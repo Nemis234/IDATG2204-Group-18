@@ -1,4 +1,4 @@
-package handler
+package handlers
 
 type ListProducts struct {
 	Products []Product `json:"products"`

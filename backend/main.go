@@ -1,7 +1,7 @@
 package main
 
 import (
-	handler "backend/handler"
+	handlers "backend/handlers"
 	"database/sql"
 	"log"
 	"net/http"
@@ -25,11 +25,12 @@ func main() {
 	}
 	defer db.Close()
 
-	handler.SetDB(db) // Assign the database connection to the handler package
+	handlers.SetDB(db) // Assign the database connection to the handler package
 
 	router := http.NewServeMux()
-	router.HandleFunc("/products", handler.ProductsHandler)
-	router.HandleFunc("/products/{id}", handler.ProductsHandler)
+	// Note plural and singular
+	router.HandleFunc("/products/{page}", handlers.ProductsHandler)
+	router.HandleFunc("/products/{id}", handlers.ProductHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {
