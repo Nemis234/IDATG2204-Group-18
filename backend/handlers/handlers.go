@@ -13,10 +13,11 @@ ProductsHandler handles requests for a list of products.
 It retrieves the products from the database and returns them in JSON format.
 
 It supports pagination and filtering based on various query parameters.
-Pagination is done using the page number in the URL path.
+Pagination is done using the page number as a query parameter, and is mandatory.
 The page number is used to determine the offset for the SQL query.
 
 Supported query parameters:
+  - page: The page number for pagination (mandatory)
   - search: Filter products by name or description
   - categoryID: Filter products by category ID
   - brandID: Filter products by brand ID
@@ -26,7 +27,7 @@ Supported query parameters:
 Example usage:
 
 	Method: GET
-	Route: /products/1?search=example&categoryID=1&brandID=2&priceMin=10&priceMax=100
+	Route: /products?page=1&search=example&categoryID=1&brandID=2&priceMin=10&priceMax=100
 	Response:
 	{
 	"products": [
@@ -53,7 +54,11 @@ Example usage:
 func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		pageStr := r.PathValue("page")
+		// Get query parameters from the URL
+		// Example: /products?page=1&search=example&categoryID=1&brandID=2&priceMin=10&priceMax=100
+		vars := r.URL.Query()
+
+		pageStr := vars.Get("page")
 		if pageStr == "" {
 			http.Error(w, "Page number is required", http.StatusBadRequest)
 			return
@@ -64,10 +69,6 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Invalid page number", http.StatusBadRequest)
 			return
 		}
-
-		// Get query parameters from the URL
-		// Example: /products?search=example&categoryID=1&brandID=2&priceMin=10&priceMax=100
-		vars := r.URL.Query()
 		search := vars.Get("search")
 		categoryID := vars.Get("categoryID")
 		brandID := vars.Get("brandID")
@@ -92,6 +93,10 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 		var whereStatements []string
 
 		// Using constants for column names
+
+		// !!!!!
+		// Sprintf NEEDS TO BE REPLACED WITH PREPARED STATEMENTS
+		// !!!!!
 		if search != "" {
 			//whereStatements = append(whereStatements, fmt.Sprintf("%s LIKE %s OR %s LIKE %s", NAME, search, DESCRIPTION, search))
 			whereStatements = append(whereStatements, fmt.Sprintf("%s LIKE %s", NAME, search))

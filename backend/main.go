@@ -29,7 +29,7 @@ func main() {
 
 	router := http.NewServeMux()
 	// Note plural and singular
-	router.HandleFunc("/products/{page}", handlers.ProductsHandler)
+	router.HandleFunc("/products", handlers.ProductsHandler)
 	router.HandleFunc("/products/{id}", handlers.ProductHandler)
 
 	port := os.Getenv("PORT")
