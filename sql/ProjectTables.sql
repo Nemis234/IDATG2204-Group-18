@@ -36,7 +36,7 @@ CREATE TABLE Member (
     MembershipLevel VARCHAR(50),
     MembershipStart DATE,
     FOREIGN KEY (UserID) REFERENCES User(UserID) ON DELETE CASCADE
-)
+);
 
 CREATE TABLE OrderStatus (
     StatusName VARCHAR(50) NOT NULL PRIMARY KEY,
