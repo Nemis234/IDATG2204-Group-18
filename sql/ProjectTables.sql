@@ -33,7 +33,7 @@ CREATE TABLE User (
 
 CREATE TABLE Member (
     UserID VARCHAR(50) PRIMARY KEY,
-    MembershipLevel VARCHAR(50),
+    MembershipLevel ENUM('Silver', 'Gold', 'Platinum') NOT NULL,
     MembershipStart DATE,
     FOREIGN KEY (UserID) REFERENCES User(UserID) ON DELETE CASCADE
 );
