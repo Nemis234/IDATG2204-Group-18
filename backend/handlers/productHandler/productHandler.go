@@ -22,61 +22,79 @@ Pagination is done using the page number as a query parameter, and is mandatory.
 The page number is used to determine the offset for the SQL query.
 
 Supported query parameters:
-  - page: The page number for pagination (mandatory)
-  - search: Filter products by name or description
-  - categoryID: Filter products by category ID
-  - brandID: Filter products by brand ID
-  - priceMin: Filter products by minimum price
-  - priceMax: Filter products by maximum price
-  - pageLimit: The number of products to return per page (default is 10)
+
+	{
+	- page 		(string)| mandatory	: The page number for pagination
+	- search 	(string)| optional	: Filter products by name or description
+	- category 	(string)| optional	: Filter products by category name
+	- brand 	(string)| optional	: Filter products by brand name
+	- priceMin 	(float64)| optional	: Filter products by minimum price
+	- priceMax 	(float64)| optional	: Filter products by maximum price
+	- pageLimit	(int64)| optional	: The number of products to return per page (default is 10)
+	}
 
 Example usage:
 
 	Method: GET
-	Route: /products?page=1&search=example&categoryID=1&brandID=2&priceMin=10&priceMax=100
+	Route: /products?page=1&search=example&category=example1&brand=example2&priceMin=9.9&priceMax=100
 	Response:
+	HTTP code: 200 OK
 	[
 		{
-			"product_id": 1,
-			"name": "Product 1, example text",
-			"description": "Description 1",
-			"price": 100,
+			"product_id": "12345",
+			"name": "example product",
+			"description": "Product Description",
+			"img_url": "https://example.com/image9.jpg",
+			"price": 100.00,
 			"stock_quantity": 50,
-			"category": {
-				"id": 1,
-				"name": "Category 1",
-				"description": "Category Description 1"
-			},
-			"brand": {
-				"id": 1,
-				"name": "Brand 2",
-				"description": "Brand Description 2"
-			}
+			"category_name": "example1",
+			"brand_name": "example2",
 		},
+		{
+			"product_id": "10",
+			"name": "TechBrave Laptop Pro",
+			"description": null,
+			"img_url": null,
+			"price": 15999.99,
+			"stock_quantity": 40,
+			"category_name": null,
+			"brand_name": null,
+	  	},
 	]
+
+When using the POST method, the request body should contain the product details in JSON format.
+Mandatory fields cannot be null, and optional fields can be null.
+The request body should include the following fields:
+
+	{
+	- product_id     (string)| mandatory	: The ID of the product
+	- name           (string)| mandatory	: The name of the product
+	- description    (string)| optional	: The description of the product
+	- img_url        (string)| optional	: The URL of the product image
+	- price          (float64)| mandatory	: The price of the product
+	- stock_quantity (int64)| mandatory	: The quantity of the product in stock
+	- category_name  (string)| optional	: The name of the category
+	- brand_name     (string)| optional	: The name of the brand
+	}
+
+Example usage:
 
 	Method: POST
 	Route: /products
 	Request body:
 	{
-		"product_id": 1,
+		"product_id": "4",
 		"name": "Product 1, example text",
 		"description": "Description 1",
-		"price": 100,
+		"img_url": "https://example.com/image1.jpg",
+		"price": 99.99,
 		"stock_quantity": 50,
-		"category": {
-			"id": 1,
-			"name": "Category 1",
-			"description": "Category Description 1"
-		},
-		"brand": {
-			"id": 1,
-			"name": "Brand 2",
-			"description": "Brand Description 2"
-		}
+		"category_name": "Category 1",
+		"brand_name": "Brand 2"
 	}
 
 	Response:
+	HTTP code: 201 Created
 	{
 		"id" : 3
 	}
@@ -179,34 +197,77 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 /*
-ProductHandler handles requests for a single product.
+ProductHandler handles GET requests for a single product.
 It retrieves the product details from the database based on the provided ID in the URL path,
 and returns the product details in JSON format.
 
-It can also handle PUT requests to update the product details.
+It also supports PUT requests to update the product details.
+
+It also supports PATCH requests to update the product details.
+
+It also supports DELETE requests to delete a product.
 
 Example usage:
 
 	Method: GET
 	Route: /products/12345
 	Response:
+	HTTP code: 200 OK
 	{
-		"product_id": 12345,
-		"name": "Product Name",
+		"product_id": "12345",
+		"name": "example product",
 		"description": "Product Description",
-		"price": 100,
+		"img_url": "https://example.com/image9.jpg",
+		"price": 100.00,
 		"stock_quantity": 50,
-		"category": {
-			"id": 1,
-			"name": "Category Name",
-			"description": "Category Description"
-			},
-		"brand": {
-			"id": 1,
-			"name": "Brand Name",
-			"description": "Brand Description"
-			}
+		"category_name": "example1",
+		"brand_name": "example2",
 	}
+
+When using the PUT method, the request body should contain the product details in JSON format.
+Mandatory fields cannot be null, while optional can be null.
+The request body should include the following fields:
+
+	{
+	- product_id     (string)| mandatory	: The ID of the product
+	- name           (string)| mandatory	: The name of the product
+	- description    (string)| optional	: The description of the product
+	- img_url        (string)| optional	: The URL of the product image
+	- price          (float64)| mandatory	: The price of the product
+	- stock_quantity (int64)| mandatory	: The quantity of the product in stock
+	- category_name  (string)| optional	: The name of the category
+	- brand_name     (string)| optional	: The name of the brand
+	}
+
+Example usage:
+
+	Method: PUT
+	Route: /products/12345
+	Request body:
+	{
+		"product_id": "12345",
+		"name": "Updated Product",
+		"description": "Updated Description",
+		"img_url": "https://example.com/updated_image.jpg",
+		"price": 150.00,
+		"stock_quantity": 30,
+		"category_name": "Updated Category",
+		"brand_name": "Updated Brand"
+	}
+	Response:
+	HTTP code: 201 No Content
+
+When using the PATCH method, the request body should contain the product details in JSON format.
+Any amount of fields can be updated, but mandatory fields cannot be null, while optional can be null.
+The request body can use any field(s) available in the PUT method.
+
+When using the DELETE method, the product will be deleted from the database.
+Example usage:
+
+	Method: DELETE
+	Route: /products/12345
+	Response:
+	HTTP code: 204 No Content
 */
 func ProductHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("ProductHandler called with method: ", r.Method)
@@ -226,6 +287,28 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(product)
 	case http.MethodPut:
 		http.Error(w, "Method not implemented", http.StatusNotImplemented)
+	case http.MethodPatch:
+		http.Error(w, "Method not implemented", http.StatusNotImplemented)
+	case http.MethodDelete:
+		id := r.PathValue("id")
+		if id == "" {
+			http.Error(w, "ID is required", http.StatusBadRequest)
+			return
+		}
+
+		// Needs to check if an admin is preforming the delete
+
+		// Delete the product from the database
+		result, err := cons.DB.Exec(cons.DeleteProduct, id)
+		log.Println("Delete result: ", result)
+		if err != nil {
+			log.Println("Error deleting product: ", err)
+			http.Error(w, "Error deleting product", http.StatusInternalServerError)
+			return
+		}
+		// Return a 204 No Content response
+		w.WriteHeader(http.StatusNoContent)
+
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
