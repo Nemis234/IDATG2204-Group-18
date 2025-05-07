@@ -1,6 +1,9 @@
 package structs
 
-import "database/sql"
+import (
+	"database/sql"
+	"time"
+)
 
 type Product struct {
 	ProductID     int            `json:"product_id" db:"ProductID"`
@@ -24,48 +27,60 @@ type Brand struct {
 }
 
 type User struct {
-	ID        int            `json:"id" db:"UserID"`
-	Username  string         `json:"username"`
-	Email     string         `json:"email"`
-	Password  string         `json:"password"` // Maybe not, yeah?
-	FirstName string         `json:"first_name"`
-	LastName  string         `json:"last_name"`
-	Address   sql.NullString `json:"address"`
+	UserID    int            `json:"user_id" db:"UserID"`
+	Username  string         `json:"username" db:"Username"`
+	Password  string         `json:"password" db:"Password"` // Maybe not, yeah?
+	Email     string         `json:"email" db:"Email"`
+	FirstName string         `json:"first_name" db:"FirstName"`
+	LastName  string         `json:"last_name" db:"LastName"`
+	Address   sql.NullString `json:"address" db:"Address"`
+}
+
+type Member struct {
+	ID              int          `json:"id" db:"UserID"`
+	MembershipLevel string       `json:"membership_level" db:"MembershipLevel"`
+	MembershipStart sql.NullTime `json:"membership_start" db:"MembershipStart"`
 }
 
 type Order struct {
-	ID          int         `json:"id"`
-	User        User        `json:"user"`
-	OrderDate   string      `json:"order_date" db:"order_date"`
-	TotalAmount int         `json:"total_amount" db:"total_amount"`
-	Status      string      `json:"status"`
-	Items       []OrderItem `json:"items"`
+	ID          int          `json:"order_id" db:"OrderID"`
+	UserID      int          `json:"user_id" db:"UserID"`
+	OrderDate   sql.NullTime `json:"order_date" db:"OrderDate"`
+	OrderStatus string       `json:"order_status" db:"OrderStatus"`
+	OrderTotal  int          `json:"order_total" db:"OrderTotal"`
+	Items       []OrderItem  `json:"items"`
 }
 
 type OrderItem struct {
-	ID       int     `json:"id"`
-	Product  Product `json:"product"`
-	Quantity int     `json:"quantity"`
-	Subtotal int     `json:"subtotal"`
+	OrderID   int `json:"order_id" db:"OrderID"`
+	ProductID int `json:"product_id" db:"ProductID"`
+	Quantity  int `json:"quantity" db:"Quantity"`
+}
+
+type OrderStatus struct {
+	ID         int            `json:"id" db:"StatusName"`
+	StatusDesc sql.NullString `json:"status" db:"StatusDesc"`
 }
 
 type Payment struct {
-	ID            int    `json:"id"`
-	Order         Order  `json:"order"`
-	PaymentMethod string `json:"payment_method" db:"payment_method"`
-	Amount        int    `json:"amount"`
-	PaymentDate   string `json:"payment_date" db:"payment_date"`
-	Status        string `json:"status"`
-}
-
-type Cart struct {
-	ID        int        `json:"id" db:"CartID"`
-	UserID    int        `json:"user_id"`
-	CartItems []CartItem `json:"cart_items"`
+	PaymentID     int            `json:"payment_id" db:"PaymentID"`
+	OrderID       int            `json:"order_id" db:"OrderID"`
+	PaymentMethod string         `json:"payment_method" db:"PaymentMethod"`
+	Amount        float32        `json:"amount" db:"Amount"`
+	PaymentDate   string         `json:"payment_date" db:"PaymentDate"`
+	PaymentStatus sql.NullString `json:"payment_status" db:"PaymentStatus"`
 }
 
 type CartItem struct {
-	CartID   int     `json:"cart_id" db:"CartID"`
-	Product  Product `json:"product" db:"ProductID"`
-	Quantity int     `json:"quantity"`
+	UserID    int           `json:"cart_id" db:"UserID"`
+	ProductID string        `json:"product_id" db:"ProductID"`
+	Quantity  sql.NullInt32 `json:"quantity" db:"Quantity"`
+}
+
+type Review struct {
+	UserID    int            `json:"user_id" db:"UserID"`
+	ProductID int            `json:"product_id" db:"ProductID"`
+	Comment   sql.NullString `json:"comment" db:"Comment"`
+	Rating    sql.NullInt16  `json:"rating" db:"Rating"`
+	PostDate  time.Time      `json:"post_date" db:"PostDate"`
 }
