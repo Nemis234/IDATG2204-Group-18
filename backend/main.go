@@ -17,14 +17,14 @@ func main() {
 	dsn := os.Getenv("DSN") // Data Source Name (DSN) for MySQL connection
 	if dsn == "" {
 		// Replace with MySQL credentials
-		dsn = "username:password@tcp(localhost:20)/dbname"
+		dsn = "root:@tcp(127.0.0.1:3306)/idatg2204"
 	}
-
+	log.Println("Attempting connection with DSN: ", dsn)
 	db, err := sqlx.Connect(databaseType, dsn)
 	if err != nil {
-		log.Println("Error connecting to database: ", err)
+		log.Fatal("Error connecting to database: ", err)
 	}
-	//defer db.Close()
+	defer db.Close()
 
 	log.Println("Connected to database successfully")
 
