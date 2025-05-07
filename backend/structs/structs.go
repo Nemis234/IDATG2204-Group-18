@@ -3,24 +3,22 @@ package structs
 import "database/sql"
 
 type Product struct {
-	ProductID     int      `json:"product_id" db:"ProductID"`
-	Name          string   `json:"name" db:"ProductName"`
-	Description   string   `json:"description" db:"ProductDesc"`
-	ImgURL        string   `json:"img_url" db:"ProductImgUrl"`
-	Price         int      `json:"price"`
-	StockQuantity int      `json:"stock_quantity"`
-	Category      Category `json:"category"`
-	Brand         Brand    `json:"brand"`
+	ProductID     int            `json:"product_id" db:"ProductID"`
+	Name          string         `json:"name" db:"ProductName"`
+	Description   sql.NullString `json:"description" db:"ProductDesc"`
+	ImgURL        sql.NullString `json:"img_url" db:"ProductImgUrl"`
+	Price         float64        `json:"price" db:"Price"`
+	StockQuantity int            `json:"stock_quantity" db:"StockQuantity"`
+	BrandName     sql.NullString `json:"brand_name" db:"Brand"`
+	CategoryName  sql.NullString `json:"category_name" db:"Category"`
 }
 
 type Category struct {
-	ID          int            `json:"id"`
 	Name        string         `json:"name" db:"CategoryName"`
 	Description sql.NullString `json:"description" db:"CategoryDesc"`
 }
 
 type Brand struct {
-	ID          int            `json:"id"`
 	Name        string         `json:"name" db:"BrandName"`
 	Description sql.NullString `json:"description" db:"BrandDesc"`
 }

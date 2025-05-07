@@ -9,30 +9,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-
-	"github.com/jmoiron/sqlx"
 )
-
-func GetProduct(productRows *sqlx.Rows) (Product, error) {
-	var p Product
-	var c Category
-	var b Brand
-	// Scan the product details into the Product struct
-	if err := productRows.StructScan(&p); err != nil {
-		return p, err
-	}
-	// Query the category and brand details using the IDs
-	if err := cons.DB.Get(&c, cons.QueryCategory, c.ID); err != nil {
-		return p, err
-	}
-	if err := cons.DB.Get(&b, cons.QueryBrand, b.ID); err != nil {
-		return p, err
-	}
-
-	p.Category = c
-	p.Brand = b
-	return p, nil
-}
 
 /*
 ProductsHandler handles requests for a list of products.
@@ -189,26 +166,8 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 		// Replace the placeholders with the actual values for logging
 		log.Println("Executing query: ", fmt.Sprintf(strings.ReplaceAll(query, "?", "%s"), variables...))
 		// Execute the query
-		productRows, err := cons.DB.Queryx(query, variables...)
-		if err != nil {
-			log.Println("Error querying products: ", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		defer productRows.Close()
-
 		var products []Product
-
-		for productRows.Next() {
-			// Scan the product values into a Product struct
-			p, err := GetProduct(productRows)
-			if err != nil {
-				log.Println("Error getting product values: ", err)
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			products = append(products, p)
-		}
+		cons.DB.Select(&products, query, variables...)
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(products)
@@ -259,29 +218,12 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		productRows, err := cons.DB.Queryx(cons.QueryProduct, id)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			log.Println("Error querying product: ", err)
-			return
-		}
-		defer productRows.Close()
+		var product Product
 
-		if !productRows.Next() {
-			log.Println("Product not found: ", productRows.Err())
-			http.Error(w, "Product not found", http.StatusNotFound)
-			return
-		}
-
-		p, err := GetProduct(productRows)
-		if err != nil {
-			log.Println("Error getting product values: ", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+		cons.DB.Get(&product, cons.QueryProduct, id)
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(p)
+		json.NewEncoder(w).Encode(product)
 	case http.MethodPut:
 		http.Error(w, "Method not implemented", http.StatusNotImplemented)
 	default:
