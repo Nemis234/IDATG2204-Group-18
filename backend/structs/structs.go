@@ -15,6 +15,17 @@ type Product struct {
 	BrandName     *string `json:"brand_name" db:"Brand"`
 }
 
+type PatchProduct struct {
+	ProductID     string   `json:"product_id" db:"ProductID"`
+	Name          *string  `json:"name" db:"ProductName"`
+	Description   *string  `json:"description" db:"ProductDesc"`
+	ImgURL        *string  `json:"img_url" db:"ProductImgUrl"`
+	Price         *float64 `json:"price" db:"Price"`
+	StockQuantity *int     `json:"stock_quantity" db:"StockQuantity"`
+	CategoryName  *string  `json:"category_name" db:"Category"`
+	BrandName     *string  `json:"brand_name" db:"Brand"`
+}
+
 type Category struct {
 	Name        string  `json:"category_name" db:"CategoryName"`
 	Description *string `json:"category_desc" db:"CategoryDesc"`

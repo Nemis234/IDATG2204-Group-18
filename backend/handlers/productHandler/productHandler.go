@@ -3,12 +3,15 @@ package producthandler
 import (
 	cons "backend/constants"
 	. "backend/structs"
+	utility "backend/utility"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/go-sql-driver/mysql"
 )
 
 /*
@@ -67,7 +70,7 @@ Mandatory fields cannot be null, and optional fields can be null.
 The request body should include the following fields:
 
 	{
-	- product_id     (string)| mandatory	: The ID of the product
+	- product_id     (string)| optional	: The ID of the product
 	- name           (string)| mandatory	: The name of the product
 	- description    (string)| optional	: The description of the product
 	- img_url        (string)| optional	: The URL of the product image
@@ -83,20 +86,19 @@ Example usage:
 	Route: /products
 	Request body:
 	{
-		"product_id": "4",
 		"name": "Product 1, example text",
 		"description": "Description 1",
 		"img_url": "https://example.com/image1.jpg",
 		"price": 99.99,
 		"stock_quantity": 50,
-		"category_name": "Category 1",
-		"brand_name": "Brand 2"
+		"category_name": "Audio & Headphones",
+		"brand_name": "TechBrave"
 	}
 
 	Response:
 	HTTP code: 201 Created
 	{
-		"id" : 3
+		"id" : "7c063863-2b6e-11f0-ad3b-58cdc90b0639"
 	}
 */
 func ProductsHandler(w http.ResponseWriter, r *http.Request) {
@@ -190,7 +192,48 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(products)
 	case http.MethodPost:
-		http.Error(w, "Method not implemented", http.StatusNotImplemented)
+		// Decode the request body into a Product struct
+		var product Product
+		err := json.NewDecoder(r.Body).Decode(&product)
+		if err != nil {
+			log.Println("Error decoding request body: ", err)
+			http.Error(w, "Invalid request body", http.StatusBadRequest)
+			return
+		}
+
+		// Validate mandatory fields
+		if product.Name == "" || product.Price <= 0 || product.StockQuantity <= 0 {
+			http.Error(w, "Missing mandatory fields", http.StatusBadRequest)
+			return
+		}
+
+		if product.ProductID == "" {
+			// Generate a new product ID
+			err := cons.DB.Get(&product, "SELECT UUID() AS ProductID;")
+			if err != nil {
+				log.Println("Error generating product ID: ", err)
+				http.Error(w, "Error generating product ID", http.StatusInternalServerError)
+				return
+			}
+			log.Println("Product ID: ", product.ProductID)
+
+		}
+
+		id := product.ProductID
+
+		_, err = cons.DB.NamedExec(cons.InsertProduct, product)
+		if err != nil {
+			log.Println("Error inserting product: ", err)
+			http.Error(w, "Error inserting product", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		// Return the ID of the newly created product
+		response := map[string]string{"id": id}
+		json.NewEncoder(w).Encode(response)
+
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
@@ -229,7 +272,6 @@ Mandatory fields cannot be null, while optional can be null.
 The request body should include the following fields:
 
 	{
-	- product_id     (string)| mandatory	: The ID of the product
 	- name           (string)| mandatory	: The name of the product
 	- description    (string)| optional	: The description of the product
 	- img_url        (string)| optional	: The URL of the product image
@@ -245,7 +287,6 @@ Example usage:
 	Route: /products/12345
 	Request body:
 	{
-		"product_id": "12345",
 		"name": "Updated Product",
 		"description": "Updated Description",
 		"img_url": "https://example.com/updated_image.jpg",
@@ -262,6 +303,7 @@ Any amount of fields can be updated, but mandatory fields cannot be null, while 
 The request body can use any field(s) available in the PUT method.
 
 When using the DELETE method, the product will be deleted from the database.
+If the product is in a foreign key constraint, the delete will fail with a 409 Conflict error.
 Example usage:
 
 	Method: DELETE
@@ -286,9 +328,81 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(product)
 	case http.MethodPut:
-		http.Error(w, "Method not implemented", http.StatusNotImplemented)
+		id := r.PathValue("id")
+		if id == "" {
+			http.Error(w, "ID is required", http.StatusBadRequest)
+			return
+		}
+		// Decode the request body into a Product struct
+		var product Product
+		err := json.NewDecoder(r.Body).Decode(&product)
+		if err != nil {
+			log.Println("Error decoding request body: ", err)
+			http.Error(w, "Invalid request body", http.StatusBadRequest)
+			return
+		}
+		if product.ProductID != "" && product.ProductID != id {
+			http.Error(w, "Product ID cannot be changed", http.StatusBadRequest)
+			return
+		}
+
+		// Validate mandatory fields
+		if product.Name == "" || product.Price <= 0 || product.StockQuantity <= 0 {
+			http.Error(w, "Missing mandatory fields", http.StatusBadRequest)
+			return
+		}
+
+		product.ProductID = id
+		// Update the product in the database
+		_, err = cons.DB.NamedExec(cons.InsertProduct, product)
+		if err != nil {
+			log.Println("Error updating product: ", err)
+			http.Error(w, "Error updating product", http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+
 	case http.MethodPatch:
-		http.Error(w, "Method not implemented", http.StatusNotImplemented)
+		id := r.PathValue("id")
+		if id == "" {
+			http.Error(w, "ID is required", http.StatusBadRequest)
+			return
+		}
+
+		// Decode the request body into a Product struct
+		var product Product
+		err := json.NewDecoder(r.Body).Decode(&product)
+		if err != nil {
+			log.Println("Error decoding request body: ", err)
+			http.Error(w, "Invalid request body", http.StatusBadRequest)
+			return
+		}
+		if product.ProductID != "" && product.ProductID != id {
+			http.Error(w, "Product ID cannot be changed", http.StatusBadRequest)
+			return
+		}
+
+		query := "UPDATE " + cons.PRODUCTS_TABLE + " SET "
+
+		setClause, args := utility.BuildUpdateQuery(product)
+		if setClause == "" {
+			http.Error(w, "No fields to update", http.StatusBadRequest)
+			return
+		}
+		query += setClause + " WHERE " + cons.PRODUCTID + " = ?"
+		args = append(args, id)
+
+		// Log the query for debugging purposes
+		// Replace the placeholders with the actual values for logging
+		log.Println("Executing query: ", fmt.Sprintf(strings.ReplaceAll(query, "?", "%s"), args...))
+		// Execute the query
+		_, err = cons.DB.Exec(query, args...)
+		if err != nil {
+			log.Println("Error updating product: ", err)
+			http.Error(w, "Error updating product", http.StatusInternalServerError)
+			return
+		}
+
 	case http.MethodDelete:
 		id := r.PathValue("id")
 		if id == "" {
@@ -300,10 +414,25 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 
 		// Delete the product from the database
 		result, err := cons.DB.Exec(cons.DeleteProduct, id)
-		log.Println("Delete result: ", result)
 		if err != nil {
+			if mysqlErr, ok := err.(*mysql.MySQLError); ok && mysqlErr.Number == 1451 {
+				// Foreign key constraint error
+				log.Println("Foreign key constraint error: ", err)
+				http.Error(w, "Cannot delete product with existing references, probably due to a foreign key constraint", http.StatusConflict)
+				return
+			}
 			log.Println("Error deleting product: ", err)
 			http.Error(w, "Error deleting product", http.StatusInternalServerError)
+			return
+		}
+		affected, err := result.RowsAffected()
+		if err != nil {
+			log.Println("Error getting affected rows: ", err)
+			http.Error(w, "Error getting affected rows", http.StatusInternalServerError)
+			return
+		}
+		if affected == 0 {
+			http.Error(w, "Product not found", http.StatusNotFound)
 			return
 		}
 		// Return a 204 No Content response
