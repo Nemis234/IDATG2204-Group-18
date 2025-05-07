@@ -6,12 +6,15 @@ import (
 
 // Constants for database table and column names
 const (
-	PRODUCTS_TABLE = "Product"
-	PRODUCTID      = "ProductID"
-	PRODUCT_NAME   = "ProductName"
-	PRODUCT_DESC   = "ProductDesc"
-	PRODUCT_PRICE  = "Price"
-	PRODUCT_STOCK  = "stockQuantity"
+	PRODUCTS_TABLE   = "Product"
+	PRODUCTID        = "ProductID"
+	PRODUCT_NAME     = "ProductName"
+	PRODUCT_DESC     = "ProductDesc"
+	PRODUCT_IMG_URL  = "ProductImgUrl"
+	PRODUCT_PRICE    = "Price"
+	PRODUCT_STOCK    = "StockQuantity"
+	PRODUCT_BRAND    = "Brand"
+	PRODUCT_CATEGORY = "Category"
 
 	CATEGORIES_TABLE = "Category"
 	CATEGORYID       = "categoryID"
@@ -32,6 +35,7 @@ const (
 var QueryProducts = "SELECT * FROM " + PRODUCTS_TABLE                                 //fmt.Sprintf("SELECT %s, %s, %s, %s, %s, %s, %s FROM "+PRODUCTS_TABLE, PRODUCTID, PRODUCT_NAME, PRODUCT_DESC, PRODUCT_PRICE, PRODUCT_STOCK, CATEGORYID, BRANDID)
 var QueryProduct = "SELECT * FROM " + PRODUCTS_TABLE + " WHERE " + PRODUCTID + " = ?" //fmt.Sprintf("SELECT %s, %s, %s, %s, %s, %s, %s FROM "+PRODUCTS_TABLE+" WHERE %s = ?", PRODUCTID, PRODUCT_NAME, PRODUCT_DESC, PRODUCT_PRICE, PRODUCT_STOCK, CATEGORYID, BRANDID, PRODUCTID)
 var DeleteProduct = "DELETE FROM " + PRODUCTS_TABLE + " WHERE " + PRODUCTID + " = ?"
+var InsertProduct = "INSERT INTO " + PRODUCTS_TABLE + " (" + PRODUCTID + ", " + PRODUCT_NAME + ", " + PRODUCT_DESC + ", " + PRODUCT_IMG_URL + ", " + PRODUCT_PRICE + ", " + PRODUCT_STOCK + ", " + PRODUCT_CATEGORY + ", " + PRODUCT_BRAND + ") VALUES (:" + PRODUCTID + ", :" + PRODUCT_NAME + ", :" + PRODUCT_DESC + ", :" + PRODUCT_IMG_URL + ", :" + PRODUCT_PRICE + ", :" + PRODUCT_STOCK + ", :" + PRODUCT_CATEGORY + ", :" + PRODUCT_BRAND + ")"
 
 var QueryCategories = "SELECT * FROM " + CATEGORIES_TABLE                                    // fmt.Sprintf("SELECT %s, %s, %s FROM "+CATEGORIES_TABLE, PRODUCTID, CATEGORY_NAME, CATEGORY_DESC)
 var QueryCategory = "SELECT * FROM " + CATEGORIES_TABLE + " WHERE " + CATEGORY_NAME + " = ?" // fmt.Sprintf("SELECT %s, %s FROM "+CATEGORIES_TABLE+" WHERE %s = ?", CATEGORY_NAME, CATEGORY_DESC, PRODUCTID)
