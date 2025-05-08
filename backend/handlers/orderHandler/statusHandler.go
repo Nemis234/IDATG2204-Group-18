@@ -64,7 +64,7 @@ func UpdateStatusHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("UpdateStatusHandler called with method: ", r.Method)
 	switch r.Method {
 	case http.MethodPut:
-		statusName := r.PathValue("orderName")
+		statusName := r.PathValue("statusName")
 		if statusName == "" {
 			log.Println("Name is required")
 			http.Error(w, "Name is required", http.StatusBadRequest)
