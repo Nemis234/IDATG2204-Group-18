@@ -15,12 +15,14 @@ import (
 )
 
 /*
-ProductsHandler handles requests for a list of products.
-It retrieves the products from the database and returns them in JSON format.
+ProductsHandler support these methods:
 
-It is also used for creating new products, by means of a POST request.
+  - GET requests for a list of products with optional search paramaters.
+  - POST requests to create a new product.
 
-It supports pagination and filtering based on various query parameters.
+# GET
+
+The function supports pagination and filtering based on various query parameters.
 Pagination is done using the page number as a query parameter, and is mandatory.
 The page number is used to determine the offset for the SQL query.
 
@@ -65,8 +67,10 @@ Example usage:
 	  	},
 	]
 
+# POST
+
 When using the POST method, the request body should contain the product details in JSON format.
-Mandatory fields cannot be null, and optional fields can be null.
+Mandatory fields cannot be null, optional fields can be null.
 The request body should include the following fields:
 
 	{
@@ -245,15 +249,17 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 /*
-ProductHandler handles GET requests for a single product.
+ProductHandler support these methods:
+
+  - GET requests for a single product.
+  - PUT requests to update a whole product.
+  - PATCH requests to update indevidual fields for a product.
+  - DELETE requests to delete a product.
+
+# GET
+
 It retrieves the product details from the database based on the provided ID in the URL path,
 and returns the product details in JSON format.
-
-It also supports PUT requests to update the product details.
-
-It also supports PATCH requests to update the product details.
-
-It also supports DELETE requests to delete a product.
 
 Example usage:
 
@@ -271,6 +277,8 @@ Example usage:
 		"category_name": "example1",
 		"brand_name": "example2",
 	}
+
+# PUT
 
 When using the PUT method, the request body should contain the product details in JSON format.
 Mandatory fields cannot be null, while optional can be null.
@@ -303,9 +311,13 @@ Example usage:
 	Response:
 	HTTP code: 201 No Content
 
+# PATCH
+
 When using the PATCH method, the request body should contain the product details in JSON format.
 Any amount of fields can be updated, but mandatory fields cannot be null, while optional can be null.
-The request body can use any field(s) available in the PUT method.
+The request body can use any field(s) available in the PUT method, in the same format.
+
+# DELETE
 
 When using the DELETE method, the product will be deleted from the database.
 If the product is in a foreign key constraint, the delete will fail with a 409 Conflict error.
