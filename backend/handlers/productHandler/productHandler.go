@@ -3,6 +3,7 @@ package producthandler
 import (
 	cons "backend/constants"
 	. "backend/structs"
+	utility "backend/utility"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -12,12 +13,14 @@ import (
 )
 
 /*
-ProductsHandler handles requests for a list of products.
-It retrieves the products from the database and returns them in JSON format.
+ProductsHandler support these methods:
 
-It is also used for creating new products, by means of a POST request.
+  - GET requests for a list of products with optional search paramaters.
+  - POST requests to create a new product.
 
-It supports pagination and filtering based on various query parameters.
+# GET
+
+The function supports pagination and filtering based on various query parameters.
 Pagination is done using the page number as a query parameter, and is mandatory.
 The page number is used to determine the offset for the SQL query.
 
@@ -62,12 +65,14 @@ Example usage:
 	  	},
 	]
 
+# POST
+
 When using the POST method, the request body should contain the product details in JSON format.
-Mandatory fields cannot be null, and optional fields can be null.
+Mandatory fields cannot be null, optional fields can be null.
 The request body should include the following fields:
 
 	{
-	- product_id     (string)| mandatory	: The ID of the product
+	- product_id     (string)| optional	: The ID of the product
 	- name           (string)| mandatory	: The name of the product
 	- description    (string)| optional	: The description of the product
 	- img_url        (string)| optional	: The URL of the product image
@@ -83,20 +88,19 @@ Example usage:
 	Route: /products
 	Request body:
 	{
-		"product_id": "4",
 		"name": "Product 1, example text",
 		"description": "Description 1",
 		"img_url": "https://example.com/image1.jpg",
 		"price": 99.99,
 		"stock_quantity": 50,
-		"category_name": "Category 1",
-		"brand_name": "Brand 2"
+		"category_name": "Audio & Headphones",
+		"brand_name": "TechBrave"
 	}
 
 	Response:
 	HTTP code: 201 Created
 	{
-		"id" : 3
+		"id" : "7c063863-2b6e-11f0-ad3b-58cdc90b0639"
 	}
 */
 func ProductsHandler(w http.ResponseWriter, r *http.Request) {
@@ -139,27 +143,35 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 		pageOffset := (page - 1) * pageLimit // Calculate the offset for pagination
 
 		search := vars.Get("search")
-		categoryID := vars.Get("categoryID")
-		brandID := vars.Get("brandID")
+		categoryID := vars.Get("category")
+		brandID := vars.Get("brand")
 		priceMin := vars.Get("priceMin")
 		priceMax := vars.Get("priceMax")
+		stockQuantity := vars.Get("stockQuantity")
 
 		rawConditions := []struct {
-			value string
 			query string
+			value string
 		}{ // Using constants for column names
-			{search, cons.PRODUCT_NAME + " LIKE ?"},
-			{categoryID, cons.CATEGORYID + " = ?"},
-			{brandID, cons.BRANDID + " = ?"},
-			{priceMin, cons.PRODUCT_PRICE + " >= ?"},
-			{priceMax, cons.PRODUCT_PRICE + " <= ?"},
+			{cons.PRODUCT_NAME + " LIKE ?", search},
+			{cons.PRODUCT_CATEGORY + " = ?", categoryID},
+			{cons.PRODUCT_BRAND + " = ?", brandID},
+			{cons.PRODUCT_PRICE + " >= ?", priceMin},
+			{cons.PRODUCT_PRICE + " <= ?", priceMax},
+			{cons.PRODUCT_STOCK + " >= ?", stockQuantity},
 		}
 		var variables []any
 		var conditions []string
 
+		log.Println("Raw conditions: ", rawConditions)
+
 		// Remove empty conditions
 		for _, cond := range rawConditions {
 			if cond.value != "" {
+				if strings.Contains(cond.query, cons.PRODUCT_NAME) {
+					// Use wildcard for LIKE queries
+					cond.value = "%" + cond.value + "%"
+				}
 				variables = append(variables, cond.value)
 				conditions = append(conditions, cond.query)
 			}
@@ -167,13 +179,10 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 		// Build the SQL query with the conditions
 		// Gets the default query for products
 		query := cons.QueryProducts
-		// Add the WHERE clause to the query if there are any conditions
 		if len(conditions) > 0 {
-			query += " WHERE " + conditions[0]
-			// Add the rest of the conditions with AND, if any
-			for _, statement := range conditions[1:] {
-				query += " AND " + statement
-			}
+			// Add the WHERE clause to the query if there are any conditions, then join the conditions with AND
+			query += " WHERE " + strings.Join(conditions, " AND ")
+			log.Println("Query: ", query)
 		}
 
 		// Add the pagination to the query
@@ -182,30 +191,87 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 
 		// Log the query for debugging purposes
 		// Replace the placeholders with the actual values for logging
-		log.Println("Executing query: ", fmt.Sprintf(strings.ReplaceAll(query, "?", "%s"), variables...))
+		log.Printf("Executing query: "+strings.ReplaceAll(query, "?", "%s"), variables...)
 		// Execute the query
 		var products []Product
-		cons.DB.Select(&products, query, variables...)
+		err = cons.DB.Select(&products, query, variables...)
+		if err != nil {
+			// If the error is a MySQL error, return
+			if utility.CheckSQLErr(err, w) {
+				return
+			}
+			log.Println("Error getting products: ", err)
+			http.Error(w, "Error getting products", http.StatusInternalServerError)
+			return
+		}
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(products)
 	case http.MethodPost:
-		http.Error(w, "Method not implemented", http.StatusNotImplemented)
+		// Decode the request body into a Product struct
+		var product Product
+		err := json.NewDecoder(r.Body).Decode(&product)
+		if err != nil {
+			log.Println("Error decoding request body: ", err)
+			http.Error(w, "Invalid request body", http.StatusBadRequest)
+			return
+		}
+
+		// Validate mandatory fields
+		if product.Name == "" || product.Price <= 0 || product.StockQuantity <= 0 {
+			http.Error(w, "Missing mandatory fields", http.StatusBadRequest)
+			return
+		}
+
+		if product.ProductID == "" {
+			// Generate a new product ID
+			err := cons.DB.Get(&product, "SELECT UUID() AS ProductID;")
+			if err != nil {
+				log.Println("Error generating product ID: ", err)
+				http.Error(w, "Error generating product ID", http.StatusInternalServerError)
+				return
+			}
+			log.Println("Product ID: ", product.ProductID)
+
+		}
+
+		id := product.ProductID
+
+		_, err = cons.DB.NamedExec(cons.InsertProduct, product)
+		if err != nil {
+			// If the error is a MySQL error, return
+			if utility.CheckSQLErr(err, w) {
+				return
+			}
+
+			log.Println("Error inserting product: ", err)
+			http.Error(w, "Error inserting product", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		// Return the ID of the newly created product
+		response := map[string]string{"id": id}
+		json.NewEncoder(w).Encode(response)
+
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
 
 /*
-ProductHandler handles GET requests for a single product.
+ProductHandler support these methods:
+
+  - GET requests for a single product.
+  - PUT requests to update a whole product.
+  - PATCH requests to update indevidual fields for a product.
+  - DELETE requests to delete a product.
+
+# GET
+
 It retrieves the product details from the database based on the provided ID in the URL path,
 and returns the product details in JSON format.
-
-It also supports PUT requests to update the product details.
-
-It also supports PATCH requests to update the product details.
-
-It also supports DELETE requests to delete a product.
 
 Example usage:
 
@@ -224,12 +290,13 @@ Example usage:
 		"brand_name": "example2",
 	}
 
+# PUT
+
 When using the PUT method, the request body should contain the product details in JSON format.
 Mandatory fields cannot be null, while optional can be null.
 The request body should include the following fields:
 
 	{
-	- product_id     (string)| mandatory	: The ID of the product
 	- name           (string)| mandatory	: The name of the product
 	- description    (string)| optional	: The description of the product
 	- img_url        (string)| optional	: The URL of the product image
@@ -245,7 +312,6 @@ Example usage:
 	Route: /products/12345
 	Request body:
 	{
-		"product_id": "12345",
 		"name": "Updated Product",
 		"description": "Updated Description",
 		"img_url": "https://example.com/updated_image.jpg",
@@ -257,11 +323,16 @@ Example usage:
 	Response:
 	HTTP code: 201 No Content
 
+# PATCH
+
 When using the PATCH method, the request body should contain the product details in JSON format.
 Any amount of fields can be updated, but mandatory fields cannot be null, while optional can be null.
-The request body can use any field(s) available in the PUT method.
+The request body can use any field(s) available in the PUT method, in the same format.
+
+# DELETE
 
 When using the DELETE method, the product will be deleted from the database.
+If the product is in a foreign key constraint, the delete will fail with a 409 Conflict error.
 Example usage:
 
 	Method: DELETE
@@ -281,14 +352,104 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 
 		var product Product
 
-		cons.DB.Get(&product, cons.QueryProduct, id)
+		err := cons.DB.Get(&product, cons.QueryProduct, id)
+		if err != nil {
+			if utility.CheckSQLErr(err, w) {
+				return
+			}
+			log.Println("Error getting product: ", err)
+			http.Error(w, "Error getting product", http.StatusNotFound)
+			return
+		}
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(product)
 	case http.MethodPut:
-		http.Error(w, "Method not implemented", http.StatusNotImplemented)
+		id := r.PathValue("id")
+		if id == "" {
+			http.Error(w, "ID is required", http.StatusBadRequest)
+			return
+		}
+		// Decode the request body into a Product struct
+		var product Product
+		err := json.NewDecoder(r.Body).Decode(&product)
+		if err != nil {
+			log.Println("Error decoding request body: ", err)
+			http.Error(w, "Invalid request body", http.StatusBadRequest)
+			return
+		}
+		if product.ProductID != "" && product.ProductID != id {
+			http.Error(w, "Product ID cannot be changed", http.StatusBadRequest)
+			return
+		}
+
+		// Validate mandatory fields
+		if product.Name == "" || product.Price <= 0 || product.StockQuantity <= 0 {
+			http.Error(w, "Missing mandatory fields", http.StatusBadRequest)
+			return
+		}
+
+		product.ProductID = id
+		// Update the product in the database
+		_, err = cons.DB.NamedExec(cons.UpdateProduct, product)
+		if err != nil {
+			// If the error is a MySQL error, return
+			if utility.CheckSQLErr(err, w) {
+				return
+			}
+			log.Println("Error updating product: ", err)
+			http.Error(w, "Error updating product", http.StatusInternalServerError)
+			return
+		}
+		log.Println("Product updated successfully with ID: ", id)
+		w.WriteHeader(http.StatusOK)
+
 	case http.MethodPatch:
-		http.Error(w, "Method not implemented", http.StatusNotImplemented)
+		id := r.PathValue("id")
+		if id == "" {
+			http.Error(w, "ID is required", http.StatusBadRequest)
+			return
+		}
+
+		// Decode the request body into a Product struct
+		var product PatchProduct
+		err := json.NewDecoder(r.Body).Decode(&product)
+		if err != nil {
+			log.Println("Error decoding request body: ", err)
+			http.Error(w, "Invalid request body", http.StatusBadRequest)
+			return
+		}
+		if product.ProductID != "" && product.ProductID != id {
+			http.Error(w, "Product ID cannot be changed", http.StatusBadRequest)
+			return
+		}
+
+		query := "UPDATE " + cons.PRODUCTS_TABLE + " SET "
+
+		setClause, args := utility.BuildUpdateQuery(product)
+		if setClause == "" {
+			http.Error(w, "No fields to update", http.StatusBadRequest)
+			return
+		}
+		query += setClause + " WHERE " + cons.PRODUCT_ID + " = ?"
+		args = append(args, id)
+
+		// Log the query for debugging purposes
+		// Replace the placeholders with actual values for logging
+		log.Println("Executing query: ", fmt.Sprintf(strings.ReplaceAll(query, "?", "%s"), args...))
+		// Execute the query
+		_, err = cons.DB.Exec(query, args...)
+		if err != nil {
+			if utility.CheckSQLErr(err, w) {
+				return
+			}
+
+			log.Println("Error updating product: ", err)
+			http.Error(w, "Error updating product", http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+
 	case http.MethodDelete:
 		id := r.PathValue("id")
 		if id == "" {
@@ -300,10 +461,23 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 
 		// Delete the product from the database
 		result, err := cons.DB.Exec(cons.DeleteProduct, id)
-		log.Println("Delete result: ", result)
 		if err != nil {
+			// If the error is a MySQL error, return
+			if utility.CheckSQLErr(err, w) {
+				return
+			}
 			log.Println("Error deleting product: ", err)
 			http.Error(w, "Error deleting product", http.StatusInternalServerError)
+			return
+		}
+		affected, err := result.RowsAffected()
+		if err != nil {
+			log.Println("Error getting affected rows: ", err)
+			http.Error(w, "Error getting affected rows", http.StatusInternalServerError)
+			return
+		}
+		if affected == 0 {
+			http.Error(w, "Product not found", http.StatusNotFound)
 			return
 		}
 		// Return a 204 No Content response

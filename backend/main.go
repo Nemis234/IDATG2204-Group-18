@@ -2,7 +2,11 @@ package main
 
 import (
 	"backend/constants"
-	handlers "backend/handlers"
+	brandshandler "backend/handlers/brandsHandler"
+	categorieshandler "backend/handlers/categoriesHandler"
+	orderHandler "backend/handlers/orderHandler"
+	producthandler "backend/handlers/productHandler"
+	usershandler "backend/handlers/usersHandler"
 	"log"
 	"net/http"
 	"os"
@@ -31,19 +35,28 @@ func main() {
 	constants.DB = db // Assign the database connection to the handler package
 
 	router := http.NewServeMux()
-	// Note plural and singular
-	router.HandleFunc("/products", handlers.ProductsHandler)
-	router.HandleFunc("/products/{id}", handlers.ProductHandler)
+	// Note plural and singular in handler names
+	router.HandleFunc("/brands", brandshandler.BrandsHandler)
+	router.HandleFunc("/brands/{id}", brandshandler.BrandHandler)
 
-	router.HandleFunc("/categories", handlers.CategoriesHandler)
-	router.HandleFunc("/categories/{id}", handlers.CategoryHandler)
+	router.HandleFunc("/categories", categorieshandler.CategoriesHandler)
+	router.HandleFunc("/categories/{id}", categorieshandler.CategoryHandler)
 
-	router.HandleFunc("/brands", handlers.BrandsHandler)
-	router.HandleFunc("/brands/{id}", handlers.BrandHandler)
+	router.HandleFunc("/orders", orderHandler.OrdersHandler)
+	router.HandleFunc("/orders/{id}", orderHandler.OrderHandler)
+	router.HandleFunc("/orders/{id}/payment", orderHandler.PaymentHandler)
+	router.HandleFunc("/orders/status", orderHandler.StatusHandler)
 
-	router.HandleFunc("/users", handlers.UsersHandler)
-	router.HandleFunc("/users/{id}", handlers.UserHandler)
-	router.HandleFunc("POST /users/login", handlers.LoginHandler)
+	router.HandleFunc("/products", producthandler.ProductsHandler)
+	router.HandleFunc("/products/{id}", producthandler.ProductHandler)
+	router.HandleFunc("/products/{id}/reviews", producthandler.ReviewHandler)
+
+	router.HandleFunc("/users", usershandler.UsersHandler)
+	router.HandleFunc("/users/{id}", usershandler.UserHandler)
+	// Only POST method is allowed for login
+	router.HandleFunc("POST /users/login", usershandler.LoginHandler)
+	router.HandleFunc("/users/{id}/member", usershandler.MemberHandler)
+	router.HandleFunc("/user/{id}/cart", usershandler.CartHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {
