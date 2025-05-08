@@ -10,7 +10,13 @@ import (
 )
 
 /*
-BrandsHandler handles requests for a list of brands.
+BrandsHandler supports these HTTP methods:
+- GET: Retrieves a list of all brands from the database.
+- POST: Inserts a new brand into the database.
+
+# GET
+
+GET handles requests for a list of brands.
 It retrieves all brands from the database and returns them in JSON format.
 
 Example usage:
@@ -28,6 +34,22 @@ Example usage:
 			"description": "Brand Description 2"
 		}
 	]
+
+# POST
+
+POST handles requests to insert a new brand into the database.
+It expects a JSON payload with the brand details.
+Example usage:
+
+	Method: POST
+	Route: /brands
+	Request Body:
+	{
+		"name": "Brand 3",
+		"description": "Brand Description 3"
+	}
+	Response:
+	HTTP Status: 201 Created
 */
 func BrandsHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("BrandsHandler called with method: ", r.Method)
@@ -65,7 +87,14 @@ func BrandsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 /*
-BrandHandler handles requests for a single brand.
+BrandHandler supports these HTTP methods:
+- GET: Retrieves details of a specific brand based on the name in the URL path.
+- PUT: Updates the details of a specific brand.
+- DELETE: Deletes a specific brand from the database.
+
+# GET
+
+GET handles requests for a single brand.
 It retrieves the brand details from the database based on the provided name in the URL path,
 and returns the brand details in JSON format.
 
@@ -78,6 +107,31 @@ Example usage:
 		"name": "Brand 1",
 		"description": "Brand Description 1"
 	}
+
+# PUT
+
+PUT handles requests to update a specific brand in the database.
+It expects a JSON payload with the brand details.
+Example usage:
+
+	Method: PUT
+	Route: /brands/Brand 1
+	Request Body:
+	{
+		"description": "Updated Brand Description"
+	}
+	Response:
+	HTTP Status: 200 OK
+
+# DELETE
+
+DELETE handles requests to delete a specific brand from the database.
+Example usage:
+
+	Method: DELETE
+	Route: /brands/Brand 1
+	Response:
+	HTTP Status: 204 No Content
 */
 func BrandHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("BrandHandler called with method: ", r.Method)
