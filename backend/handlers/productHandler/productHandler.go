@@ -141,27 +141,35 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 		pageOffset := (page - 1) * pageLimit // Calculate the offset for pagination
 
 		search := vars.Get("search")
-		categoryID := vars.Get("categoryID")
-		brandID := vars.Get("brandID")
+		categoryID := vars.Get("category")
+		brandID := vars.Get("brand")
 		priceMin := vars.Get("priceMin")
 		priceMax := vars.Get("priceMax")
+		stockQuantity := vars.Get("stockQuantity")
 
 		rawConditions := []struct {
-			value string
 			query string
+			value string
 		}{ // Using constants for column names
-			{search, cons.PRODUCT_NAME + " LIKE ?"},
-			{categoryID, cons.CATEGORYID + " = ?"},
-			{brandID, cons.BRANDID + " = ?"},
-			{priceMin, cons.PRODUCT_PRICE + " >= ?"},
-			{priceMax, cons.PRODUCT_PRICE + " <= ?"},
+			{cons.PRODUCT_NAME + " LIKE ?", search},
+			{cons.PRODUCT_CATEGORY + " = ?", categoryID},
+			{cons.PRODUCT_BRAND + " = ?", brandID},
+			{cons.PRODUCT_PRICE + " >= ?", priceMin},
+			{cons.PRODUCT_PRICE + " <= ?", priceMax},
+			{cons.PRODUCT_STOCK + " >= ?", stockQuantity},
 		}
 		var variables []any
 		var conditions []string
 
+		log.Println("Raw conditions: ", rawConditions)
+
 		// Remove empty conditions
 		for _, cond := range rawConditions {
 			if cond.value != "" {
+				if strings.Contains(cond.query, cons.PRODUCT_NAME) {
+					// Use wildcard for LIKE queries
+					cond.value = "%" + cond.value + "%"
+				}
 				variables = append(variables, cond.value)
 				conditions = append(conditions, cond.query)
 			}
@@ -169,13 +177,10 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 		// Build the SQL query with the conditions
 		// Gets the default query for products
 		query := cons.QueryProducts
-		// Add the WHERE clause to the query if there are any conditions
 		if len(conditions) > 0 {
-			query += " WHERE " + conditions[0]
-			// Add the rest of the conditions with AND, if any
-			for _, statement := range conditions[1:] {
-				query += " AND " + statement
-			}
+			// Add the WHERE clause to the query if there are any conditions, then join the conditions with AND
+			query += " WHERE " + strings.Join(conditions, " AND ")
+			log.Println("Query: ", query)
 		}
 
 		// Add the pagination to the query
@@ -184,7 +189,7 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 
 		// Log the query for debugging purposes
 		// Replace the placeholders with the actual values for logging
-		log.Println("Executing query: ", fmt.Sprintf(strings.ReplaceAll(query, "?", "%s"), variables...))
+		log.Printf("Executing query: "+strings.ReplaceAll(query, "?", "%s"), variables...)
 		// Execute the query
 		var products []Product
 		cons.DB.Select(&products, query, variables...)
