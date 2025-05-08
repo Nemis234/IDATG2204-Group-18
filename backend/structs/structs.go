@@ -1,8 +1,29 @@
 package structs
 
 import (
+	"encoding/json"
 	"time"
 )
+
+type NullField[T any] struct {
+	Set   bool
+	Value *T
+}
+
+func (nf *NullField[T]) UnmarshalJSON(data []byte) error {
+	nf.Set = true
+	if string(data) == "null" {
+		nf.Value = nil
+		return nil
+	}
+
+	var val T
+	if err := json.Unmarshal(data, &val); err != nil {
+		return err
+	}
+	nf.Value = &val
+	return nil
+}
 
 type Product struct {
 	ProductID     string  `json:"product_id" db:"ProductID"`
@@ -16,14 +37,14 @@ type Product struct {
 }
 
 type PatchProduct struct {
-	ProductID     string   `json:"product_id" db:"ProductID"`
-	Name          *string  `json:"name" db:"ProductName"`
-	Description   *string  `json:"description" db:"ProductDesc"`
-	ImgURL        *string  `json:"img_url" db:"ProductImgUrl"`
-	Price         *float64 `json:"price" db:"Price"`
-	StockQuantity *int     `json:"stock_quantity" db:"StockQuantity"`
-	CategoryName  *string  `json:"category_name" db:"Category"`
-	BrandName     *string  `json:"brand_name" db:"Brand"`
+	ProductID     string             `json:"product_id" db:"ProductID"`
+	Name          NullField[string]  `json:"name" db:"ProductName"`
+	Description   NullField[string]  `json:"description" db:"ProductDesc"`
+	ImgURL        NullField[string]  `json:"img_url" db:"ProductImgUrl"`
+	Price         NullField[float64] `json:"price" db:"Price"`
+	StockQuantity NullField[int]     `json:"stock_quantity" db:"StockQuantity"`
+	CategoryName  NullField[string]  `json:"category_name" db:"Category"`
+	BrandName     NullField[string]  `json:"brand_name" db:"Brand"`
 }
 
 type Category struct {
