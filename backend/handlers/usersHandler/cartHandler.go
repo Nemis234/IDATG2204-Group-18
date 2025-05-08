@@ -8,8 +8,6 @@ func CartHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Method not implemented", http.StatusNotImplemented)
 	case http.MethodPost:
 		http.Error(w, "Method not implemented", http.StatusNotImplemented)
-	case http.MethodPut:
-		http.Error(w, "Method not implemented", http.StatusNotImplemented)
 	case http.MethodDelete:
 		http.Error(w, "Method not implemented", http.StatusNotImplemented)
 	default:
