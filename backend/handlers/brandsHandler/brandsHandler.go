@@ -72,7 +72,7 @@ and returns the brand details in JSON format.
 Example usage:
 
 	Method: GET
-	Route: /brands/1
+	Route: /brands/Brand 1
 	Response:
 	{
 		"name": "Brand 1",
@@ -104,6 +104,10 @@ func BrandHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Invalid request payload", http.StatusBadRequest)
 			return
 		}
+		if b.Name != "" && b.Name != brandName {
+			http.Error(w, "Brand name cannot be changed", http.StatusBadRequest)
+			return
+		}
 		b.Name = brandName
 
 		_, err := cons.DB.NamedExec(cons.UpdateBrand, b)
@@ -115,6 +119,7 @@ func BrandHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		w.WriteHeader(http.StatusOK)
+
 	case http.MethodDelete:
 		brandName := r.PathValue("id")
 		if brandName == "" {
