@@ -412,7 +412,7 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Decode the request body into a Product struct
-		var product PatchProduct
+		var product ProductPatch
 		err := json.NewDecoder(r.Body).Decode(&product)
 		if err != nil {
 			log.Println("Error decoding request body: ", err)
