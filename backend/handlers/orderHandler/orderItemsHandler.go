@@ -15,6 +15,56 @@ OrderItemsHandler supports the following methods:
 - POST: Adds a new order item to an existing order.
 
 # GET
+
+GET handles the retrieval of all order items for a specific order by ID from the database.
+It queries the database for all order items associated with the specified order ID and returns them as a JSON response.
+
+Example usage:
+
+	Method: GET
+	Route: /orders/12345/items
+	Response:
+	Http Status: 200 OK
+	[
+		{
+			"order_id": "12345",
+			"product_id": "67890",
+			"quantity": 2
+		},
+		{
+			"order_id": "12345",
+			"product_id": "54321",
+			"quantity": 1
+		}
+	]
+
+# POST
+
+POST handles the addition of a new order item to an existing order.
+It expects a JSON payload with the order item details, in JSON format.
+
+The order ID is specified in the URL, and the order item details are provided in the request body.
+The order ID cannot be changed.
+Mandatory fields cannot be null, while optional can be null.
+
+The request body should contain the following fields:
+
+	{
+	- product_id	(string)| mandatory	: The ID of the product being ordered.
+	- quantity	(int)| mandatory	: The quantity of the product in the order.
+	}
+
+Example usage:
+
+	Method: POST
+	Route: /orders/12345/items
+	Request Body:
+	{
+		"product_id": "67890",
+		"quantity": 2
+	}
+	Response:
+	Http Status: 201 Created
 */
 func OrderItemsHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("OrderItemHandler called with method : ", r.Method)
