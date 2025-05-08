@@ -388,7 +388,7 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Decode the request body into a Product struct
-		var product Product
+		var product PatchProduct
 		err := json.NewDecoder(r.Body).Decode(&product)
 		if err != nil {
 			log.Println("Error decoding request body: ", err)
@@ -411,7 +411,7 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 		args = append(args, id)
 
 		// Log the query for debugging purposes
-		// Replace the placeholders with the actual values for logging
+		// Replace the placeholders with actual values for logging
 		log.Println("Executing query: ", fmt.Sprintf(strings.ReplaceAll(query, "?", "%s"), args...))
 		// Execute the query
 		_, err = cons.DB.Exec(query, args...)
@@ -420,6 +420,7 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error updating product", http.StatusInternalServerError)
 			return
 		}
+		w.WriteHeader(http.StatusOK)
 
 	case http.MethodDelete:
 		id := r.PathValue("id")
