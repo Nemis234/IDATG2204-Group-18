@@ -30,5 +30,10 @@ var InsertOrderItem = "INSERT INTO " + ORDER_ITEMS_TABLE + " (" + ORDER_ID + ", 
 var UpdateOrderItem = "UPDATE " + ORDER_ITEMS_TABLE + " SET " + ORDER_QUANTITY + " = :" + ORDER_QUANTITY + " WHERE " + ORDER_ID + " = :" + ORDER_ID + " AND " + PRODUCT_ID + " = :" + PRODUCT_ID
 var DeleteOrderItem = "DELETE FROM " + ORDER_ITEMS_TABLE + " WHERE " + ORDER_ID + " = ? AND " + PRODUCT_ID + " = ?"
 
+var QueryOrderStatus = "SELECT * FROM " + ORDER_STATUS_TABLE
+var InsertOrderStatus = "INSERT INTO " + ORDER_STATUS_TABLE + " (" + ORDER_STATUS_NAME + ", " + ORDER_STATUS_DESC + ") VALUES (:" + ORDER_STATUS_NAME + ", :" + ORDER_STATUS_DESC + ")"
+var UpdateOrderStatus = "UPDATE " + ORDER_STATUS_TABLE + " SET " + ORDER_STATUS_DESC + " = :" + ORDER_STATUS_DESC + " WHERE " + ORDER_STATUS_NAME + " = :" + ORDER_STATUS_NAME
+var DeleteOrderStatus = "DELETE FROM " + ORDER_STATUS_TABLE + " WHERE " + ORDER_STATUS_NAME + " = ?"
+
 var QueryUserLogin = "SELECT * FROM " + USERS_TABLE + " WHERE email = ?"
 var QueryUser = "SELECT * FROM " + USERS_TABLE + " WHERE " + USER_ID + " = ?"
