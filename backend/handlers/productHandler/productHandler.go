@@ -227,17 +227,18 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if product.ProductID == "" {
 			// Generate a new product ID
-			err := cons.DB.Get(&product, "SELECT UUID() AS ProductID;")
+		err = cons.DB.Get(&product, "SELECT UUID() AS "+cons.PRODUCT_ID+";")
 			if err != nil {
+			if utility.CheckSQLErr(err, w) {
+				return
+			}
+
 				log.Println("Error generating product ID: ", err)
 				http.Error(w, "Error generating product ID", http.StatusInternalServerError)
 				return
 			}
 			log.Println("Product ID: ", product.ProductID)
-
-		}
 
 		id := product.ProductID
 
