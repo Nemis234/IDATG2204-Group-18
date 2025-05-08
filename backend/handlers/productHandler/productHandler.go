@@ -371,12 +371,13 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 
 		product.ProductID = id
 		// Update the product in the database
-		_, err = cons.DB.NamedExec(cons.InsertProduct, product)
+		_, err = cons.DB.NamedExec(cons.UpdateProduct, product)
 		if err != nil {
 			log.Println("Error updating product: ", err)
 			http.Error(w, "Error updating product", http.StatusInternalServerError)
 			return
 		}
+		log.Println("Product updated successfully with ID: ", id)
 		w.WriteHeader(http.StatusOK)
 
 	case http.MethodPatch:
