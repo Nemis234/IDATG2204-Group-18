@@ -18,6 +18,11 @@ var InsertBrand = "INSERT INTO " + BRANDS_TABLE + " (" + BRAND_NAME + ", " + BRA
 var UpdateBrand = "UPDATE " + BRANDS_TABLE + " SET " + BRAND_DESC + " = :" + BRAND_DESC + " WHERE " + BRAND_NAME + " = :" + BRAND_NAME
 var DeleteBrand = "DELETE FROM " + BRANDS_TABLE + " WHERE " + BRAND_NAME + " = ?"
 
-var QueryUser = "SELECT * FROM " + USERS_TABLE + " WHERE " + USERID + " = ?"
+var QueryOrders = "SELECT * FROM " + ORDER_TABLE
+var QueryOrder = "SELECT * FROM " + ORDER_TABLE + " WHERE " + ORDER_ID + " = ?"
+var InsertOrder = "INSERT INTO " + ORDER_TABLE + " (" + ORDER_ID + ", " + USER_ID + ", " + ORDER_DATE + ", " + ORDER_STATUS + ", " + ORDER_TOTAL + ") VALUES (:" + ORDER_ID + ", :" + USER_ID + ", :" + ORDER_DATE + ", :" + ORDER_STATUS + ", :" + ORDER_TOTAL + ")"
+var UpdateOrder = "UPDATE " + ORDER_TABLE + " SET " + USER_ID + " = :" + USER_ID + ", " + ORDER_DATE + " = :" + ORDER_DATE + ", " + ORDER_STATUS + " = :" + ORDER_STATUS + ", " + ORDER_TOTAL + " = :" + ORDER_TOTAL + " WHERE " + ORDER_ID + " = :" + ORDER_ID
+var DeleteOrder = "DELETE FROM " + ORDER_TABLE + " WHERE " + ORDER_ID + " = ?"
+
 var QueryUserLogin = "SELECT * FROM " + USERS_TABLE + " WHERE email = ?"
 var QueryUser = "SELECT * FROM " + USERS_TABLE + " WHERE " + USER_ID + " = ?"
