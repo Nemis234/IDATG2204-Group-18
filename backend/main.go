@@ -20,7 +20,7 @@ var databaseType = "mysql"
 func main() {
 	dsn := os.Getenv("DSN") // Data Source Name (DSN) for MySQL connection
 	if dsn == "" {
-		// Replace with MySQL credentials
+		// This works with XAMPP when running locally
 		dsn = "root:@tcp(127.0.0.1:3306)/idatg2204"
 	}
 	log.Println("Attempting connection with DSN: ", dsn)
