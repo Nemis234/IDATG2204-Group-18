@@ -84,7 +84,7 @@ type Member struct {
 }
 
 type Order struct {
-	ID          string      `json:"order_id" db:"OrderID"`
+	OrderID     string      `json:"order_id" db:"OrderID"`
 	UserID      string      `json:"user_id" db:"UserID"`
 	OrderDate   *time.Time  `json:"order_date" db:"OrderDate"`
 	OrderStatus string      `json:"order_status" db:"OrderStatus"`
@@ -93,7 +93,7 @@ type Order struct {
 }
 
 type OrderPatch struct {
-	ID          string               `json:"order_id" db:"OrderID"`
+	OrderID     string               `json:"order_id" db:"OrderID"`
 	UserID      *string              `json:"user_id" db:"UserID"`
 	OrderDate   NullField[time.Time] `json:"order_date" db:"OrderDate"`
 	OrderStatus *string              `json:"order_status" db:"OrderStatus"`
