@@ -191,12 +191,15 @@ func CategoryHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Category name is required", http.StatusBadRequest)
 			return
 		}
-		_, err := cons.DB.Exec(cons.DeleteCategory, categoryName)
+		result, err := cons.DB.Exec(cons.DeleteCategory, categoryName)
 		if err != nil {
 			if utility.CheckSQLErr(err, w) {
 				return
 			}
 			http.Error(w, "Failed to delete category", http.StatusInternalServerError)
+			return
+		}
+		if utility.CheckDeleteResult(result, w) {
 			return
 		}
 		w.WriteHeader(http.StatusNoContent)

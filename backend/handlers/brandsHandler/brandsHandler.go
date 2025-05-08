@@ -188,12 +188,15 @@ func BrandHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Brand name is required", http.StatusBadRequest)
 			return
 		}
-		_, err := cons.DB.Exec(cons.DeleteBrand, brandName)
+		result, err := cons.DB.Exec(cons.DeleteBrand, brandName)
 		if err != nil {
 			if utility.CheckSQLErr(err, w) {
 				return
 			}
 			http.Error(w, "Failed to delete brand", http.StatusInternalServerError)
+			return
+		}
+		if utility.CheckDeleteResult(result, w) {
 			return
 		}
 		w.WriteHeader(http.StatusNoContent)

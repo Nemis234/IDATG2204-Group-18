@@ -482,14 +482,7 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error deleting product", http.StatusInternalServerError)
 			return
 		}
-		affected, err := result.RowsAffected()
-		if err != nil {
-			log.Println("Error getting affected rows: ", err)
-			http.Error(w, "Error getting affected rows", http.StatusInternalServerError)
-			return
-		}
-		if affected == 0 {
-			http.Error(w, "Product not found", http.StatusNotFound)
+		if utility.CheckDeleteResult(result, w) {
 			return
 		}
 		// Return a 204 No Content response

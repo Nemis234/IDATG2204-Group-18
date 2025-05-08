@@ -1,6 +1,7 @@
 package producthandler
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 	"reflect"
@@ -8,6 +9,21 @@ import (
 
 	"github.com/go-sql-driver/mysql"
 )
+
+func CheckDeleteResult(res sql.Result, w http.ResponseWriter) bool {
+	affected, err := res.RowsAffected()
+	if err != nil {
+		log.Println("Error getting affected rows: ", err)
+		http.Error(w, "Error getting affected rows", http.StatusInternalServerError)
+		return true
+	}
+	if affected == 0 {
+		log.Println("No rows affected by delete")
+		http.Error(w, "Order item not found", http.StatusNotFound)
+		return true
+	}
+	return false
+}
 
 /*
 Returns true if the error is a MySQL error
