@@ -330,7 +330,7 @@ Example usage:
 		"brand_name": "Updated Brand"
 	}
 	Response:
-	HTTP code: 201 No Content
+	HTTP code: 200 OK
 
 # PATCH
 
