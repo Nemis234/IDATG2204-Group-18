@@ -12,7 +12,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("UserHandler called with method: ", r.Method)
 	switch r.Method {
 	case http.MethodGet:
-		userID := r.PathValue("id")
+		userID := r.PathValue("user_id")
 		if userID == "" {
 			http.Error(w, "User ID is required", http.StatusBadRequest)
 			return

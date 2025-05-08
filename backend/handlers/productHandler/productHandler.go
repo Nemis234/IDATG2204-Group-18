@@ -353,7 +353,7 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("ProductHandler called with method: ", r.Method)
 	switch r.Method {
 	case http.MethodGet:
-		id := r.PathValue("id")
+		id := r.PathValue("product_id")
 		if id == "" {
 			http.Error(w, "ID is required", http.StatusBadRequest)
 			return
@@ -378,7 +378,7 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	case http.MethodPut:
-		id := r.PathValue("id")
+		id := r.PathValue("product_id")
 		if id == "" {
 			http.Error(w, "ID is required", http.StatusBadRequest)
 			return
@@ -418,7 +418,7 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 
 	case http.MethodPatch:
-		id := r.PathValue("id")
+		id := r.PathValue("product_id")
 		if id == "" {
 			http.Error(w, "ID is required", http.StatusBadRequest)
 			return
@@ -464,7 +464,7 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 
 	case http.MethodDelete:
-		id := r.PathValue("id")
+		id := r.PathValue("product_id")
 		if id == "" {
 			http.Error(w, "ID is required", http.StatusBadRequest)
 			return

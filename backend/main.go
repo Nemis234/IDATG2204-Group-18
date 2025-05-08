@@ -44,22 +44,23 @@ func main() {
 	router.HandleFunc("/categories/{id}", categorieshandler.CategoryHandler)
 
 	router.HandleFunc("/orders", orderHandler.OrdersHandler)
-	router.HandleFunc("/orders/{id}", orderHandler.OrderHandler)
-	router.HandleFunc("/orders/{id}/payment", orderHandler.PaymentHandler)
-	router.HandleFunc("/orders/{id}/items", orderHandler.OrderItemsHandler)
-	router.HandleFunc("/orders/{id}/items/{item_id}", orderHandler.OrderItemHandler)
+	router.HandleFunc("/orders/{order_id}", orderHandler.OrderHandler)
+	router.HandleFunc("/orders/{order_id}/payment", orderHandler.PaymentHandler)
+	router.HandleFunc("/orders/{order_id}/items", orderHandler.OrderItemsHandler)
+	router.HandleFunc("/orders/{order_id}/items/{item_id}", orderHandler.OrderItemHandler)
 	router.HandleFunc("/orders/status", orderHandler.StatusHandler)
+	router.HandleFunc("/orders/status/{statusName}", orderHandler.StatusHandler)
 
 	router.HandleFunc("/products", producthandler.ProductsHandler)
-	router.HandleFunc("/products/{id}", producthandler.ProductHandler)
-	router.HandleFunc("/products/{id}/reviews", producthandler.ReviewHandler)
+	router.HandleFunc("/products/{product_id}", producthandler.ProductHandler)
+	router.HandleFunc("/products/{product_id}/reviews", producthandler.ReviewHandler)
 
 	router.HandleFunc("/users", usershandler.UsersHandler)
-	router.HandleFunc("/users/{id}", usershandler.UserHandler)
+	router.HandleFunc("/users/{user_id}", usershandler.UserHandler)
+	router.HandleFunc("/users/{user_id}/member", usershandler.MemberHandler)
+	router.HandleFunc("/user/{user_id}/cart", usershandler.CartHandler)
 	// Only POST method is allowed for login
 	router.HandleFunc("POST /users/login", usershandler.LoginHandler)
-	router.HandleFunc("/users/{id}/member", usershandler.MemberHandler)
-	router.HandleFunc("/user/{id}/cart", usershandler.CartHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {

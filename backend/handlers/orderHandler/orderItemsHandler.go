@@ -70,7 +70,7 @@ func OrderItemsHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("OrderItemHandler called with method : ", r.Method)
 	switch r.Method {
 	case http.MethodGet:
-		orderID := r.PathValue("id")
+		orderID := r.PathValue("order_id")
 
 		var orderItems []OrderItem
 		err := cons.DB.Select(&orderItems, cons.QueryOrderItemsByID, orderID)
@@ -91,7 +91,7 @@ func OrderItemsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case http.MethodPost:
-		orderID := r.PathValue("id")
+		orderID := r.PathValue("order_id")
 		if orderID == "" {
 			log.Println("Order ID is required for POST request")
 			http.Error(w, "Order ID is required", http.StatusBadRequest)
@@ -198,7 +198,7 @@ func OrderItemHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("OrderItemHandler called with method : ", r.Method)
 	switch r.Method {
 	case http.MethodGet:
-		orderID := r.PathValue("id")
+		orderID := r.PathValue("order_id")
 		itemID := r.PathValue("item_id")
 
 		if orderID == "" {
@@ -231,7 +231,7 @@ func OrderItemHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case http.MethodPut:
-		orderID := r.PathValue("id")
+		orderID := r.PathValue("order_id")
 		itemID := r.PathValue("item_id")
 		if orderID == "" {
 			log.Println("Order ID is required for PUT request")
@@ -282,7 +282,7 @@ func OrderItemHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 
 	case http.MethodDelete:
-		orderID := r.PathValue("id")
+		orderID := r.PathValue("order_id")
 		itemID := r.PathValue("item_id")
 		if orderID == "" {
 			log.Println("Order ID is required for DELETE request")

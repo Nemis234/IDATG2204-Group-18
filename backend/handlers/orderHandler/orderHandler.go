@@ -246,7 +246,7 @@ func OrderHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("OrderHandler called with method : ", r.Method)
 	switch r.Method {
 	case http.MethodGet:
-		orderID := r.PathValue("id")
+		orderID := r.PathValue("order_id")
 
 		var order Order
 
@@ -279,7 +279,7 @@ func OrderHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case http.MethodPut:
-		id := r.PathValue("id")
+		id := r.PathValue("order_id")
 		if id == "" {
 			log.Println("Order ID is required for PUT request")
 			http.Error(w, "Order ID is required", http.StatusBadRequest)
@@ -325,7 +325,7 @@ func OrderHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 
 	case http.MethodPatch:
-		id := r.PathValue("id")
+		id := r.PathValue("order_id")
 		if id == "" {
 			log.Println("Order ID is required for PATCH request")
 			http.Error(w, "Order ID is required", http.StatusBadRequest)
@@ -369,7 +369,7 @@ func OrderHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 
 	case http.MethodDelete:
-		id := r.PathValue("id")
+		id := r.PathValue("order_id")
 		if id == "" {
 			log.Println("Order ID is required for DELETE request")
 			http.Error(w, "Order ID is required", http.StatusBadRequest)
