@@ -40,8 +40,18 @@ func CheckSQLErr(err error, w http.ResponseWriter) bool {
 			http.Error(w, "A mandatory column cannot be null. Error: "+mysqlErr.Message, http.StatusBadRequest)
 			return true
 		}
+		if mysqlErr.Number == 1062 {
+			log.Println("Duplicate entry error: ", err)
+			http.Error(w, "Duplicate entry. Another value of this type already exists. Error: "+mysqlErr.Message, http.StatusConflict)
+			return true
+		}
 		log.Println("MySQL error: ", err)
 		http.Error(w, "MySQL error: "+mysqlErr.Message, http.StatusInternalServerError)
+		return true
+	}
+	if err == sql.ErrNoRows {
+		log.Println("No rows found error: ", err)
+		http.Error(w, "Item not found.", http.StatusNotFound)
 		return true
 	}
 	return false
