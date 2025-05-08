@@ -10,8 +10,6 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-
-	"github.com/go-sql-driver/mysql"
 )
 
 /*
@@ -196,7 +194,16 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Executing query: "+strings.ReplaceAll(query, "?", "%s"), variables...)
 		// Execute the query
 		var products []Product
-		cons.DB.Select(&products, query, variables...)
+		err = cons.DB.Select(&products, query, variables...)
+		if err != nil {
+			// If the error is a MySQL error, return
+			if utility.CheckSQLErr(err, w) {
+				return
+			}
+			log.Println("Error getting products: ", err)
+			http.Error(w, "Error getting products", http.StatusInternalServerError)
+			return
+		}
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(products)
@@ -232,6 +239,11 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 
 		_, err = cons.DB.NamedExec(cons.InsertProduct, product)
 		if err != nil {
+			// If the error is a MySQL error, return
+			if utility.CheckSQLErr(err, w) {
+				return
+			}
+
 			log.Println("Error inserting product: ", err)
 			http.Error(w, "Error inserting product", http.StatusInternalServerError)
 			return
@@ -340,7 +352,15 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 
 		var product Product
 
-		cons.DB.Get(&product, cons.QueryProduct, id)
+		err := cons.DB.Get(&product, cons.QueryProduct, id)
+		if err != nil {
+			if utility.CheckSQLErr(err, w) {
+				return
+			}
+			log.Println("Error getting product: ", err)
+			http.Error(w, "Error getting product", http.StatusNotFound)
+			return
+		}
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(product)
@@ -373,6 +393,10 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 		// Update the product in the database
 		_, err = cons.DB.NamedExec(cons.UpdateProduct, product)
 		if err != nil {
+			// If the error is a MySQL error, return
+			if utility.CheckSQLErr(err, w) {
+				return
+			}
 			log.Println("Error updating product: ", err)
 			http.Error(w, "Error updating product", http.StatusInternalServerError)
 			return
@@ -416,6 +440,10 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 		// Execute the query
 		_, err = cons.DB.Exec(query, args...)
 		if err != nil {
+			if utility.CheckSQLErr(err, w) {
+				return
+			}
+
 			log.Println("Error updating product: ", err)
 			http.Error(w, "Error updating product", http.StatusInternalServerError)
 			return
@@ -434,10 +462,8 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 		// Delete the product from the database
 		result, err := cons.DB.Exec(cons.DeleteProduct, id)
 		if err != nil {
-			if mysqlErr, ok := err.(*mysql.MySQLError); ok && mysqlErr.Number == 1451 {
-				// Foreign key constraint error
-				log.Println("Foreign key constraint error: ", err)
-				http.Error(w, "Cannot delete product with existing references, probably due to a foreign key constraint", http.StatusConflict)
+			// If the error is a MySQL error, return
+			if utility.CheckSQLErr(err, w) {
 				return
 			}
 			log.Println("Error deleting product: ", err)
