@@ -24,6 +24,7 @@ func main() {
 		dsn = "root:@tcp(127.0.0.1:3306)/idatg2204"
 	}
 	log.Println("Attempting connection with DSN: ", dsn)
+	dsn += "?parseTime=true" // Add to parse time into time.Time correctly
 	db, err := sqlx.Connect(databaseType, dsn)
 	if err != nil {
 		log.Fatal("Error connecting to database: ", err)
