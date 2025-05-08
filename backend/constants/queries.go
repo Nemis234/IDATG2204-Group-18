@@ -1,10 +1,10 @@
 package constants
 
 var QueryProducts = "SELECT * FROM " + PRODUCTS_TABLE
-var QueryProduct = "SELECT * FROM " + PRODUCTS_TABLE + " WHERE " + PRODUCTID + " = ?"
-var DeleteProduct = "DELETE FROM " + PRODUCTS_TABLE + " WHERE " + PRODUCTID + " = ?"
-var InsertProduct = "INSERT INTO " + PRODUCTS_TABLE + " (" + PRODUCTID + ", " + PRODUCT_NAME + ", " + PRODUCT_DESC + ", " + PRODUCT_IMG_URL + ", " + PRODUCT_PRICE + ", " + PRODUCT_STOCK + ", " + PRODUCT_CATEGORY + ", " + PRODUCT_BRAND + ") VALUES (:" + PRODUCTID + ", :" + PRODUCT_NAME + ", :" + PRODUCT_DESC + ", :" + PRODUCT_IMG_URL + ", :" + PRODUCT_PRICE + ", :" + PRODUCT_STOCK + ", :" + PRODUCT_CATEGORY + ", :" + PRODUCT_BRAND + ")"
-var UpdateProduct = "UPDATE " + PRODUCTS_TABLE + " SET " + PRODUCT_NAME + " = :" + PRODUCT_NAME + ", " + PRODUCT_DESC + " = :" + PRODUCT_DESC + ", " + PRODUCT_IMG_URL + " = :" + PRODUCT_IMG_URL + ", " + PRODUCT_PRICE + " = :" + PRODUCT_PRICE + ", " + PRODUCT_STOCK + " = :" + PRODUCT_STOCK + ", " + PRODUCT_CATEGORY + " = :" + PRODUCT_CATEGORY + ", " + PRODUCT_BRAND + " = :" + PRODUCT_BRAND + " WHERE " + PRODUCTID + " = :" + PRODUCTID
+var QueryProduct = "SELECT * FROM " + PRODUCTS_TABLE + " WHERE " + PRODUCT_ID + " = ?"
+var DeleteProduct = "DELETE FROM " + PRODUCTS_TABLE + " WHERE " + PRODUCT_ID + " = ?"
+var InsertProduct = "INSERT INTO " + PRODUCTS_TABLE + " (" + PRODUCT_ID + ", " + PRODUCT_NAME + ", " + PRODUCT_DESC + ", " + PRODUCT_IMG_URL + ", " + PRODUCT_PRICE + ", " + PRODUCT_STOCK + ", " + PRODUCT_CATEGORY + ", " + PRODUCT_BRAND + ") VALUES (:" + PRODUCT_ID + ", :" + PRODUCT_NAME + ", :" + PRODUCT_DESC + ", :" + PRODUCT_IMG_URL + ", :" + PRODUCT_PRICE + ", :" + PRODUCT_STOCK + ", :" + PRODUCT_CATEGORY + ", :" + PRODUCT_BRAND + ")"
+var UpdateProduct = "UPDATE " + PRODUCTS_TABLE + " SET " + PRODUCT_NAME + " = :" + PRODUCT_NAME + ", " + PRODUCT_DESC + " = :" + PRODUCT_DESC + ", " + PRODUCT_IMG_URL + " = :" + PRODUCT_IMG_URL + ", " + PRODUCT_PRICE + " = :" + PRODUCT_PRICE + ", " + PRODUCT_STOCK + " = :" + PRODUCT_STOCK + ", " + PRODUCT_CATEGORY + " = :" + PRODUCT_CATEGORY + ", " + PRODUCT_BRAND + " = :" + PRODUCT_BRAND + " WHERE " + PRODUCT_ID + " = :" + PRODUCT_ID
 
 var QueryCategories = "SELECT * FROM " + CATEGORIES_TABLE
 var QueryCategory = "SELECT * FROM " + CATEGORIES_TABLE + " WHERE " + CATEGORY_NAME + " = ?"
@@ -20,3 +20,4 @@ var DeleteBrand = "DELETE FROM " + BRANDS_TABLE + " WHERE " + BRAND_NAME + " = ?
 
 var QueryUser = "SELECT * FROM " + USERS_TABLE + " WHERE " + USERID + " = ?"
 var QueryUserLogin = "SELECT * FROM " + USERS_TABLE + " WHERE email = ?"
+var QueryUser = "SELECT * FROM " + USERS_TABLE + " WHERE " + USER_ID + " = ?"

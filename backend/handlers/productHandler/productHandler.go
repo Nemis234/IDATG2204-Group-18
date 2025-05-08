@@ -431,7 +431,7 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "No fields to update", http.StatusBadRequest)
 			return
 		}
-		query += setClause + " WHERE " + cons.PRODUCTID + " = ?"
+		query += setClause + " WHERE " + cons.PRODUCT_ID + " = ?"
 		args = append(args, id)
 
 		// Log the query for debugging purposes
