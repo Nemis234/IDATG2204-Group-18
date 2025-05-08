@@ -21,8 +21,14 @@ var DeleteBrand = "DELETE FROM " + BRANDS_TABLE + " WHERE " + BRAND_NAME + " = ?
 var QueryOrders = "SELECT * FROM " + ORDER_TABLE
 var QueryOrder = "SELECT * FROM " + ORDER_TABLE + " WHERE " + ORDER_ID + " = ?"
 var InsertOrder = "INSERT INTO " + ORDER_TABLE + " (" + ORDER_ID + ", " + USER_ID + ", " + ORDER_DATE + ", " + ORDER_STATUS + ", " + ORDER_TOTAL + ") VALUES (:" + ORDER_ID + ", :" + USER_ID + ", :" + ORDER_DATE + ", :" + ORDER_STATUS + ", :" + ORDER_TOTAL + ")"
-var UpdateOrder = "UPDATE " + ORDER_TABLE + " SET " + USER_ID + " = :" + USER_ID + ", " + ORDER_DATE + " = :" + ORDER_DATE + ", " + ORDER_STATUS + " = :" + ORDER_STATUS + ", " + ORDER_TOTAL + " = :" + ORDER_TOTAL + " WHERE " + ORDER_ID + " = :" + ORDER_ID
+var UpdateOrder = "UPDATE " + ORDER_TABLE + " SET " + ORDER_DATE + " = :" + ORDER_DATE + ", " + ORDER_STATUS + " = :" + ORDER_STATUS + ", " + ORDER_TOTAL + " = :" + ORDER_TOTAL + " WHERE " + ORDER_ID + " = :" + ORDER_ID
 var DeleteOrder = "DELETE FROM " + ORDER_TABLE + " WHERE " + ORDER_ID + " = ?"
+
+var QueryOrderItemsByID = "SELECT * FROM " + ORDER_ITEMS_TABLE + " WHERE " + ORDER_ID + " = ?"
+var QueryOrderItemByID = "SELECT * FROM " + ORDER_ITEMS_TABLE + " WHERE " + ORDER_ID + " = ? AND " + PRODUCT_ID + " = ?"
+var InsertOrderItem = "INSERT INTO " + ORDER_ITEMS_TABLE + " (" + ORDER_ID + ", " + PRODUCT_ID + ", " + ORDER_QUANTITY + ") VALUES (:" + ORDER_ID + ", :" + PRODUCT_ID + ", :" + ORDER_QUANTITY + ")"
+var UpdateOrderItem = "UPDATE " + ORDER_ITEMS_TABLE + " SET " + ORDER_QUANTITY + " = :" + ORDER_QUANTITY + " WHERE " + ORDER_ID + " = :" + ORDER_ID + " AND " + PRODUCT_ID + " = :" + PRODUCT_ID
+var DeleteOrderItem = "DELETE FROM " + ORDER_ITEMS_TABLE + " WHERE " + ORDER_ID + " = ? AND " + PRODUCT_ID + " = ?"
 
 var QueryUserLogin = "SELECT * FROM " + USERS_TABLE + " WHERE email = ?"
 var QueryUser = "SELECT * FROM " + USERS_TABLE + " WHERE " + USER_ID + " = ?"
