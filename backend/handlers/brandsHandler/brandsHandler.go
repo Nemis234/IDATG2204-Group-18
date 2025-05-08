@@ -60,7 +60,11 @@ func BrandsHandler(w http.ResponseWriter, r *http.Request) {
 		cons.DB.Select(&brands, cons.QueryBrands)
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(brands)
+		if err := json.NewEncoder(w).Encode(brands); err != nil {
+			log.Println("Error encoding brands to JSON: ", err)
+			http.Error(w, "Error encoding brands to JSON", http.StatusInternalServerError)
+			return
+		}
 	case http.MethodPost:
 		var b Brand
 		if err := json.NewDecoder(r.Body).Decode(&b); err != nil {
@@ -146,7 +150,11 @@ func BrandHandler(w http.ResponseWriter, r *http.Request) {
 		cons.DB.Get(&b, cons.QueryBrand, brandName)
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(b)
+		if err := json.NewEncoder(w).Encode(b); err != nil {
+			log.Println("Error encoding brand to JSON: ", err)
+			http.Error(w, "Error encoding brand to JSON", http.StatusInternalServerError)
+			return
+		}
 	case http.MethodPut:
 		brandName := r.PathValue("id")
 		if brandName == "" {

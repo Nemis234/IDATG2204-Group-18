@@ -206,7 +206,11 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(products)
+		if err := json.NewEncoder(w).Encode(products); err != nil {
+			log.Println("Error encoding products to JSON: ", err)
+			http.Error(w, "Error encoding products to JSON", http.StatusInternalServerError)
+			return
+		}
 	case http.MethodPost:
 		// Decode the request body into a Product struct
 		var product Product
@@ -253,7 +257,11 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusCreated)
 		// Return the ID of the newly created product
 		response := map[string]string{"id": id}
-		json.NewEncoder(w).Encode(response)
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			log.Println("Error encoding response to JSON: ", err)
+			http.Error(w, "Error encoding response to JSON", http.StatusInternalServerError)
+			return
+		}
 
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -363,7 +371,11 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(product)
+		if err := json.NewEncoder(w).Encode(product); err != nil {
+			log.Println("Error encoding product to JSON: ", err)
+			http.Error(w, "Error encoding product to JSON", http.StatusInternalServerError)
+			return
+		}
 	case http.MethodPut:
 		id := r.PathValue("id")
 		if id == "" {

@@ -60,7 +60,11 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 		cons.DB.Select(&categories, cons.QueryCategories)
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(categories)
+		if err := json.NewEncoder(w).Encode(categories); err != nil {
+			log.Println("Error encoding categories to JSON: ", err)
+			http.Error(w, "Error encoding categories to JSON", http.StatusInternalServerError)
+			return
+		}
 
 	case http.MethodPost:
 		var c Category
@@ -151,7 +155,11 @@ func CategoryHandler(w http.ResponseWriter, r *http.Request) {
 		cons.DB.Get(&cat, cons.QueryCategory, categoryName)
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(cat)
+		if err := json.NewEncoder(w).Encode(cat); err != nil {
+			log.Println("Error encoding category to JSON: ", err)
+			http.Error(w, "Error encoding category to JSON", http.StatusInternalServerError)
+			return
+		}
 
 	case http.MethodPut:
 		categoryName := r.PathValue("id")
