@@ -37,14 +37,14 @@ type Product struct {
 }
 
 type ProductPatch struct {
-	ProductID     string            `json:"product_id" db:"ProductID"`
-	Name          string            `json:"name" db:"ProductName"`
-	Description   NullField[string] `json:"description" db:"ProductDesc"`
-	ImgURL        NullField[string] `json:"img_url" db:"ProductImgUrl"`
-	Price         float64           `json:"price" db:"Price"`
-	StockQuantity int               `json:"stock_quantity" db:"StockQuantity"`
-	CategoryName  NullField[string] `json:"category_name" db:"Category"`
-	BrandName     NullField[string] `json:"brand_name" db:"Brand"`
+	ProductID     string             `json:"product_id" db:"ProductID"`
+	Name          NullField[string]  `json:"name" db:"ProductName"`
+	Description   NullField[string]  `json:"description" db:"ProductDesc"`
+	ImgURL        NullField[string]  `json:"img_url" db:"ProductImgUrl"`
+	Price         NullField[float64] `json:"price" db:"Price"`
+	StockQuantity NullField[int]     `json:"stock_quantity" db:"StockQuantity"`
+	CategoryName  NullField[string]  `json:"category_name" db:"Category"`
+	BrandName     NullField[string]  `json:"brand_name" db:"Brand"`
 }
 
 type Category struct {
@@ -69,11 +69,11 @@ type User struct {
 
 type UserPatch struct {
 	UserID    string            `json:"user_id" db:"UserID"`
-	Username  string            `json:"username" db:"Username"`
-	Password  string            `json:"password" db:"Password"` // Maybe not, yeah?
-	Email     string            `json:"email" db:"Email"`
-	FirstName string            `json:"first_name" db:"FirstName"`
-	LastName  string            `json:"last_name" db:"LastName"`
+	Username  NullField[string] `json:"username" db:"Username"`
+	Password  NullField[string] `json:"password" db:"Password"` // Maybe not, yeah?
+	Email     NullField[string] `json:"email" db:"Email"`
+	FirstName NullField[string] `json:"first_name" db:"FirstName"`
+	LastName  NullField[string] `json:"last_name" db:"LastName"`
 	Address   NullField[string] `json:"address" db:"Address"`
 }
 
@@ -94,10 +94,10 @@ type Order struct {
 
 type OrderPatch struct {
 	OrderID     string               `json:"order_id" db:"OrderID"`
-	UserID      *string              `json:"user_id" db:"UserID"`
+	UserID      string               `json:"user_id" db:"UserID"`
 	OrderDate   NullField[time.Time] `json:"order_date" db:"OrderDate"`
-	OrderStatus *string              `json:"order_status" db:"OrderStatus"`
-	OrderTotal  *float64             `json:"order_total" db:"OrderTotal"`
+	OrderStatus NullField[string]    `json:"order_status" db:"OrderStatus"`
+	OrderTotal  NullField[float64]   `json:"order_total" db:"OrderTotal"`
 	Items       []OrderItem          `json:"items"`
 }
 
@@ -122,12 +122,12 @@ type Payment struct {
 }
 
 type PaymentPatch struct {
-	PaymentID     string     `json:"payment_id" db:"PaymentID"`
-	OrderID       *string    `json:"order_id" db:"OrderID"`
-	PaymentMethod *string    `json:"payment_method" db:"PaymentMethod"`
-	Amount        *float64   `json:"amount" db:"Amount"`
-	PaymentDate   *time.Time `json:"payment_date" db:"PaymentDate"`
-	PaymentStatus *string    `json:"payment_status" db:"PaymentStatus"`
+	PaymentID     string               `json:"payment_id" db:"PaymentID"`
+	OrderID       NullField[string]    `json:"order_id" db:"OrderID"`
+	PaymentMethod NullField[string]    `json:"payment_method" db:"PaymentMethod"`
+	Amount        NullField[float64]   `json:"amount" db:"Amount"`
+	PaymentDate   NullField[time.Time] `json:"payment_date" db:"PaymentDate"`
+	PaymentStatus NullField[string]    `json:"payment_status" db:"PaymentStatus"`
 }
 
 type CartItem struct {
@@ -145,9 +145,9 @@ type Review struct {
 }
 
 type ReviewPatch struct {
-	UserID    string            `json:"user_id" db:"UserID"`
-	ProductID string            `json:"product_id" db:"ProductID"`
-	Comment   NullField[string] `json:"comment" db:"Comment"`
-	Rating    NullField[int16]  `json:"rating" db:"Rating"`
-	PostDate  *time.Time        `json:"post_date" db:"PostDate"`
+	UserID    string               `json:"user_id" db:"UserID"`
+	ProductID string               `json:"product_id" db:"ProductID"`
+	Comment   NullField[string]    `json:"comment" db:"Comment"`
+	Rating    NullField[int16]     `json:"rating" db:"Rating"`
+	PostDate  NullField[time.Time] `json:"post_date" db:"PostDate"`
 }
