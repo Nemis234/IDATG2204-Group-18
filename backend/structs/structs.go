@@ -107,12 +107,6 @@ type OrderItem struct {
 	Quantity  int    `json:"quantity" db:"Quantity"`
 }
 
-type OrderItemPatch struct {
-	OrderID   string  `json:"order_id" db:"OrderID"`
-	ProductID *string `json:"product_id" db:"ProductID"`
-	Quantity  *int    `json:"quantity" db:"Quantity"`
-}
-
 type OrderStatus struct {
 	StatusName string  `json:"status_name" db:"StatusName"`
 	StatusDesc *string `json:"status_desc" db:"StatusDesc"`
