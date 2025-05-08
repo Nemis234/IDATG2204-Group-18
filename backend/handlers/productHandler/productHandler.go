@@ -227,18 +227,18 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-			// Generate a new product ID
+		// Generate a new product ID
 		err = cons.DB.Get(&product, "SELECT UUID() AS "+cons.PRODUCT_ID+";")
-			if err != nil {
+		if err != nil {
 			if utility.CheckSQLErr(err, w) {
 				return
 			}
 
-				log.Println("Error generating product ID: ", err)
-				http.Error(w, "Error generating product ID", http.StatusInternalServerError)
-				return
-			}
-			log.Println("Product ID: ", product.ProductID)
+			log.Println("Error generating product ID: ", err)
+			http.Error(w, "Error generating product ID", http.StatusInternalServerError)
+			return
+		}
+		log.Println("Product ID: ", product.ProductID)
 
 		id := product.ProductID
 
@@ -397,7 +397,7 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Validate mandatory fields
-		if product.Name == "" || product.Price <= 0 || product.StockQuantity <= 0 {
+		if product.Name == "" || product.Price < 0 || product.StockQuantity <= 0 {
 			http.Error(w, "Missing mandatory fields", http.StatusBadRequest)
 			return
 		}
