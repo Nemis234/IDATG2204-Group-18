@@ -1,6 +1,7 @@
 package producthandler
 
 import (
+	cons "backend/constants"
 	"database/sql"
 	"log"
 	"net/http"
@@ -8,7 +9,26 @@ import (
 	"strings"
 
 	"github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
+
+/*
+Thanks to https://www.reddit.com/r/golang/comments/a85ex4/comment/ec89v3b/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+*/
+func Transact(fn func(*sqlx.Tx) error) error {
+	tx, err := cons.DB.Beginx()
+	if err != nil {
+		return err
+	}
+
+	err = fn(tx)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
+}
 
 func CheckDeleteResult(res sql.Result, w http.ResponseWriter) bool {
 	affected, err := res.RowsAffected()
