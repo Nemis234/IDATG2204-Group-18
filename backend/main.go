@@ -48,8 +48,9 @@ func main() {
 	router.HandleFunc("/orders/{order_id}/payment", orderHandler.PaymentHandler)
 	router.HandleFunc("/orders/{order_id}/items", orderHandler.OrderItemsHandler)
 	router.HandleFunc("/orders/{order_id}/items/{item_id}", orderHandler.OrderItemHandler)
-	router.HandleFunc("/orders/status", orderHandler.StatusHandler)
-	router.HandleFunc("/orders/status/{statusName}", orderHandler.StatusHandler)
+
+	router.HandleFunc("/orderstatus", orderHandler.StatusHandler)
+	router.HandleFunc("/orderstatus/{statusName}", orderHandler.StatusHandler)
 
 	router.HandleFunc("/products", producthandler.ProductsHandler)
 	router.HandleFunc("/products/{product_id}", producthandler.ProductHandler)
