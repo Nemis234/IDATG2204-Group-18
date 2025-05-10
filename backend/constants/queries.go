@@ -36,4 +36,5 @@ var UpdateOrderStatus = "UPDATE " + ORDER_STATUS_TABLE + " SET " + ORDER_STATUS_
 var DeleteOrderStatus = "DELETE FROM " + ORDER_STATUS_TABLE + " WHERE " + ORDER_STATUS_NAME + " = ?"
 
 var QueryUserLogin = "SELECT * FROM " + USERS_TABLE + " WHERE email = ?"
+var QueryUserLoginUsername = "SELECT * FROM " + USERS_TABLE + " WHERE username = ?"
 var QueryUser = "SELECT * FROM " + USERS_TABLE + " WHERE " + USER_ID + " = ?"
