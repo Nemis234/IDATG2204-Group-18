@@ -2,11 +2,11 @@ package usershandler
 
 import (
 	cons "backend/constants"
+	utility "backend/utility"
 	. "backend/structs"
 	"encoding/json"
 	"log"
 	"net/http"
-	"database/sql"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -68,14 +68,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 			err = cons.DB.Get(&checkUser, cons.QueryUserLoginUsername, newUser.Username)
 		}
 
-		//Check if user was found in the database
-		if err == sql.ErrNoRows {
-			log.Println("User not found")
-			http.Error(w, "User not found", http.StatusNotFound)
-			return
-		} else if err != nil {
-			log.Println("Server error")
-			http.Error(w, "Server error", http.StatusInternalServerError)
+		//Check if user was found in the database or for any other sql errors
+		if utility.CheckSQLErr(err, w) {
 			return
 		}
 
