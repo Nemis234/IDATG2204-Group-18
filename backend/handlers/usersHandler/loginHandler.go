@@ -8,6 +8,41 @@ import (
 	"net/http"
 )
 
+/*
+LoginHandler support these methods:
+
+  - POST Request for comparing login credentials.
+
+# GET
+
+It retrieves the user information from the database and compares the password.
+General function flow :
+-> Extract the Payload
+-> Check if the payload is not empty
+-> Query the database for the user login information
+-> Compare the password
+-> Writes a respond to the client
+
+Possible Responds:
+200: OK, user is authenticated
+401: Wrong credentials, wrong password or username/email
+400: Missing fields, Payload is not complete/missing fields required
+500: Internal Server Error
+
+Example usage:
+
+	Method: Post
+	Route: /users/login
+	Request body:
+	{
+		"Username": "helloWorld",
+		"Email": "john_doe@gmail.com",
+		"Password": "helloWorld"
+	}
+	Respond body:
+	HTTP code: 200 No Content
+
+*/
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("LoginHandler called with method: ", r.Method)
 	switch r.Method {
@@ -17,13 +52,18 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Invalid request", http.StatusBadRequest)
 			return
 		}
-		if newUser.Email == "" || newUser.Password == "" {
+		if (newUser.Email == "" && newUser.Username == "") || newUser.Password == "" {
 			http.Error(w, "Username and password are required", http.StatusBadRequest)
 			return
 		}
 		var checkUser User
 
-		cons.DB.Get(&checkUser, cons.QueryUserLogin, newUser.Email)
+		//Use username or email to query the database, depending on which was given
+		if (newUser.Email != ""){
+			cons.DB.Get(&checkUser, cons.QueryUserLogin, newUser.Email)
+		}else{
+			cons.DB.Get(&checkUser, cons.QueryUserLoginUsername, newUser.Username)
+		}
 
 		w.Header().Set("Content-Type", "application/json")
 

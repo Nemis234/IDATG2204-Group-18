@@ -25,4 +25,5 @@ var UpdateOrder = "UPDATE " + ORDER_TABLE + " SET " + USER_ID + " = :" + USER_ID
 var DeleteOrder = "DELETE FROM " + ORDER_TABLE + " WHERE " + ORDER_ID + " = ?"
 
 var QueryUserLogin = "SELECT * FROM " + USERS_TABLE + " WHERE email = ?"
+var QueryUserLoginUsername = "SELECT * FROM " + USERS_TABLE + " WHERE username = ?"
 var QueryUser = "SELECT * FROM " + USERS_TABLE + " WHERE " + USER_ID + " = ?"
