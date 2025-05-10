@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"database/sql"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -26,8 +27,9 @@ General function flow :
 
 Possible Responds:
 200: OK, user is authenticated
-401: Wrong credentials, wrong password or username/email
-400: Missing fields, Payload is not complete/missing fields required
+400: Bad Request, Payload is not complete/missing fields required
+401: Unauthorized, wrong password or username/email
+404: Not found, query returned 0 rows, no user found in the database with the given username/email
 500: Internal Server Error
 
 Example usage:
@@ -60,14 +62,26 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		var checkUser User
 
 		//Use username or email to query the database, depending on which was given
+		var err error
 		if (newUser.Email != ""){
-			cons.DB.Get(&checkUser, cons.QueryUserLogin, newUser.Email)
+			err = cons.DB.Get(&checkUser, cons.QueryUserLogin, newUser.Email)
 		}else{
-			cons.DB.Get(&checkUser, cons.QueryUserLoginUsername, newUser.Username)
+			err = cons.DB.Get(&checkUser, cons.QueryUserLoginUsername, newUser.Username)
+		}
+
+		//Check if user was found in the database
+		if err == sql.ErrNoRows {
+			log.Println("User not found")
+			http.Error(w, "User not found", http.StatusNotFound)
+			return
+		} else if err != nil {
+			log.Println("Server error")
+			http.Error(w, "Server error", http.StatusInternalServerError)
+			return
 		}
 
 		//Using bcrypt to compared the raw password in the payload with the stored hashed password
-		err := bcrypt.CompareHashAndPassword([]byte(checkUser.Password), []byte(newUser.Password))
+		err = bcrypt.CompareHashAndPassword([]byte(checkUser.Password), []byte(newUser.Password))
 		if err != nil {
 			//Password does not match
 			log.Println("Invalid credentials")
