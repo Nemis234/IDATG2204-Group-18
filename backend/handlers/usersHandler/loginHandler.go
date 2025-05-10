@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"golang.org/x/crypto/bcrypt"
 )
 
 /*
@@ -53,7 +54,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if (newUser.Email == "" && newUser.Username == "") || newUser.Password == "" {
-			http.Error(w, "Username and password are required", http.StatusBadRequest)
+			http.Error(w, "Username/Email and password are required", http.StatusBadRequest)
 			return
 		}
 		var checkUser User
@@ -63,6 +64,15 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 			cons.DB.Get(&checkUser, cons.QueryUserLogin, newUser.Email)
 		}else{
 			cons.DB.Get(&checkUser, cons.QueryUserLoginUsername, newUser.Username)
+		}
+
+		//Using bcrypt to compared the raw password in the payload with the stored hashed password
+		err := bcrypt.CompareHashAndPassword([]byte(checkUser.Password), []byte(newUser.Password))
+		if err != nil {
+			//Password does not match
+			log.Println("Invalid credentials")
+			http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+			return
 		}
 
 		w.Header().Set("Content-Type", "application/json")
