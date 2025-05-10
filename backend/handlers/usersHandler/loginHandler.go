@@ -38,7 +38,6 @@ Example usage:
 	Route: /users/login
 	Request body:
 	{
-		"Username": "helloWorld",
 		"Email": "john_doe@gmail.com",
 		"Password": "helloWorld"
 	}
