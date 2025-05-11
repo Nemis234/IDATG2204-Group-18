@@ -13,11 +13,15 @@ import (
 /*
 LoginHandler support these methods:
 
-  - POST Request for comparing login credentials.
+  - POST Request for comparing login credentials and returns a JWT token used for authentications.
 
-# GET
+# POST
 
 It retrieves the user information from the database and compares the password.
+Then generates a JWT and returns this to the client as a Header. This must be stored in the frontend
+and will be used for later on protected requests that requires admin privileges.
+It can be made to return a JSON body containing the JWT token if needed, but it does not support that for now.
+
 General function flow :
 -> Extract the Payload
 -> Check if the payload is not empty
