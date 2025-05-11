@@ -2,8 +2,8 @@ package usershandler
 
 import (
 	cons "backend/constants"
-	utility "backend/utility"
 	. "backend/structs"
+	utility "backend/utility"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -19,6 +19,11 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		// Check if the user is logged in with a JWT token
+		if !utility.CheckPrivileges(r, w, &userID) {
+			return
+		}
+
 		var u User
 		cons.DB.Get(&u, cons.QueryUser, userID)
 
@@ -29,7 +34,6 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
-
 
 /*
 ProductsHandler support these methods:
@@ -80,21 +84,13 @@ func UsersHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 
-		//Check if user is logged in with a JWT token
-		jwtTokenData, err := utility.ValidateJWT(r, cons.JwtKey)
-		if err != nil {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		// Only admins can access this endpoint
+		if !utility.CheckPrivileges(r, w, nil) {
 			return
-			} 
-			
-		//Check if the request has admin privileges
-		if jwtTokenData.Role != "admin" {
-			http.Error(w, "Forbidden", http.StatusForbidden)
-        	return
 		}
 
 		var users []User
-		err = cons.DB.Select(&users, cons.QueryUsers)
+		err := cons.DB.Select(&users, cons.QueryUsers)
 		if err != nil {
 			//Check if the error is a sql error
 			if utility.CheckSQLErr(err, w) {
@@ -105,14 +101,12 @@ func UsersHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-
 		w.Header().Set("Content-Type", "application/json")
 		if err := json.NewEncoder(w).Encode(users); err != nil {
 			log.Println("Error encoding users to JSON: ", err)
 			http.Error(w, "Error encoding users to JSON", http.StatusInternalServerError)
 			return
 		}
-
 
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
