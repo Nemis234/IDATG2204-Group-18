@@ -4,16 +4,17 @@ import (
 	cons "backend/constants"
 	structs "backend/structs"
 	"database/sql"
-	"log"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 	"reflect"
 	"strings"
 	"time"
-	"os"
+
 	"github.com/go-sql-driver/mysql"
-	"github.com/jmoiron/sqlx"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/jmoiron/sqlx"
 )
 
 /*
@@ -156,15 +157,15 @@ This token will be used by the frontend/backend to check privileges.
 */
 func GenerateJWT(userID, role string, jwtKey []byte) (string, error) {
 
-    expirationTime := time.Now().Add(24 * time.Hour)
+	expirationTime := time.Now().Add(24 * time.Hour)
 
-    jwtToken := &structs.JWTToken{
-        UserID: userID,
-        Role:   role,
-        RegisteredClaims: jwt.RegisteredClaims{
-            ExpiresAt: jwt.NewNumericDate(expirationTime),
-        },
-    }
+	jwtToken := &structs.JWTToken{
+		UserID: userID,
+		Role:   role,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expirationTime),
+		},
+	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwtToken)
 	signedToken, err := token.SignedString(jwtKey)
@@ -185,26 +186,87 @@ then proceeds to validate it, then extracts the data before returning.
 */
 
 func ValidateJWT(r *http.Request, jwtKey []byte) (*structs.JWTToken, error) {
-    authHeader := r.Header.Get("Authorization")
-    if authHeader == "" {
-        return nil, fmt.Errorf("No authorization header")
-    }
+	authHeader := r.Header.Get("Authorization")
+	if authHeader == "" {
+		return nil, fmt.Errorf("No authorization header")
+	}
 
-    parts := strings.Split(authHeader, " ")
-    if len(parts) != 2 || parts[0] != "Bearer" {
-        return nil, fmt.Errorf("invalid authorization header format")
-    }
+	parts := strings.Split(authHeader, " ")
+	if len(parts) != 2 || parts[0] != "Bearer" {
+		return nil, fmt.Errorf("invalid authorization header format")
+	}
 
-    tokenStr := parts[1]
+	tokenStr := parts[1]
 
-    jwtToken := &structs.JWTToken{}
-    token, err := jwt.ParseWithClaims(tokenStr, jwtToken, func(token *jwt.Token) (interface{}, error) {
-        return jwtKey, nil
-    })
+	jwtToken := &structs.JWTToken{}
+	token, err := jwt.ParseWithClaims(tokenStr, jwtToken, func(token *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
 
-    if err != nil || !token.Valid {
-        return nil, fmt.Errorf("Invalid token")
-    }
+	if err != nil || !token.Valid {
+		return nil, fmt.Errorf("Invalid token")
+	}
 
-    return jwtToken, nil
+	return jwtToken, nil
+}
+
+/*
+CheckPrivileges checks if the user has the right privileges to access the resource.
+It checks if the user is logged in with a JWT token.
+
+Admins will always have access to the resource, regardless of the userID.
+
+To check only for admin privileges, pass nil as the userID parameter.
+
+To check if the right user is logged in with a JWT token, pass the userID parameter as a pointer &string.
+*/
+func CheckPrivileges(r *http.Request, w http.ResponseWriter, userID *string) bool {
+	//Check if user is logged in with a JWT token
+	jwtTokenData, err := ValidateJWT(r, cons.JwtKey)
+	if err != nil {
+		log.Println("Error validating JWT token: ", err)
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return false
+	}
+
+	//Check if the request has admin privileges
+	if jwtTokenData.Role == "admin" {
+		return true
+	}
+
+	if userID != nil {
+		userIDValue := *userID
+		// Check if the user ID in the token matches the user ID in the request
+		if jwtTokenData.UserID == userIDValue {
+			return true
+		}
+		log.Println("User ID does not match, expected: ", userID, " got: ", jwtTokenData.UserID)
+	} else {
+		log.Println("User does not have admin privileges")
+	}
+
+	http.Error(w, "Forbidden", http.StatusForbidden)
+	return false
+}
+
+/*
+Helper function to check if the user has privileges to access a table.
+*/
+func CheckUser(r *http.Request, w http.ResponseWriter, query string, args ...any) bool {
+	// Get user ID from database
+	var userID string
+	err := cons.DB.Get(&userID, query, args...)
+	if err != nil {
+		if CheckSQLErr(err, w) {
+			return false
+		}
+		log.Println("Error fetching user ID: ", err)
+		http.Error(w, "Error fetching user ID", http.StatusInternalServerError)
+		return false
+	}
+	// Check user privileges
+	if !CheckPrivileges(r, w, &userID) {
+		return false
+	}
+	return true
 }
