@@ -2,14 +2,17 @@ package producthandler
 
 import (
 	cons "backend/constants"
+	structs "backend/structs"
 	"database/sql"
 	"log"
 	"net/http"
 	"reflect"
 	"strings"
-
+	"time"
+	"os"
 	"github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 /*
@@ -123,4 +126,49 @@ func BuildUpdateQuery(input any) (string, []any) {
 	}
 
 	return strings.Join(setParts, ", "), args
+}
+
+
+/*
+Made with help from ChatGPT
+
+It generates a JWT-token, this stores the userID togethers with the corresponding role in a struct.
+This token will be used by the frontend/backend to check privileges.
+This is used in the loginhandler, and thus could be moved to another package maybe.
+*/
+func GenerateJWT(userID, role string) (string, error) {
+
+	// Used to generate a unique JWT-token
+	var jwtKey []byte
+
+	keyStr := os.Getenv("JWT_TOKEN_KEY")
+	if keyStr != "" {
+		jwtKey = []byte(keyStr) // environment variable was set
+	} else {
+		var err error
+		jwtKey, err = os.ReadFile("jwt-key-for-testing.txt") //Normally this should be set an ENV or in .env file 
+		if err != nil {
+			log.Println("Failed to read jwt-key-for-testing.txt:", err)
+			return "", err
+		}
+	}
+
+    expirationTime := time.Now().Add(24 * time.Hour)
+
+    jwtToken := &structs.JWTToken{
+        UserID: userID,
+        Role:   role,
+        RegisteredClaims: jwt.RegisteredClaims{
+            ExpiresAt: jwt.NewNumericDate(expirationTime),
+        },
+    }
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwtToken)
+	signedToken, err := token.SignedString(jwtKey)
+	if err != nil {
+		log.Println("Error signing the token:", err)
+		return "", err
+	}
+
+	return signedToken, nil
 }

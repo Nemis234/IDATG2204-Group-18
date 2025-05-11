@@ -3,6 +3,7 @@ package structs
 import (
 	"encoding/json"
 	"time"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type NullField[T any] struct {
@@ -151,4 +152,10 @@ type ReviewPatch struct {
 	Comment   NullField[string]    `json:"comment" db:"Comment"`
 	Rating    NullField[int16]     `json:"rating" db:"Rating"`
 	PostDate  NullField[time.Time] `json:"post_date" db:"PostDate"`
+}
+
+type JWTToken struct {
+    UserID string `json:"user_id" db:"UserID"`
+    Role   string `json:"role" db:"Role"`
+    jwt.RegisteredClaims
 }

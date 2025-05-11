@@ -3,7 +3,6 @@ package usershandler
 import (
 	cons "backend/constants"
 	utility "backend/utility"
-	"os"
 	. "backend/structs"
 	"encoding/json"
 	"log"
@@ -24,6 +23,7 @@ General function flow :
 -> Check if the payload is not empty
 -> Query the database for the user login information
 -> Compare the password
+-> Generates a JWT token, this is sent back to the client. Used to distinguish user roles on protected requests
 -> Writes a respond to the client
 
 Possible Responds:
@@ -50,22 +50,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("LoginHandler called with method: ", r.Method)
 	switch r.Method {
 	case http.MethodPost:
-		// Used to generate a unique JWT-token
-		var jwtKey []byte
-
-		keyStr := os.Getenv("JWT_TOKEN_KEY")
-		if keyStr != "" {
-			jwtKey = []byte(keyStr) // environment variable was set
-		} else {
-			var err error
-			jwtKey, err = os.ReadFile("jwt-key-for-testing.txt")
-			if err != nil {
-				log.Println("Failed to read jwt-key-for-testing.txt.")
-				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-				return
-			}
-		}
-		log.Println(jwtKey)
 
 		var newUser User
 		if err := json.NewDecoder(r.Body).Decode(&newUser); err != nil {
@@ -100,8 +84,16 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		w.Header().Set("Content-Type", "application/json")
-
+		//Creating a JWT token to attach to the user, used to check user privileges.
+		token, err := utility.GenerateJWT(checkUser.UserID, checkUser.Role)
+		if err != nil {
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+		
+		w.Header().Set("Authorization", "Bearer "+token)
+		
+		log.Println("JWT-toekn: ", token)
 		log.Println("User: ", checkUser.Username, " Password: ", checkUser.Password)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
