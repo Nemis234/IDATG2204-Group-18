@@ -13,6 +13,11 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("OrderStatusHandler called with method: ", r.Method)
 	switch r.Method {
 	case http.MethodGet:
+		// Check admin privileges
+		if !utility.CheckPrivileges(r, w, nil) {
+			return
+		}
+
 		var orderStatus []OrderStatus
 		err := cons.DB.Select(&orderStatus, cons.QueryOrderStatus)
 		if err != nil {
@@ -32,6 +37,11 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case http.MethodPost:
+		// Check admin privileges
+		if !utility.CheckPrivileges(r, w, nil) {
+			return
+		}
+
 		var orderStatus OrderStatus
 		if err := json.NewDecoder(r.Body).Decode(&orderStatus); err != nil {
 			log.Println("Error decoding JSON: ", err)
@@ -70,6 +80,12 @@ func UpdateStatusHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Name is required", http.StatusBadRequest)
 			return
 		}
+
+		// Check admin privileges
+		if !utility.CheckPrivileges(r, w, nil) {
+			return
+		}
+
 		var orderStatus OrderStatus
 		if err := json.NewDecoder(r.Body).Decode(&orderStatus); err != nil {
 			log.Println("Error decoding JSON: ", err)
@@ -102,6 +118,12 @@ func UpdateStatusHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Name is required", http.StatusBadRequest)
 			return
 		}
+
+		// Check admin privileges
+		if !utility.CheckPrivileges(r, w, nil) {
+			return
+		}
+
 		result, err := cons.DB.Exec(cons.DeleteOrderStatus, statusName)
 		if err != nil {
 			if utility.CheckSQLErr(err, w) {

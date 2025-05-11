@@ -25,6 +25,8 @@ GET handles the retrieval of all orders from the database.
 It queries the database for all orders and returns them as a JSON response.
 It does not respond with the orders items.
 
+Only admin users can access this endpoint.
+
 Example usage:
 
 	Method: GET
@@ -106,6 +108,11 @@ func OrdersHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("OrdersHandler called with method: ", r.Method)
 	switch r.Method {
 	case http.MethodGet:
+		// Check admin privileges
+		if !utility.CheckPrivileges(r, w, nil) {
+			return
+		}
+
 		var orders []Order
 		err := cons.DB.Select(&orders, cons.QueryOrders)
 		if err != nil {

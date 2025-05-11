@@ -69,6 +69,9 @@ Example usage:
 
 When using the POST method, the request body should contain the product details in JSON format.
 Mandatory fields cannot be null, optional fields can be null.
+
+Only admins can access this endpoint.
+
 The request body should include the following fields:
 
 	{
@@ -212,6 +215,11 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	case http.MethodPost:
+		// Only admins can access this endpoint
+		if !utility.CheckPrivileges(r, w, nil) {
+			return
+		}
+
 		// Decode the request body into a Product struct
 		var product Product
 		err := json.NewDecoder(r.Body).Decode(&product)
@@ -303,6 +311,9 @@ Example usage:
 
 When using the PUT method, the request body should contain the product details in JSON format.
 Mandatory fields cannot be null, while optional can be null.
+
+Only admins can access this endpoint.
+
 The request body should include the following fields:
 
 	{
@@ -338,10 +349,15 @@ When using the PATCH method, the request body should contain the product details
 Any amount of fields can be updated, but mandatory fields cannot be null, while optional can be null.
 The request body can use any field(s) available in the PUT method, in the same format.
 
+Only admins can access this endpoint.
+
 # DELETE
 
 When using the DELETE method, the product will be deleted from the database.
 If the product is in a foreign key constraint, the delete will fail with a 409 Conflict error.
+
+Only admins can access this endpoint.
+
 Example usage:
 
 	Method: DELETE
@@ -383,6 +399,12 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "ID is required", http.StatusBadRequest)
 			return
 		}
+
+		// Only admins can access this endpoint
+		if !utility.CheckPrivileges(r, w, nil) {
+			return
+		}
+
 		// Decode the request body into a Product struct
 		var product Product
 		err := json.NewDecoder(r.Body).Decode(&product)
@@ -421,6 +443,11 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 		id := r.PathValue("product_id")
 		if id == "" {
 			http.Error(w, "ID is required", http.StatusBadRequest)
+			return
+		}
+
+		// Only admins can access this endpoint
+		if !utility.CheckPrivileges(r, w, nil) {
 			return
 		}
 
@@ -470,7 +497,10 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Needs to check if an admin is preforming the delete
+		// Only admins can access this endpoint
+		if !utility.CheckPrivileges(r, w, nil) {
+			return
+		}
 
 		// Delete the product from the database
 		result, err := cons.DB.Exec(cons.DeleteProduct, id)

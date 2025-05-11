@@ -11,8 +11,8 @@ import (
 
 /*
 BrandsHandler supports these HTTP methods:
-- GET: Retrieves a list of all brands from the database.
-- POST: Inserts a new brand into the database.
+  - GET: Retrieves a list of all brands from the database.
+  - POST: Inserts a new brand into the database.
 
 # GET
 
@@ -39,6 +39,9 @@ Example usage:
 
 POST handles requests to insert a new brand into the database.
 It expects a JSON payload with the brand details.
+
+Only admins can access this endpoint.
+
 Example usage:
 
 	Method: POST
@@ -66,6 +69,11 @@ func BrandsHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	case http.MethodPost:
+		// Check admin privileges
+		if !utility.CheckPrivileges(r, w, nil) {
+			return
+		}
+
 		var b Brand
 		if err := json.NewDecoder(r.Body).Decode(&b); err != nil {
 			http.Error(w, "Invalid request payload", http.StatusBadRequest)
@@ -92,9 +100,9 @@ func BrandsHandler(w http.ResponseWriter, r *http.Request) {
 
 /*
 BrandHandler supports these HTTP methods:
-- GET: Retrieves details of a specific brand based on the name in the URL path.
-- PUT: Updates the details of a specific brand.
-- DELETE: Deletes a specific brand from the database.
+  - GET: Retrieves details of a specific brand based on the name in the URL path.
+  - PUT: Updates the details of a specific brand.
+  - DELETE: Deletes a specific brand from the database.
 
 # GET
 
@@ -116,6 +124,9 @@ Example usage:
 
 PUT handles requests to update a specific brand in the database.
 It expects a JSON payload with the brand details.
+
+Only admins can access this endpoint.
+
 Example usage:
 
 	Method: PUT
@@ -130,6 +141,9 @@ Example usage:
 # DELETE
 
 DELETE handles requests to delete a specific brand from the database.
+
+Only admins can access this endpoint.
+
 Example usage:
 
 	Method: DELETE
@@ -161,6 +175,11 @@ func BrandHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Brand name is required", http.StatusBadRequest)
 			return
 		}
+
+		// Check admin privileges
+		if !utility.CheckPrivileges(r, w, nil) {
+			return
+		}
 		var b Brand
 		if err := json.NewDecoder(r.Body).Decode(&b); err != nil {
 			http.Error(w, "Invalid request payload", http.StatusBadRequest)
@@ -186,6 +205,10 @@ func BrandHandler(w http.ResponseWriter, r *http.Request) {
 		brandName := r.PathValue("id")
 		if brandName == "" {
 			http.Error(w, "Brand name is required", http.StatusBadRequest)
+			return
+		}
+		// Check admin privileges
+		if !utility.CheckPrivileges(r, w, nil) {
 			return
 		}
 		result, err := cons.DB.Exec(cons.DeleteBrand, brandName)
