@@ -28,7 +28,8 @@ CREATE TABLE Users (
     Email VARCHAR(100) NOT NULL,
     FirstName VARCHAR(50) NOT NULL,
     LastName VARCHAR(50) NOT NULL,
-    Address VARCHAR(255)
+    Address VARCHAR(255),
+    Role ENUM('user', 'admin') NOT NULL DEFAULT 'user'
 );
 
 CREATE TABLE Member (

@@ -158,18 +158,18 @@ func populateUser(db *sql.DB, userID []string) {
 	}
 
 	query := `
-        INSERT INTO Users (UserID, Username, Password, Email, FirstName, LastName, Address) VALUES
-        (?, ?, ?, ?, ?, ?, ?),
-        (?, ?, ?, ?, ?, ?, ?),
-        (?, ?, ?, ?, ?, ?, ?),
-        (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO Users (UserID, Username, Password, Email, FirstName, LastName, Address, Role) VALUES
+        (?, ?, ?, ?, ?, ?, ?, ?),
+        (?, ?, ?, ?, ?, ?, ?, ?),
+        (?, ?, ?, ?, ?, ?, ?, ?),
+        (?, ?, ?, ?, ?, ?, ?, ?)
     `
 
 	_, err = db.Exec(query,
-		userID[0], "helloWorld", hashedPassword1, "john_doe@gmail.com", "John", "Doe", "Yolostreet 15",
-		userID[1], "janedoe", hashedPassword2, "jane_doe@gmail.com", "Jane", "Doe", "Main Street 5",
-		userID[2], "alice123", hashedPassword3, "alice@gmail.com", "Alice", "Smith", "River Road 42",
-		userID[3], "bob88", hashedPassword4, "bob88@gmail.com", "Bob", "Johnson", "Mountain View 10",
+		userID[0], "helloWorld", hashedPassword1, "john_doe@gmail.com", "John", "Doe", "Yolostreet 15", "admin",
+		userID[1], "janedoe", hashedPassword2, "jane_doe@gmail.com", "Jane", "Doe", "Main Street 5", "user",
+		userID[2], "alice123", hashedPassword3, "alice@gmail.com", "Alice", "Smith", "River Road 42", "user",
+		userID[3], "bob88", hashedPassword4, "bob88@gmail.com", "Bob", "Johnson", "Mountain View 10", "user",
 	)
 	if err != nil {
 		fmt.Println("Failed to insert users.")
