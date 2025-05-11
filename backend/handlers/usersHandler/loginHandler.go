@@ -42,8 +42,11 @@ Example usage:
 		"Email": "john_doe@gmail.com",
 		"Password": "helloWorld"
 	}
+		
 	Respond body:
 	HTTP code: 200 No Content
+	Respond header:
+	Authorization: Bearer "jwt-token" 
 
 */
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
