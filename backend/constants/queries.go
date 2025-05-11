@@ -23,6 +23,7 @@ var QueryOrder = "SELECT * FROM " + ORDER_TABLE + " WHERE " + ORDER_ID + " = ?"
 var InsertOrder = "INSERT INTO " + ORDER_TABLE + " (" + ORDER_ID + ", " + USER_ID + ", " + ORDER_DATE + ", " + ORDER_STATUS + ", " + ORDER_TOTAL + ") VALUES (:" + ORDER_ID + ", :" + USER_ID + ", :" + ORDER_DATE + ", :" + ORDER_STATUS + ", :" + ORDER_TOTAL + ")"
 var UpdateOrder = "UPDATE " + ORDER_TABLE + " SET " + ORDER_DATE + " = :" + ORDER_DATE + ", " + ORDER_STATUS + " = :" + ORDER_STATUS + ", " + ORDER_TOTAL + " = :" + ORDER_TOTAL + " WHERE " + ORDER_ID + " = :" + ORDER_ID
 var DeleteOrder = "DELETE FROM " + ORDER_TABLE + " WHERE " + ORDER_ID + " = ?"
+var GetUserIDByOrderID = "SELECT " + USER_ID + " FROM " + ORDER_TABLE + " WHERE " + ORDER_ID + " = ?"
 
 var QueryOrderItemsByID = "SELECT * FROM " + ORDER_ITEMS_TABLE + " WHERE " + ORDER_ID + " = ?"
 var QueryOrderItemByID = "SELECT * FROM " + ORDER_ITEMS_TABLE + " WHERE " + ORDER_ID + " = ? AND " + PRODUCT_ID + " = ?"

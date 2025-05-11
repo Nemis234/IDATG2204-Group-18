@@ -11,8 +11,11 @@ import (
 
 /*
 OrderItemsHandler supports the following methods:
-- GET: Fetches all order items for a specific order by ID.
-- POST: Adds a new order item to an existing order.
+  - GET: Fetches all order items for a specific order by ID.
+  - POST: Adds a new order item to an existing order.
+
+Only users that created the order can see, update or delete it.
+Admin users can update any order.
 
 # GET
 
@@ -67,10 +70,16 @@ Example usage:
 	Http Status: 201 Created
 */
 func OrderItemsHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("OrderItemHandler called with method : ", r.Method)
+	log.Println("OrderItemsHandler called with method : ", r.Method)
 	switch r.Method {
 	case http.MethodGet:
 		orderID := r.PathValue("order_id")
+
+		// Check user privileges
+		if !utility.CheckUser(r, w, cons.GetUserIDByOrderID, orderID) {
+			log.Println("User does not have privileges to "+r.Method+"  order with ID: ", orderID)
+			return
+		}
 
 		var orderItems []OrderItem
 		err := cons.DB.Select(&orderItems, cons.QueryOrderItemsByID, orderID)
@@ -97,6 +106,12 @@ func OrderItemsHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Order ID is required", http.StatusBadRequest)
 			return
 		}
+		// Check user privileges
+		if !utility.CheckUser(r, w, cons.GetUserIDByOrderID, orderID) {
+			log.Println("User does not have privileges to "+r.Method+"  order with ID: ", orderID)
+			return
+		}
+
 		var orderItem OrderItem
 		if err := json.NewDecoder(r.Body).Decode(&orderItem); err != nil {
 			log.Println("Error decoding order item: ", err)
@@ -133,9 +148,12 @@ func OrderItemsHandler(w http.ResponseWriter, r *http.Request) {
 
 /*
 OrderItemHandler supports the following methods:
-- GET: Fetches a specific order item by order ID and item ID.
-- PUT: Updates an existing order item.
-- DELETE: Deletes an existing order item.
+  - GET: Fetches a specific order item by order ID and item ID.
+  - PUT: Updates an existing order item.
+  - DELETE: Deletes an existing order item.
+
+Only users that created the order can see, update or delete it.
+Admin users can update any order.
 
 # GET
 
@@ -212,6 +230,12 @@ func OrderItemHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		// Check user privileges
+		if !utility.CheckUser(r, w, cons.GetUserIDByOrderID, orderID) {
+			log.Println("User does not have privileges to "+r.Method+"  order with ID: ", orderID)
+			return
+		}
+
 		var orderItem OrderItem
 		err := cons.DB.Get(&orderItem, cons.QueryOrderItemByID, orderID, itemID)
 		if err != nil {
@@ -242,6 +266,12 @@ func OrderItemHandler(w http.ResponseWriter, r *http.Request) {
 		if itemID == "" {
 			log.Println("Product ID is required for PUT request")
 			http.Error(w, "Product ID is required", http.StatusBadRequest)
+			return
+		}
+
+		// Check user privileges
+		if !utility.CheckUser(r, w, cons.GetUserIDByOrderID, orderID) {
+			log.Println("User does not have privileges to "+r.Method+"  order with ID: ", orderID)
 			return
 		}
 
@@ -294,6 +324,13 @@ func OrderItemHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Item ID is required", http.StatusBadRequest)
 			return
 		}
+
+		// Check user privileges
+		if !utility.CheckUser(r, w, cons.GetUserIDByOrderID, orderID) {
+			log.Println("User does not have privileges to "+r.Method+"  order with ID: ", orderID)
+			return
+		}
+
 		// Delete the order item from the database
 		result, err := cons.DB.Exec(cons.DeleteOrderItem, orderID, itemID)
 		if err != nil {
