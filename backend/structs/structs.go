@@ -65,6 +65,7 @@ type User struct {
 	FirstName string  `json:"first_name" db:"FirstName"`
 	LastName  string  `json:"last_name" db:"LastName"`
 	Address   *string `json:"address" db:"Address"`
+	Role	  string  `json:"role" db:"Role"`
 }
 
 type UserPatch struct {
