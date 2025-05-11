@@ -3,6 +3,7 @@ package usershandler
 import (
 	cons "backend/constants"
 	utility "backend/utility"
+	"os"
 	. "backend/structs"
 	"encoding/json"
 	"log"
@@ -49,6 +50,23 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("LoginHandler called with method: ", r.Method)
 	switch r.Method {
 	case http.MethodPost:
+		// Used to generate a unique JWT-token
+		var jwtKey []byte
+
+		keyStr := os.Getenv("JWT_TOKEN_KEY")
+		if keyStr != "" {
+			jwtKey = []byte(keyStr) // environment variable was set
+		} else {
+			var err error
+			jwtKey, err = os.ReadFile("jwt-key-for-testing.txt")
+			if err != nil {
+				log.Println("Failed to read jwt-key-for-testing.txt.")
+				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+				return
+			}
+		}
+		log.Println(jwtKey)
+
 		var newUser User
 		if err := json.NewDecoder(r.Body).Decode(&newUser); err != nil {
 			http.Error(w, "Invalid request", http.StatusBadRequest)
