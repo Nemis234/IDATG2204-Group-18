@@ -7,6 +7,7 @@ import (
 	orderHandler "backend/handlers/orderHandler"
 	producthandler "backend/handlers/productHandler"
 	usershandler "backend/handlers/usersHandler"
+	utility "backend/utility"
 	"log"
 	"net/http"
 	"os"
@@ -32,6 +33,12 @@ func main() {
 	defer db.Close()
 
 	log.Println("Connected to database successfully")
+
+	//Creating the JWT Key
+	constants.JwtKey, err = utility.GetJwtKey()
+	if err != nil {
+		log.Fatal("Failed to initialize JWT key:", err)
+	}
 
 	constants.DB = db // Assign the database connection to the handler package
 

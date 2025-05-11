@@ -42,3 +42,4 @@ const (
 )
 
 var DB *sqlx.DB
+var JwtKey []byte //Token used by the frontend/backend to check user privilegies 

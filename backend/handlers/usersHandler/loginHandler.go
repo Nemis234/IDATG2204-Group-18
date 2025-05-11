@@ -42,7 +42,7 @@ Example usage:
 		"Email": "john_doe@gmail.com",
 		"Password": "helloWorld"
 	}
-		
+
 	Respond body:
 	HTTP code: 200 No Content
 	Respond header:
@@ -88,7 +88,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		//Creating a JWT token to attach to the user, used to check user privileges.
-		token, err := utility.GenerateJWT(checkUser.UserID, checkUser.Role)
+		token, err := utility.GenerateJWT(checkUser.UserID, checkUser.Role, cons.JwtKey)
 		if err != nil {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return
@@ -96,7 +96,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		
 		w.Header().Set("Authorization", "Bearer "+token)
 		
-		log.Println("JWT-toekn: ", token)
+		log.Println("JWT-token: ", token)
 		log.Println("User: ", checkUser.Username, " Password: ", checkUser.Password)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)

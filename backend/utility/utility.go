@@ -5,6 +5,7 @@ import (
 	structs "backend/structs"
 	"database/sql"
 	"log"
+	"fmt"
 	"net/http"
 	"reflect"
 	"strings"
@@ -128,30 +129,32 @@ func BuildUpdateQuery(input any) (string, []any) {
 	return strings.Join(setParts, ", "), args
 }
 
+/*
+Used to get the ENV "JWT_TOKEN_KEY", if it does not exit it defautls to the test file in the rootfolder :"jwt-key-for-testing.txt"
+
+This function is mainly used in the two functions below: GenerateJWT and ValidateJWT
+*/
+func GetJwtKey() ([]byte, error) {
+	keyStr := os.Getenv("JWT_TOKEN_KEY")
+	if keyStr != "" {
+		return []byte(keyStr), nil
+	}
+
+	keyBytes, err := os.ReadFile("jwt-key-for-testing.txt")
+	if err != nil {
+		log.Println("Failed to read jwt-key-for-testing.txt:", err)
+		return nil, err
+	}
+	return keyBytes, nil
+}
 
 /*
 Made with help from ChatGPT
 
 It generates a JWT-token, this stores the userID togethers with the corresponding role in a struct.
 This token will be used by the frontend/backend to check privileges.
-This is used in the loginhandler, and thus could be moved to another package maybe.
 */
-func GenerateJWT(userID, role string) (string, error) {
-
-	// Used to generate a unique JWT-token
-	var jwtKey []byte
-
-	keyStr := os.Getenv("JWT_TOKEN_KEY")
-	if keyStr != "" {
-		jwtKey = []byte(keyStr) // environment variable was set
-	} else {
-		var err error
-		jwtKey, err = os.ReadFile("jwt-key-for-testing.txt") //Normally this should be set an ENV or in .env file 
-		if err != nil {
-			log.Println("Failed to read jwt-key-for-testing.txt:", err)
-			return "", err
-		}
-	}
+func GenerateJWT(userID, role string, jwtKey []byte) (string, error) {
 
     expirationTime := time.Now().Add(24 * time.Hour)
 
@@ -171,4 +174,37 @@ func GenerateJWT(userID, role string) (string, error) {
 	}
 
 	return signedToken, nil
+}
+
+/*
+Made with help from ChatGPT
+
+This functions takes in request and validates the JWT in the http.Request.
+First it checks if any JWT token is recieved from the client,
+then proceeds to validate it, then extracts the data before returning.
+*/
+
+func ValidateJWT(r *http.Request, jwtKey []byte) (*structs.JWTToken, error) {
+    authHeader := r.Header.Get("Authorization")
+    if authHeader == "" {
+        return nil, fmt.Errorf("No authorization header")
+    }
+
+    parts := strings.Split(authHeader, " ")
+    if len(parts) != 2 || parts[0] != "Bearer" {
+        return nil, fmt.Errorf("invalid authorization header format")
+    }
+
+    tokenStr := parts[1]
+
+    jwtToken := &structs.JWTToken{}
+    token, err := jwt.ParseWithClaims(tokenStr, jwtToken, func(token *jwt.Token) (interface{}, error) {
+        return jwtKey, nil
+    })
+
+    if err != nil || !token.Valid {
+        return nil, fmt.Errorf("Invalid token")
+    }
+
+    return jwtToken, nil
 }
