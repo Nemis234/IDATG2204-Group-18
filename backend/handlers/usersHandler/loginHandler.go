@@ -2,11 +2,12 @@ package usershandler
 
 import (
 	cons "backend/constants"
-	utility "backend/utility"
 	. "backend/structs"
+	utility "backend/utility"
 	"encoding/json"
 	"log"
 	"net/http"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -50,8 +51,7 @@ Example usage:
 	Respond body:
 	HTTP code: 200 No Content
 	Respond header:
-	Authorization: Bearer "jwt-token" 
-
+	Authorization: Bearer "jwt-token"
 */
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("LoginHandler called with method: ", r.Method)
@@ -71,9 +71,9 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 		//Use username or email to query the database, depending on which was given
 		var err error
-		if (newUser.Email != ""){
+		if newUser.Email != "" {
 			err = cons.DB.Get(&checkUser, cons.QueryUserLogin, newUser.Email)
-		}else{
+		} else {
 			err = cons.DB.Get(&checkUser, cons.QueryUserLoginUsername, newUser.Username)
 		}
 
@@ -97,9 +97,18 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return
 		}
-		
+
 		w.Header().Set("Authorization", "Bearer "+token)
-		
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		id := checkUser.UserID
+		response := map[string]string{"user_id": id}
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			log.Println("Error encoding response: ", err)
+			http.Error(w, "Error encoding response", http.StatusInternalServerError)
+			return
+		}
+
 		log.Println("JWT-token: ", token)
 		log.Println("User: ", checkUser.Username, " Password: ", checkUser.Password)
 	default:
