@@ -69,5 +69,5 @@ func UserReviewsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// See ProductReviewsHandler()
+// See productHandler.ReviewHandler()
 var ReviewHandler = producthandler.ReviewHandler
