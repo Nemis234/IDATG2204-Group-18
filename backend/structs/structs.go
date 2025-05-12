@@ -69,6 +69,17 @@ type User struct {
 	Role	  string  `json:"role" db:"Role"`
 }
 
+//This will only be used on POST users request, to create a new user.
+//This has less fields than the original, due to userID and Role being set by the backend.
+type NewUser struct {
+	Username  string  `json:"username" db:"Username"`
+	Password  string  `json:"password" db:"Password"` // Maybe not, yeah?
+	Email     string  `json:"email" db:"Email"`
+	FirstName string  `json:"first_name" db:"FirstName"`
+	LastName  string  `json:"last_name" db:"LastName"`
+	Address   *string `json:"address" db:"Address"`
+}
+
 type UserPatch struct {
 	UserID    string            `json:"user_id" db:"UserID"`
 	Username  NullField[string] `json:"username" db:"Username"`

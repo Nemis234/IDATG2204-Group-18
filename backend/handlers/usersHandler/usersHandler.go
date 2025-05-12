@@ -96,11 +96,11 @@ Example usage:
 	Request body:
 	{
 
-		"username":"will00"
-		"password":"son00"
-		"email":"willson00gmail.com"
-		"first_name":"Will"
-		"last_name":"Son"
+		"username":"will00",
+		"password":"son00",
+		"email":"willson00gmail.com",
+		"first_name":"Will",
+		"last_name":"Son",
 		"address":"Big Street 28"
 	}
 
@@ -140,7 +140,18 @@ func UsersHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case http.MethodPost:
-		
+
+		// Decode the request body into a Product struct
+		var newUser NewUser
+		err := json.NewDecoder(r.Body).Decode(&newUser)
+		if err != nil {
+			log.Println("Error decoding request body: ", err)
+			http.Error(w, "Invalid request body", http.StatusBadRequest)
+			return
+		}
+
+		log.Println(newUser)
+
 		w.Header().Set("Content-Type", "application/json")
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
