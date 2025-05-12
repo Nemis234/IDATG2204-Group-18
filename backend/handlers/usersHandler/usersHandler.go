@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"github.com/google/uuid"
 )
 
 func UserHandler(w http.ResponseWriter, r *http.Request) {
@@ -171,7 +172,31 @@ func UsersHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		log.Println(existingUsers)
+		//Creating neccesary fields to insert into struct to be stored.
+		newId := uuid.New().String()
+		defaultRole := "user"
+
+		//Encrypting the raw password
+		hashedPassword, err := utility.HashPassword(newUser.Password)
+		if err != nil {
+			log.Println("Failed to hash password.")
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+
+		//Preparing struct to store in the database
+		userToStore := User{
+			UserID:   newId,
+			Username: newUser.Username,
+			Password: hashedPassword, 
+			Email:    newUser.Email,
+			FirstName: newUser.FirstName,
+			LastName: newUser.LastName,
+			Address:  newUser.Address,
+			Role:     defaultRole,
+		}
+
+		log.Println(userToStore)
 
 		w.Header().Set("Content-Type", "application/json")
 	default:

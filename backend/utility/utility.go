@@ -15,6 +15,7 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/jmoiron/sqlx"
+	"golang.org/x/crypto/bcrypt"
 )
 
 /*
@@ -296,4 +297,20 @@ func CheckUser(r *http.Request, w http.ResponseWriter, query string, args ...any
 		return false
 	}
 	return true
+}
+
+
+/*
+*   Hash the password before storing it. Using the bycrypt which is in GO's libary.
+*   It includes salt.
+*
+*   password - This is the password string that is to be hashed
+ */
+func HashPassword(password string) (string, error) {
+	// Generate a salt + hash the password using bcrypt
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(hashedPassword), nil
 }
