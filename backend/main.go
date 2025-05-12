@@ -61,7 +61,8 @@ func main() {
 
 	router.HandleFunc("/products", producthandler.ProductsHandler)
 	router.HandleFunc("/products/{product_id}", producthandler.ProductHandler)
-	router.HandleFunc("/products/{product_id}/reviews", producthandler.ReviewHandler)
+	router.HandleFunc("/products/{product_id}/reviews", producthandler.ProductReviewsHandler)
+	router.HandleFunc("/products/{product_id}/reviews/{user_id}", producthandler.ProductReviewHandler)
 
 	router.HandleFunc("/users", usershandler.UsersHandler)
 	router.HandleFunc("/users/{user_id}", usershandler.UserHandler)
