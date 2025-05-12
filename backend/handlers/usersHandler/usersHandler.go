@@ -150,7 +150,28 @@ func UsersHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		log.Println(newUser)
+		//Check mandatory fields
+		if newUser.Username == "" || newUser.Email == "" || newUser.Password == "" || newUser.FirstName == "" || newUser.LastName == "" {
+		http.Error(w, "Missing required fields", http.StatusBadRequest)
+		return
+		}
+
+		//Checks if the requested email already exists in the database
+		var existingUsers int
+		err = cons.DB.Get(&existingUsers, cons.QueryUserCountByEmailOrUsername, newUser.Email, newUser.Username)
+		if err != nil {
+			log.Println("Database error checking existing user:", err)
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+
+		//Checks if the query returned more than 0 users
+		if existingUsers > 0 {
+			http.Error(w, "Email or username already in use", http.StatusConflict)
+			return
+		}
+
+		log.Println(existingUsers)
 
 		w.Header().Set("Content-Type", "application/json")
 	default:

@@ -45,5 +45,6 @@ var DeleteOrderStatus = "DELETE FROM " + ORDER_STATUS_TABLE + " WHERE " + ORDER_
 
 var QueryUserLogin = "SELECT * FROM " + USERS_TABLE + " WHERE email = ?"
 var QueryUserLoginUsername = "SELECT * FROM " + USERS_TABLE + " WHERE username = ?"
+var QueryUserCountByEmailOrUsername = "SELECT COUNT(*) FROM " + USERS_TABLE + " WHERE Email = ? OR Username = ?"
 var QueryUser = "SELECT * FROM " + USERS_TABLE + " WHERE " + USER_ID + " = ?"
 var QueryUsers = "SELECT * FROM " + USERS_TABLE
