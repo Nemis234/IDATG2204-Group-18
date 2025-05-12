@@ -42,8 +42,15 @@ const (
 	ORDER_STATUS_NAME  = "StatusName"
 	ORDER_STATUS_DESC  = "StatusDesc"
 
-	USERS_TABLE = "Users"
-	USER_ID     = "UserID"
+	USERS_TABLE    = "Users"
+	USER_ID        = "UserID"
+	USER_USERNAME  = "Username"
+	USER_PASSWORD  = "Password"
+	USER_EMAIL     = "Email"
+	USER_FIRSTNAME = "FirstName"
+	USER_LASTNAME  = "LastName"
+	USER_ADDRESS   = "Address"
+	USER_ROLE      = "Role"
 )
 
 var DB *sqlx.DB

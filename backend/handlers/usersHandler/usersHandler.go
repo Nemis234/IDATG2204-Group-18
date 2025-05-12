@@ -198,7 +198,27 @@ func UsersHandler(w http.ResponseWriter, r *http.Request) {
 
 		log.Println(userToStore)
 
+		_, err = cons.DB.NamedExec(cons.InsertUser, userToStore)
+		if err != nil {
+			// If the error is a MySQL error, return
+			if utility.CheckSQLErr(err, w) {
+				return
+			}
+
+			log.Println("Error inserting user: ", err)
+			http.Error(w, "Error creating user", http.StatusInternalServerError)
+			return
+		}
+
 		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		// Return the ID of the newly created user
+		response := map[string]string{"id": newId}
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			log.Println("Error encoding response to JSON: ", err)
+			http.Error(w, "Error encoding response to JSON", http.StatusInternalServerError)
+			return
+		}
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
