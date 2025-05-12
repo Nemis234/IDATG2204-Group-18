@@ -62,14 +62,14 @@ func main() {
 	router.HandleFunc("/products", producthandler.ProductsHandler)
 	router.HandleFunc("/products/{product_id}", producthandler.ProductHandler)
 	router.HandleFunc("/products/{product_id}/reviews", producthandler.ProductReviewsHandler)
-	router.HandleFunc("/products/{product_id}/reviews/{user_id}", producthandler.ProductReviewHandler)
+	router.HandleFunc("/products/{product_id}/reviews/{user_id}", producthandler.ReviewHandler)
 
 	router.HandleFunc("/users", usershandler.UsersHandler)
 	router.HandleFunc("/users/{user_id}", usershandler.UserHandler)
 	router.HandleFunc("/users/{user_id}/member", usershandler.MemberHandler)
 	router.HandleFunc("/user/{user_id}/cart", usershandler.CartHandler)
 	router.HandleFunc("/users/{user_id}/reviews", usershandler.UserReviewsHandler)
-	router.HandleFunc("/users/{user_id}/reviews/{product_id}", usershandler.UserReviewHandler)
+	router.HandleFunc("/users/{user_id}/reviews/{product_id}", usershandler.ReviewHandler)
 	// Only POST method is allowed for login
 	router.HandleFunc("POST /users/login", usershandler.LoginHandler)
 
