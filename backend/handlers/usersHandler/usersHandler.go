@@ -80,7 +80,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(u)
 
 	case http.MethodDelete:
-		
+		w.Header().Set("Content-Type", "application/json")
 		
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
