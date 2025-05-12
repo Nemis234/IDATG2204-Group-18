@@ -2,6 +2,7 @@ package usershandler
 
 import (
 	cons "backend/constants"
+	producthandler "backend/handlers/productHandler"
 	. "backend/structs"
 	utility "backend/utility"
 	"encoding/json"
@@ -12,14 +13,14 @@ import (
 func UserReviewsHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		id := r.PathValue("user_id")
-		if id == "" {
+		userID := r.PathValue("user_id")
+		if userID == "" {
 			http.Error(w, "User ID is required", http.StatusBadRequest)
 			return
 		}
 
 		var reviews []Review
-		err := cons.DB.Select(&reviews, cons.QueryReviewsByUser, id)
+		err := cons.DB.Select(&reviews, cons.QueryReviewsByUser, userID)
 		if err != nil {
 			if utility.CheckSQLErr(err, w) {
 				return
@@ -37,21 +38,36 @@ func UserReviewsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case http.MethodPost:
-		http.Error(w, "Method not implemented", http.StatusNotImplemented)
+		userID := r.PathValue("user_id")
+		if userID == "" {
+			http.Error(w, "User ID is required", http.StatusBadRequest)
+			return
+		}
+		var review Review
+		if err := json.NewDecoder(r.Body).Decode(&review); err != nil {
+			http.Error(w, "Error decoding request body", http.StatusBadRequest)
+			return
+		}
+
+		// Check user privileges
+		if !utility.CheckPrivileges(r, w, &userID) {
+			return
+		}
+
+		review.ProductID = userID
+		_, err := cons.DB.NamedExec(cons.InsertReview, review)
+		if err != nil {
+			if utility.CheckSQLErr(err, w) {
+				return
+			}
+			http.Error(w, "Error inserting review", http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusCreated)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
 
-func UserReviewHandler(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		http.Error(w, "Method not implemented", http.StatusNotImplemented)
-	case http.MethodPut:
-		http.Error(w, "Method not implemented", http.StatusNotImplemented)
-	case http.MethodDelete:
-		http.Error(w, "Method not implemented", http.StatusNotImplemented)
-	default:
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-	}
-}
+// See ProductReviewsHandler()
+var ReviewHandler = producthandler.ReviewHandler
