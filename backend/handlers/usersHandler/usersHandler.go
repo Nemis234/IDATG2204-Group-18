@@ -10,6 +10,54 @@ import (
 	"github.com/google/uuid"
 )
 
+
+/*
+ProductsHandler support these methods:
+
+  - GET retrieve user info with the given user id.
+  - DELETE deletes a use from the database.
+
+# GET
+
+Retrieves the user info from the database.
+
+
+Example usage:
+
+	Method: GET
+	Route: /users/0df01f83-a9a7-4afa-9b62-8d0bb9722849
+	Response:
+	HTTP code: 200 OK
+	[
+		{
+			"user_id": "0df01f83-a9a7-4afa-9b62-8d0bb9722849",
+			"username": "helloWorld",
+			"password": "$2a$10$a8ZHeovSX0/NitUQBkHHHeTe8FqVRlJEmet29pUYDjjqkQA6KGaum",
+			"email": "john_doe@gmail.com",
+			"first_name": "John",
+			"last_name": "Doe",
+			"address": "Yolostreet 15",
+			"role": "admin"
+		},
+	]
+
+# DELETE
+
+Deletes a user from the database, users can delete their own users, admins are allowed to delete other users.
+
+General function flow:
+-> 
+
+
+Example usage:
+
+	Method: DELETE
+	Route: /users/0df01f83-a9a7-4afa-9b62-8d0bb9722849
+	Response:
+	HTTP code: ----
+	
+
+*/
 func UserHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("UserHandler called with method: ", r.Method)
 	switch r.Method {
@@ -31,6 +79,9 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(u)
 
+	case http.MethodDelete:
+		
+		
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
@@ -86,8 +137,11 @@ Example usage:
 Receives a payload with user informations and creates a new user.
 
 General function flow:
--> 
--> Query the database
+-> Extract the user infor from the payload
+-> Check if mandatory fields are missing
+-> Query the database for existing username/email
+-> Creates the struct to be stored in the database
+-> Stores the data(new user) in the database 
 -> Write a respond to the client
 
 Example usage:
@@ -196,7 +250,6 @@ func UsersHandler(w http.ResponseWriter, r *http.Request) {
 			Role:     defaultRole,
 		}
 
-		log.Println(userToStore)
 
 		_, err = cons.DB.NamedExec(cons.InsertUser, userToStore)
 		if err != nil {
