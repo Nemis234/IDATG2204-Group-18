@@ -219,6 +219,17 @@ Admins will always have access to the resource, regardless of the userID.
 To check only for admin privileges, pass nil as the userID parameter.
 
 To check if the right user is logged in with a JWT token, pass the userID parameter as a pointer &string.
+
+Example:
+
+	if !CheckPrivileges(r, w, nil) {
+		return
+	}
+	if !CheckPrivileges(r, w, &userID) {
+		return
+	}
+
+This function will return true if the user has access, false otherwise.
 */
 func CheckPrivileges(r *http.Request, w http.ResponseWriter, userID *string) bool {
 	//Check if user is logged in with a JWT token
@@ -251,6 +262,22 @@ func CheckPrivileges(r *http.Request, w http.ResponseWriter, userID *string) boo
 
 /*
 Helper function to check if the user has privileges to access a table.
+It returns true if the user has access, false otherwise.
+
+To use, prepare a query that gets the userID from the database, and pass it to this function.
+Then pass it the required arguments to the query.
+
+Example:
+
+	query := "SELECT userID FROM orders WHERE orderID = ?"
+	args := []any{orderID}
+	if !CheckUser(r, w, query, args...) {
+		return
+	}
+	// or
+	if !CheckUser(r, w, query, orderID) {
+		return
+	}
 */
 func CheckUser(r *http.Request, w http.ResponseWriter, query string, args ...any) bool {
 	// Get user ID from database
