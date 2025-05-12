@@ -16,6 +16,11 @@ const (
 	PRODUCT_BRAND    = "Brand"
 	PRODUCT_CATEGORY = "Category"
 
+	REVIEWS_TABLE   = "Review"
+	REVIEW_COMMENT  = "Comment"
+	REVIEW_RATING   = "Rating"
+	REVIEW_PostDate = "PostDate"
+
 	CATEGORIES_TABLE = "Category"
 	CATEGORY_NAME    = "CategoryName"
 	CATEGORY_DESC    = "CategoryDesc"
@@ -42,4 +47,4 @@ const (
 )
 
 var DB *sqlx.DB
-var JwtKey []byte //Token used by the frontend/backend to check user privilegies 
+var JwtKey []byte //Token used by the frontend/backend to check user privilegies

@@ -6,6 +6,9 @@ var DeleteProduct = "DELETE FROM " + PRODUCTS_TABLE + " WHERE " + PRODUCT_ID + "
 var InsertProduct = "INSERT INTO " + PRODUCTS_TABLE + " (" + PRODUCT_ID + ", " + PRODUCT_NAME + ", " + PRODUCT_DESC + ", " + PRODUCT_IMG_URL + ", " + PRODUCT_PRICE + ", " + PRODUCT_STOCK + ", " + PRODUCT_CATEGORY + ", " + PRODUCT_BRAND + ") VALUES (:" + PRODUCT_ID + ", :" + PRODUCT_NAME + ", :" + PRODUCT_DESC + ", :" + PRODUCT_IMG_URL + ", :" + PRODUCT_PRICE + ", :" + PRODUCT_STOCK + ", :" + PRODUCT_CATEGORY + ", :" + PRODUCT_BRAND + ")"
 var UpdateProduct = "UPDATE " + PRODUCTS_TABLE + " SET " + PRODUCT_NAME + " = :" + PRODUCT_NAME + ", " + PRODUCT_DESC + " = :" + PRODUCT_DESC + ", " + PRODUCT_IMG_URL + " = :" + PRODUCT_IMG_URL + ", " + PRODUCT_PRICE + " = :" + PRODUCT_PRICE + ", " + PRODUCT_STOCK + " = :" + PRODUCT_STOCK + ", " + PRODUCT_CATEGORY + " = :" + PRODUCT_CATEGORY + ", " + PRODUCT_BRAND + " = :" + PRODUCT_BRAND + " WHERE " + PRODUCT_ID + " = :" + PRODUCT_ID
 
+var QueryReviewsByProduct = "SELECT * FROM " + REVIEWS_TABLE + " WHERE " + PRODUCT_ID + " = ?"
+var QueryReviewsByUser = "SELECT * FROM " + REVIEWS_TABLE + " WHERE " + USER_ID + " = ?"
+
 var QueryCategories = "SELECT * FROM " + CATEGORIES_TABLE
 var QueryCategory = "SELECT * FROM " + CATEGORIES_TABLE + " WHERE " + CATEGORY_NAME + " = ?"
 var InsertCategory = "INSERT INTO " + CATEGORIES_TABLE + " (" + CATEGORY_NAME + ", " + CATEGORY_DESC + ") VALUES (:" + CATEGORY_NAME + ", :" + CATEGORY_DESC + ")"
