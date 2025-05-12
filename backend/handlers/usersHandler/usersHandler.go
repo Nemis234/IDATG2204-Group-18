@@ -39,6 +39,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 ProductsHandler support these methods:
 
   - GET request for a list of users.
+  - POST creates a new user.
 
 # GET
 
@@ -78,6 +79,36 @@ Example usage:
 			"role": "user"
 		}
 	]
+
+# POST
+
+Receives a payload with user informations and creates a new user.
+
+General function flow:
+-> 
+-> Query the database
+-> Write a respond to the client
+
+Example usage:
+
+	Method: POST
+	Route: /users
+	Request body:
+	{
+
+		"username":"will00"
+		"password":"son00"
+		"email":"willson00gmail.com"
+		"first_name":"Will"
+		"last_name":"Son"
+		"address":"Big Street 28"
+	}
+
+	Response:
+	HTTP code: 201 Created
+	{
+		"id" : "fiadg09b0-200b-4d08-939a-f90105f6546s"
+	}
 */
 func UsersHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("UsersHandler called with method: ", r.Method)
@@ -108,6 +139,9 @@ func UsersHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+	case http.MethodPost:
+		
+		w.Header().Set("Content-Type", "application/json")
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
