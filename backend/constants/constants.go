@@ -16,10 +16,10 @@ const (
 	PRODUCT_BRAND    = "Brand"
 	PRODUCT_CATEGORY = "Category"
 
-	REVIEWS_TABLE   = "Review"
-	REVIEW_COMMENT  = "Comment"
-	REVIEW_RATING   = "Rating"
-	REVIEW_PostDate = "PostDate"
+	REVIEWS_TABLE    = "Review"
+	REVIEW_COMMENT   = "Comment"
+	REVIEW_RATING    = "Rating"
+	REVIEW_POST_DATE = "PostDate"
 
 	CATEGORIES_TABLE = "Category"
 	CATEGORY_NAME    = "CategoryName"
