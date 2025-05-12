@@ -8,6 +8,10 @@ var UpdateProduct = "UPDATE " + PRODUCTS_TABLE + " SET " + PRODUCT_NAME + " = :"
 
 var QueryReviewsByProduct = "SELECT * FROM " + REVIEWS_TABLE + " WHERE " + PRODUCT_ID + " = ?"
 var QueryReviewsByUser = "SELECT * FROM " + REVIEWS_TABLE + " WHERE " + USER_ID + " = ?"
+var QueryReview = "SELECT * FROM " + REVIEWS_TABLE + " WHERE " + PRODUCT_ID + " = ? AND " + USER_ID + " = ?"
+var InsertReview = "INSERT INTO " + REVIEWS_TABLE + " (" + PRODUCT_ID + ", " + USER_ID + ", " + REVIEW_COMMENT + ", " + REVIEW_RATING + ", " + REVIEW_POST_DATE + ") VALUES (:" + PRODUCT_ID + ", :" + USER_ID + ", :" + REVIEW_COMMENT + ", :" + REVIEW_RATING + ", :" + REVIEW_POST_DATE + ")"
+var UpdateReview = "UPDATE " + REVIEWS_TABLE + " SET " + REVIEW_COMMENT + " = :" + REVIEW_COMMENT + ", " + REVIEW_RATING + " = :" + REVIEW_RATING + ", " + REVIEW_POST_DATE + " = :" + REVIEW_POST_DATE + " WHERE " + PRODUCT_ID + " = :" + PRODUCT_ID + " AND " + USER_ID + " = :" + USER_ID
+var DeleteReview = "DELETE FROM " + REVIEWS_TABLE + " WHERE " + PRODUCT_ID + " = ? AND " + USER_ID + " = ?"
 
 var QueryCategories = "SELECT * FROM " + CATEGORIES_TABLE
 var QueryCategory = "SELECT * FROM " + CATEGORIES_TABLE + " WHERE " + CATEGORY_NAME + " = ?"
