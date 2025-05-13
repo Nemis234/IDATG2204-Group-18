@@ -87,11 +87,14 @@ func main() {
 	populateCartItems(db, userIDs, productIDs)
 
 	//Populate the member table
-	populateMember(db, userIDs)
+	populateMembers(db, userIDs)
 
 	//Udating ordertotals, payment amount accordingly to the other tables, to make it more realistic
 	updateOrderTotals(db)
 	updatePaymentAmounts(db)
+
+	//Assigning admin
+	assignAdmin(db, userIDs)
 }
 
 /*
@@ -100,7 +103,7 @@ func main() {
 *   db - This is the databased passed from the main function.
  */
 func clearTables(db *sql.DB) {
-	tables := []string{"OrderTable", "Users", "Product", "Brand", "Review", "CartItem", "Category", "OrderStatus", "OrderItem", "Payment", "Member"}
+	tables := []string{"OrderTable", "Users", "Administrators" ,"Members", "Product", "Brand", "Review", "CartItem", "Category", "OrderStatus", "OrderItem", "Payment"}
 	for _, table := range tables {
 		_, err := db.Exec(fmt.Sprintf("DELETE FROM %s", table))
 		if err != nil {
@@ -158,18 +161,18 @@ func populateUser(db *sql.DB, userID []string) {
 	}
 
 	query := `
-        INSERT INTO Users (UserID, Username, Password, Email, FirstName, LastName, Address, Role) VALUES
-        (?, ?, ?, ?, ?, ?, ?, ?),
-        (?, ?, ?, ?, ?, ?, ?, ?),
-        (?, ?, ?, ?, ?, ?, ?, ?),
-        (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO Users (UserID, Username, Password, Email, FirstName, LastName, Address) VALUES
+        (?, ?, ?, ?, ?, ?, ?),
+        (?, ?, ?, ?, ?, ?, ?),
+        (?, ?, ?, ?, ?, ?, ?),
+        (?, ?, ?, ?, ?, ?, ?)
     `
 
 	_, err = db.Exec(query,
-		userID[0], "helloWorld", hashedPassword1, "john_doe@gmail.com", "John", "Doe", "Yolostreet 15", "admin",
-		userID[1], "janedoe", hashedPassword2, "jane_doe@gmail.com", "Jane", "Doe", "Main Street 5", "user",
-		userID[2], "alice123", hashedPassword3, "alice@gmail.com", "Alice", "Smith", "River Road 42", "user",
-		userID[3], "bob88", hashedPassword4, "bob88@gmail.com", "Bob", "Johnson", "Mountain View 10", "user",
+		userID[0], "helloWorld", hashedPassword1, "john_doe@gmail.com", "John", "Doe", "Yolostreet 15",
+		userID[1], "janedoe", hashedPassword2, "jane_doe@gmail.com", "Jane", "Doe", "Main Street 5", 
+		userID[2], "alice123", hashedPassword3, "alice@gmail.com", "Alice", "Smith", "River Road 42", 
+		userID[3], "bob88", hashedPassword4, "bob88@gmail.com", "Bob", "Johnson", "Mountain View 10", 
 	)
 	if err != nil {
 		fmt.Println("Failed to insert users.")
@@ -517,9 +520,9 @@ func populateCartItems(db *sql.DB, userID []string, productID []string) {
 /*
 *   Populating the member table, this will create 3 members in the table.
  */
-func populateMember(db *sql.DB, userID []string) {
+func populateMembers(db *sql.DB, userID []string) {
 	query := `
-		INSERT INTO Member (UserID, MembershipLevel, MembershipStart) VALUES
+		INSERT INTO Members (UserID, MembershipLevel, MembershipStart) VALUES
 		(?, ?, ?),
 		(?, ?, ?),
 		(?, ?, ?)
@@ -589,4 +592,24 @@ func updatePaymentAmounts(db *sql.DB) {
 		panic(err)
 	}
 	fmt.Println("Updated payment amounts.")
+}
+
+/*
+*	Assigning adminstrators in the adminstrator table.
+*
+*	db - This is the databased passed from the main function.
+*/
+func assignAdmin(db *sql.DB, userID []string){
+		query := `
+		INSERT INTO Administrators (UserID, RoleName) VALUES
+		(?, ?)
+	`
+	_, err := db.Exec(query,
+		userID[0], "admin", 
+	)
+	if err != nil {
+		panic(err)
+	}
+	msg := fmt.Sprintf("Assign user: %s , as admin.", userID[0])
+	fmt.Println(msg)
 }

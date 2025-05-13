@@ -28,15 +28,20 @@ CREATE TABLE Users (
     Email VARCHAR(100) NOT NULL,
     FirstName VARCHAR(50) NOT NULL,
     LastName VARCHAR(50) NOT NULL,
-    Address VARCHAR(255),
-    Role ENUM('user', 'admin') NOT NULL DEFAULT 'user'
+    Address VARCHAR(255)
 );
 
-CREATE TABLE Member (
+CREATE TABLE Members (
     UserID VARCHAR(50) PRIMARY KEY,
     MembershipLevel ENUM('Silver', 'Gold', 'Platinum') NOT NULL,
     MembershipStart DATE,
-    FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE
+    FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE Administrators (
+    UserID VARCHAR(50) PRIMARY KEY,
+    RoleName VARCHAR(100) NOT NULL,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE OrderStatus (
