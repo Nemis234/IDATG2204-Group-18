@@ -7,9 +7,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+
 	"github.com/google/uuid"
 )
-
 
 /*
 ProductsHandler support these methods:
@@ -20,7 +20,6 @@ ProductsHandler support these methods:
 # GET
 
 Retrieves the user info from the database.
-
 
 Example usage:
 
@@ -46,8 +45,7 @@ Example usage:
 Deletes a user from the database, users can delete their own users, admins are allowed to delete other users.
 
 General function flow:
--> 
-
+->
 
 Example usage:
 
@@ -55,8 +53,6 @@ Example usage:
 	Route: /users/0df01f83-a9a7-4afa-9b62-8d0bb9722849
 	Response:
 	HTTP code: ----
-	
-
 */
 func UserHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("UserHandler called with method: ", r.Method)
@@ -78,10 +74,12 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(u)
-
+	case http.MethodPut:
+		http.Error(w, "Method not implemented", http.StatusNotImplemented)
+	case http.MethodPatch:
+		http.Error(w, "Method not implemented", http.StatusNotImplemented)
 	case http.MethodDelete:
-		w.Header().Set("Content-Type", "application/json")
-		
+		http.Error(w, "Method not implemented", http.StatusNotImplemented)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
@@ -141,7 +139,7 @@ General function flow:
 -> Check if mandatory fields are missing
 -> Query the database for existing username/email
 -> Creates the struct to be stored in the database
--> Stores the data(new user) in the database 
+-> Stores the data(new user) in the database
 -> Write a respond to the client
 
 Example usage:
@@ -149,6 +147,7 @@ Example usage:
 	Method: POST
 	Route: /users
 	Request body:
+
 	{
 
 		"username":"will00",
@@ -196,7 +195,7 @@ func UsersHandler(w http.ResponseWriter, r *http.Request) {
 
 	case http.MethodPost:
 
-		// Decode the request body into a Product struct
+		// Decode the request body into a new User struct
 		var newUser NewUser
 		err := json.NewDecoder(r.Body).Decode(&newUser)
 		if err != nil {
@@ -207,8 +206,8 @@ func UsersHandler(w http.ResponseWriter, r *http.Request) {
 
 		//Check mandatory fields
 		if newUser.Username == "" || newUser.Email == "" || newUser.Password == "" || newUser.FirstName == "" || newUser.LastName == "" {
-		http.Error(w, "Missing required fields", http.StatusBadRequest)
-		return
+			http.Error(w, "Missing required fields", http.StatusBadRequest)
+			return
 		}
 
 		//Checks if the requested email already exists in the database
@@ -227,7 +226,13 @@ func UsersHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		//Creating neccesary fields to insert into struct to be stored.
-		newId := uuid.New().String()
+		roughID, err := uuid.NewRandom()
+		if err != nil {
+			log.Println("Failed to generate UUID: ", err)
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+		newId := roughID.String()
 		defaultRole := "user"
 
 		//Encrypting the raw password
@@ -240,16 +245,15 @@ func UsersHandler(w http.ResponseWriter, r *http.Request) {
 
 		//Preparing struct to store in the database
 		userToStore := User{
-			UserID:   newId,
-			Username: newUser.Username,
-			Password: hashedPassword, 
-			Email:    newUser.Email,
+			UserID:    newId,
+			Username:  newUser.Username,
+			Password:  hashedPassword,
+			Email:     newUser.Email,
 			FirstName: newUser.FirstName,
-			LastName: newUser.LastName,
-			Address:  newUser.Address,
-			Role:     defaultRole,
+			LastName:  newUser.LastName,
+			Address:   newUser.Address,
+			Role:      defaultRole,
 		}
-
 
 		_, err = cons.DB.NamedExec(cons.InsertUser, userToStore)
 		if err != nil {
