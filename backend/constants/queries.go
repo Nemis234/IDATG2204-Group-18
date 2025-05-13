@@ -43,9 +43,9 @@ var InsertOrderStatus = "INSERT INTO " + ORDER_STATUS_TABLE + " (" + ORDER_STATU
 var UpdateOrderStatus = "UPDATE " + ORDER_STATUS_TABLE + " SET " + ORDER_STATUS_DESC + " = :" + ORDER_STATUS_DESC + " WHERE " + ORDER_STATUS_NAME + " = :" + ORDER_STATUS_NAME
 var DeleteOrderStatus = "DELETE FROM " + ORDER_STATUS_TABLE + " WHERE " + ORDER_STATUS_NAME + " = ?"
 
-var QueryUserLogin = "SELECT * FROM " + USERS_TABLE + " WHERE email = ?"
-var QueryUserLoginUsername = "SELECT * FROM " + USERS_TABLE + " WHERE username = ?"
+var QueryUserLoginByEmail =  "SELECT u."+USER_ID+", u."+USER_USERNAME+", u."+USER_PASSWORD+", u."+USER_EMAIL+", u."+USER_FIRSTNAME+", u."+USER_LASTNAME+", u."+USER_LASTNAME+", a."+ADMINSTRATORS_ROLENAME+" FROM "+ USERS_TABLE +" u LEFT JOIN " + ADMINSTRATORS_TABLE + " a ON u."+USER_ID+" = a."+USER_ID+" WHERE u."+USER_EMAIL+"= ?"
+var QueryUserLoginByUsername = "SELECT u."+USER_ID+", u."+USER_USERNAME+", u."+USER_PASSWORD+", u."+USER_EMAIL+", u."+USER_FIRSTNAME+", u."+USER_LASTNAME+", u."+USER_LASTNAME+", a."+ADMINSTRATORS_ROLENAME+" FROM "+ USERS_TABLE +" u LEFT JOIN " + ADMINSTRATORS_TABLE + " a ON u."+USER_ID+" = a."+USER_ID+" WHERE u."+USER_USERNAME+"= ?"
 var QueryUserCountByEmailOrUsername = "SELECT COUNT(*) FROM " + USERS_TABLE + " WHERE Email = ? OR Username = ?"
-var InsertUser = "Insert Into " + USERS_TABLE + " (" + USER_ID + ", " + USER_USERNAME + ", " + USER_PASSWORD + ", " + USER_EMAIL + ", " + USER_FIRSTNAME + ", " + USER_LASTNAME + ", " + USER_ADDRESS + ", " + USER_ROLE  + ") VALUES (:" + USER_ID + ", :" + USER_USERNAME + ", :" + USER_PASSWORD + ", :" + USER_EMAIL + ", :" + USER_FIRSTNAME + ", :" + USER_LASTNAME + ", :" + USER_ADDRESS + ", :" + USER_ROLE  + ")"
+var InsertUser = "Insert Into " + USERS_TABLE + " (" + USER_ID + ", " + USER_USERNAME + ", " + USER_PASSWORD + ", " + USER_EMAIL + ", " + USER_FIRSTNAME + ", " + USER_LASTNAME + ", " + USER_ADDRESS + ") VALUES (:" + USER_ID + ", :" + USER_USERNAME + ", :" + USER_PASSWORD + ", :" + USER_EMAIL + ", :" + USER_FIRSTNAME + ", :" + USER_LASTNAME + ", :" + USER_ADDRESS +")"
 var QueryUser = "SELECT * FROM " + USERS_TABLE + " WHERE " + USER_ID + " = ?"
 var QueryUsers = "SELECT * FROM " + USERS_TABLE

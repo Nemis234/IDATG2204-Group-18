@@ -50,7 +50,9 @@ const (
 	USER_FIRSTNAME = "FirstName"
 	USER_LASTNAME  = "LastName"
 	USER_ADDRESS   = "Address"
-	USER_ROLE      = "Role"
+
+	ADMINSTRATORS_TABLE    = "Administrators"
+	ADMINSTRATORS_ROLENAME = "RoleName"
 )
 
 var DB *sqlx.DB

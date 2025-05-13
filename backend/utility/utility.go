@@ -156,7 +156,7 @@ Made with help from ChatGPT
 It generates a JWT-token, this stores the userID togethers with the corresponding role in a struct.
 This token will be used by the frontend/backend to check privileges.
 */
-func GenerateJWT(userID, role string, jwtKey []byte) (string, error) {
+func GenerateJWT(userID string , role *string, jwtKey []byte) (string, error) {
 
 	expirationTime := time.Now().Add(24 * time.Hour)
 
@@ -242,7 +242,7 @@ func CheckPrivileges(r *http.Request, w http.ResponseWriter, userID *string) boo
 	}
 
 	//Check if the request has admin privileges
-	if jwtTokenData.Role == "admin" {
+	if jwtTokenData.Role != nil {
 		return true
 	}
 

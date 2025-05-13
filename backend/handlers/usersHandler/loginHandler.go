@@ -72,9 +72,9 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		//Use username or email to query the database, depending on which was given
 		var err error
 		if newUser.Email != "" {
-			err = cons.DB.Get(&checkUser, cons.QueryUserLogin, newUser.Email)
+			err = cons.DB.Get(&checkUser, cons.QueryUserLoginByEmail, newUser.Email)
 		} else {
-			err = cons.DB.Get(&checkUser, cons.QueryUserLoginUsername, newUser.Username)
+			err = cons.DB.Get(&checkUser, cons.QueryUserLoginByUsername, newUser.Username)
 		}
 
 		//Check if user was found in the database or for any other sql errors
@@ -92,7 +92,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		//Creating a JWT token to attach to the user, used to check user privileges.
-		token, err := utility.GenerateJWT(checkUser.UserID, checkUser.Role, cons.JwtKey)
+		token, err := utility.GenerateJWT(checkUser.UserID, checkUser.RoleName, cons.JwtKey)
 		if err != nil {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return

@@ -66,7 +66,7 @@ type User struct {
 	FirstName string  `json:"first_name" db:"FirstName"`
 	LastName  string  `json:"last_name" db:"LastName"`
 	Address   *string `json:"address" db:"Address"`
-	Role	  string  `json:"role" db:"Role"`
+	RoleName  *string `json:"RoleName" db:"RoleName"`
 }
 
 //This will only be used on POST users request, to create a new user.
@@ -167,6 +167,6 @@ type ReviewPatch struct {
 
 type JWTToken struct {
     UserID string `json:"user_id" db:"UserID"`
-    Role   string `json:"role" db:"Role"`
+    Role   *string `json:"role" db:"Role"`
     jwt.RegisteredClaims
 }

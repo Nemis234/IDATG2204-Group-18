@@ -233,7 +233,6 @@ func UsersHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		newId := roughID.String()
-		defaultRole := "user"
 
 		//Encrypting the raw password
 		hashedPassword, err := utility.HashPassword(newUser.Password)
@@ -252,7 +251,6 @@ func UsersHandler(w http.ResponseWriter, r *http.Request) {
 			FirstName: newUser.FirstName,
 			LastName:  newUser.LastName,
 			Address:   newUser.Address,
-			Role:      defaultRole,
 		}
 
 		_, err = cons.DB.NamedExec(cons.InsertUser, userToStore)
