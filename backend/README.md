@@ -57,8 +57,9 @@ in [Section `Features`](#feature)
     - PATCH - WIP
     - DELETE - WIP
 
-#### Login - Done
-
+#### Login - WIP
+ - Commenting - WIP
+ - POST - done
 
 #### Members - WIP
 - Commenting - WIP
