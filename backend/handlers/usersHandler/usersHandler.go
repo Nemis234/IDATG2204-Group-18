@@ -74,10 +74,12 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(u)
-
+	case http.MethodPut:
+		http.Error(w, "Method not implemented", http.StatusNotImplemented)
+	case http.MethodPatch:
+		http.Error(w, "Method not implemented", http.StatusNotImplemented)
 	case http.MethodDelete:
-		w.Header().Set("Content-Type", "application/json")
-
+		http.Error(w, "Method not implemented", http.StatusNotImplemented)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
@@ -145,6 +147,7 @@ Example usage:
 	Method: POST
 	Route: /users
 	Request body:
+
 	{
 
 		"username":"will00",
