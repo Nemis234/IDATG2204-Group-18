@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"log"
+	"io/ioutil"
 	"time"
+	"strings"
     "github.com/google/uuid"
 	_ "github.com/go-sql-driver/mysql"
 	"golang.org/x/crypto/bcrypt"
@@ -31,6 +34,28 @@ func main() {
 		panic(err)
 	}
 	fmt.Println("Connected to the database")
+
+
+	//Creates the tables
+	sqlBytes, err := ioutil.ReadFile("databasetables.sql")
+	if err != nil {
+		log.Fatal("Failed to read SQL file:", err)
+	}
+	sqlStatements := string(sqlBytes)
+
+	queries := strings.Split(string(sqlStatements), ";")
+
+	for _, query := range queries {
+		trimmed := strings.TrimSpace(query)
+		if trimmed == "" {
+			continue
+		}
+
+		_, err := db.Exec(trimmed)
+		if err != nil {
+			log.Fatalf("Failed to execute SQL: %v\nStatement: %s", err, trimmed)
+		}
+	}
 
 	//Creating a uuid for users to be put in the sample database.
 	userIDs := []string{}
@@ -178,6 +203,7 @@ func populateUser(db *sql.DB, userID []string) {
 		fmt.Println("Failed to insert users.")
 		panic(err)
 	}
+
 	fmt.Println("Inserted 4 users.")
 
 }
@@ -204,6 +230,7 @@ func populateBrand(db *sql.DB) {
 		fmt.Println("Failed to insert brands.")
 		panic(err)
 	}
+	
 	fmt.Println("Inserted 3 brands.")
 
 }
@@ -244,6 +271,7 @@ func populateCategory(db *sql.DB) {
 		fmt.Println("Failed to insert categories.")
 		panic(err)
 	}
+
 	fmt.Println("Inserted 10 categories into Category table.")
 }
 
@@ -305,6 +333,7 @@ func populateProduct(db *sql.DB, productID []string) {
 		fmt.Println("Failed to insert products.")
 		panic(err)
 	}
+
 	fmt.Println("Inserted 20 products into Product table.")
 }
 
@@ -352,7 +381,6 @@ func populateReview(db *sql.DB, userID []string, productID []string) {
 			panic(err)
 		}
 	}
-
 	fmt.Println("Inserted 10 reviews.")
 }
 
