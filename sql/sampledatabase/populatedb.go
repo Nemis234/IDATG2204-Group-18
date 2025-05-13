@@ -6,7 +6,6 @@ import (
 	"math/rand"
 	"os"
 	"log"
-	"io/ioutil"
 	"time"
 	"strings"
     "github.com/google/uuid"
@@ -14,9 +13,18 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+
 func main() {
-	// Replace the "test_project" with the name of your database
-	dsn := "root:@tcp(127.0.0.1:3306)/idatg2204" // << replace this
+	var databasename string
+	rawName, err := os.ReadFile("DATABASE_NAME.txt")
+	if err != nil {
+		fmt.Println("Failed to read the name of the database from file, will use the default name written in the code.")
+		databasename = "idatg2204" //<---- REPLACE THIS MANUALLY IF YOU SEE THE ERROR OVER WHEN YOU RUN THIS CODE.
+	}else {
+		databasename = string(rawName)
+	}
+
+	dsn := "root:@tcp(127.0.0.1:3306)/" + databasename
 	os.Setenv("DSN", dsn)
 
 	//Open the database
@@ -37,7 +45,7 @@ func main() {
 
 
 	//Creates the tables
-	sqlBytes, err := ioutil.ReadFile("databasetables.sql")
+	sqlBytes, err := os.ReadFile("databasetables.sql")
 	if err != nil {
 		log.Fatal("Failed to read SQL file:", err)
 	}

@@ -17,17 +17,18 @@ If you're using phpmyadmin interface simply:
 populatedb.go will populate the database with sample data.
 It can also be used as a reset to revert back to the original sample data. (Some data is randomized)
 
-Then you need to change the dsn and which database it should use.
-In populatedb.go change the dsn variable in the main func to use your newly created database:
-```Go
-//Change this:
-dsn := "root:@tcp(127.0.0.1:3306)/test_project"
-
-//To this:
-dsn := "root:@tcp(127.0.0.1:3306)/NAME_OF_YOUR_NEWLY_CREATED_DATABASE"
-```
-
+First you need to change the content inside of the .txt file provided in folder : DATABASE_NAME.txt
+This file should only contain the name of your newly created database: Replace "idatg2204" with the name of your database without the "".
 After that you are ready to run the script:
 ```bash
 go run populatedb.go
+```
+
+You can set the name of the database manually in the code if you get error reading the name from file, look for:
+```Go
+//Change this:
+databasename = "idatg2204" //<---- REPLACE THIS MANUALLY IF YOU SEE THE ERROR OVER WHEN YOU RUN THIS CODE.
+
+//To this:
+databasename = "NAME_OF_YOUR_NEWLY_CREATED_DATABASE" //<---- REPLACE THIS MANUALLY IF YOU SEE THE ERROR OVER WHEN YOU RUN THIS CODE.
 ```
