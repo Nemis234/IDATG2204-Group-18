@@ -11,6 +11,49 @@ import (
 	"strings"
 )
 
+/*
+ProductReviewsHandler support these methods:
+  - GET retrieve all reviews for a product.
+  - POST create a new review for a product.
+
+# GET
+
+Retrieves all reviews for a product from the database.
+Example usage:
+
+	Method: GET
+	Route: /products/0df01f83-a9a7-4afa-9b62-8d0bb9722849/reviews
+	Response:
+	HTTP code: 200 OK
+	[
+		{
+			"product_id": "0df01f83-a9a7-4afa-9b62-8d0bb9722849",
+			"user_id": "0df01f83-a9a7-4afa-9b62-8d0bb9722849",
+			"rating": 5,
+			"comment": "Great product!",
+			"created_at": "2023-10-01T12:00:00Z"
+		},
+	]
+
+# POST
+
+Creates a new review for a product in the database.
+Only a user that provides its own user_id can create a review.
+An admin can create a review for any user.
+
+Example usage:
+
+	Method: POST
+	Route: /products/0df01f83-a9a7-4afa-9b62-8d0bb9722849/reviews
+	Request body:
+	{
+		"user_id": "0df01f83-a9a7-4afa-9b62-8d0bb9722849",
+		"rating": 5,
+		"comment": "Great product!"
+	}
+	Response:
+	HTTP code: 201 Created
+*/
 func ProductReviewsHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
@@ -70,6 +113,66 @@ func ProductReviewsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+/*
+ReviewHandler support these methods:
+  - GET retrieve a review for a product by user and product ID.
+  - PUT update a review for a product by user and product ID.
+  - PATCH partially update a review for a product by user and product ID.
+  - DELETE delete a review for a product by user and product ID.
+
+# GET
+
+Retrieves a review for a product by user and product ID from the database.
+
+Example usage:
+
+	Method: GET
+
+	Route: /products/0df01f83-a9a7-4afa-9b62-8d0bb9722849/reviews/0df01f83-a9a7-4afa-9b62-8d0bb9722849
+	Response:
+	HTTP code: 200 OK
+	{
+		"product_id": "0df01f83-a9a7-4afa-9b62-8d0bb9722849",
+		"user_id": "0df01f83-a9a7-4afa-9b62-8d0bb9722849",
+		"rating": 5,
+		"comment": "Great product!",
+		"created_at": "2023-10-01T12:00:00Z"
+	}
+
+# PUT
+
+Updates a review for a product by user and product ID in the database.
+Only the user that created the review  or an admin can update it.
+
+Example usage:
+
+	Method: PUT
+	Route: /products/0df01f83-a9a7-4afa-9b62-8d0bb9722849/reviews/0df01f83-a9a7-4afa-9b62-8d0bb9722849
+	Request body:
+	{
+		"rating": 4,
+		"comment": "Good product!"
+	}
+	Response:
+	HTTP code: 200 OK
+
+# PATCH
+Partially updates a review for a product by user and product ID in the database.
+Only the user that created the review  or an admin can update it.
+
+All fields are optional, and all fields used in the PUT method are available.
+
+# DELETE
+Deletes a review for a product by user and product ID from the database.
+Only the user that created the review  or an admin can delete it.
+
+Example usage:
+
+	Method: DELETE
+	Route: /products/0df01f83-a9a7-4afa-9b62-8d0bb9722849/reviews/0df01f83-a9a7-4afa-9b62-8d0bb9722849
+	Response:
+	HTTP code: 204 No Content
+*/
 func ReviewHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
