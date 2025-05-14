@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 )
 
 /*
@@ -99,6 +100,8 @@ func ProductReviewsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		review.ProductID = productID
+		review.PostDate = time.Now()
+
 		_, err := cons.DB.NamedExec(cons.InsertReview, review)
 		if err != nil {
 			if utility.CheckSQLErr(err, w) {
