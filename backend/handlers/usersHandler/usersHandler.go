@@ -12,7 +12,7 @@ import (
 )
 
 /*
-ProductsHandler support these methods:
+UserHandler support these methods:
 
   - GET retrieve user info with the given user id.
   - DELETE deletes a use from the database.
@@ -86,7 +86,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 /*
-ProductsHandler support these methods:
+UsersHandler supports these methods:
 
   - GET request for a list of users.
   - POST creates a new user.
