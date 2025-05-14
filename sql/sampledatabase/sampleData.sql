@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: 13. Mai, 2025 17:33 PM
--- Tjener-versjon: 11.7.2-MariaDB
--- PHP Version: 8.2.12
+-- Host: localhost
+-- Generation Time: 14. Mai, 2025 13:21 PM
+-- Tjener-versjon: 10.4.28-MariaDB
+-- PHP Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,37 +24,37 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Tabellstruktur for tabell `administrators`
+-- Tabellstruktur for tabell `Administrators`
 --
 
-CREATE TABLE `administrators` (
+CREATE TABLE `Administrators` (
   `UserID` varchar(50) NOT NULL,
   `RoleName` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dataark for tabell `administrators`
+-- Dataark for tabell `Administrators`
 --
 
-INSERT INTO `administrators` (`UserID`, `RoleName`) VALUES
-('96116344-b23e-49cf-868a-c67656ec17d7', 'admin');
+INSERT INTO `Administrators` (`UserID`, `RoleName`) VALUES
+('e156ef59-bc21-4c72-9699-42a80be9f97a', 'admin');
 
 -- --------------------------------------------------------
 
 --
--- Tabellstruktur for tabell `brand`
+-- Tabellstruktur for tabell `Brand`
 --
 
-CREATE TABLE `brand` (
+CREATE TABLE `Brand` (
   `BrandName` varchar(50) NOT NULL,
   `BrandDesc` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dataark for tabell `brand`
+-- Dataark for tabell `Brand`
 --
 
-INSERT INTO `brand` (`BrandName`, `BrandDesc`) VALUES
+INSERT INTO `Brand` (`BrandName`, `BrandDesc`) VALUES
 ('DigiTech', 'DigiTech powers your lifestyle with a full range of smart electronics — from smartphones to home appliances — all designed for seamless digital living.'),
 ('E-Gadgets', 'E-Gadget brings everyday innovation to your fingertips with a wide selection of electronics and accessories that make life simpler, smarter, and more exciting.'),
 ('TechBrave', 'TechBrave delivers bold, cutting-edge technology across smartphones, laptops, cameras, and more, empowering pioneers in every part of life.');
@@ -62,47 +62,47 @@ INSERT INTO `brand` (`BrandName`, `BrandDesc`) VALUES
 -- --------------------------------------------------------
 
 --
--- Tabellstruktur for tabell `cartitem`
+-- Tabellstruktur for tabell `CartItem`
 --
 
-CREATE TABLE `cartitem` (
+CREATE TABLE `CartItem` (
   `UserID` varchar(50) NOT NULL,
   `ProductID` varchar(50) NOT NULL,
   `Quantity` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dataark for tabell `cartitem`
+-- Dataark for tabell `CartItem`
 --
 
-INSERT INTO `cartitem` (`UserID`, `ProductID`, `Quantity`) VALUES
-('1a85843f-cfd1-44b6-972a-7d2f1c5e8529', '7fcaa398-4e28-4c6f-9bb4-b5386e7259c4', 2),
-('1a85843f-cfd1-44b6-972a-7d2f1c5e8529', 'd84e12b7-4b48-4727-b1eb-dc9d9006cedc', 1),
-('1a85843f-cfd1-44b6-972a-7d2f1c5e8529', 'f8028536-7055-4c3f-aea1-2f7f8fa2102d', 2),
-('1b23667e-3f65-496c-92df-00de0ad36931', '56c85d36-342a-470f-8a90-482ab72774d1', 1),
-('1b23667e-3f65-496c-92df-00de0ad36931', 'bd71a543-ce71-4fd1-bd45-da411f9b91fc', 2),
-('96116344-b23e-49cf-868a-c67656ec17d7', '108c322d-d851-40e2-9f1c-e003fbceea3a', 2),
-('96116344-b23e-49cf-868a-c67656ec17d7', 'a7d3632d-58fb-4627-a5d3-d8699c80256c', 2),
-('96116344-b23e-49cf-868a-c67656ec17d7', 'd24e3e4d-5e1f-495b-aaa8-f9347bbbd6d0', 2),
-('bd25f99d-e779-4eca-af91-cd7507d987ed', '28633bd5-b5ea-47c4-b8d7-b096cb2be139', 2),
-('bd25f99d-e779-4eca-af91-cd7507d987ed', '9a8c7da7-c5f5-4676-8743-37aafdee8c02', 3);
+INSERT INTO `CartItem` (`UserID`, `ProductID`, `Quantity`) VALUES
+('2e20bf33-a493-4741-8047-99bcdbf7188d', '7fc631a0-0c4d-4e9b-9176-40064d92b1dc', 3),
+('2e20bf33-a493-4741-8047-99bcdbf7188d', 'b920bf4a-b8f7-40b4-898e-1184700d5fb0', 2),
+('9744e8eb-4c01-44c1-8a56-3a3767f1cfe1', '00ca2bb5-f537-418d-8c7e-db595a9e17b6', 1),
+('9744e8eb-4c01-44c1-8a56-3a3767f1cfe1', '35107d01-c99b-43d3-8203-38ab776ad589', 2),
+('9744e8eb-4c01-44c1-8a56-3a3767f1cfe1', 'dc6127b0-e5f8-4f0f-bdc8-afe6394217b8', 2),
+('a3e8eabb-ee71-4892-ba06-7f011a42954c', '99c699bd-05ff-4e84-80ed-973fa3d8b7b6', 2),
+('a3e8eabb-ee71-4892-ba06-7f011a42954c', 'c9ada754-017c-4762-95c4-893e8bc108f4', 2),
+('e156ef59-bc21-4c72-9699-42a80be9f97a', '41af6698-6dff-44dc-b5a7-13c145adba57', 3),
+('e156ef59-bc21-4c72-9699-42a80be9f97a', '98471267-f1c6-4306-b37f-dfdcec1c96e7', 3),
+('e156ef59-bc21-4c72-9699-42a80be9f97a', 'b147738f-6f21-4565-b81e-000df750b4df', 1);
 
 -- --------------------------------------------------------
 
 --
--- Tabellstruktur for tabell `category`
+-- Tabellstruktur for tabell `Category`
 --
 
-CREATE TABLE `category` (
+CREATE TABLE `Category` (
   `CategoryName` varchar(50) NOT NULL,
   `CategoryDesc` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dataark for tabell `category`
+-- Dataark for tabell `Category`
 --
 
-INSERT INTO `category` (`CategoryName`, `CategoryDesc`) VALUES
+INSERT INTO `Category` (`CategoryName`, `CategoryDesc`) VALUES
 ('Audio & Headphones', 'Speakers, headphones, earphones, and audio systems.'),
 ('Cameras & Photography', 'Digital cameras, lenses, tripods, and photography gear.'),
 ('Computers & Accessories', 'Desktops, laptops, components, and peripherals like keyboards and mice.'),
@@ -117,78 +117,78 @@ INSERT INTO `category` (`CategoryName`, `CategoryDesc`) VALUES
 -- --------------------------------------------------------
 
 --
--- Tabellstruktur for tabell `members`
+-- Tabellstruktur for tabell `Members`
 --
 
-CREATE TABLE `members` (
+CREATE TABLE `Members` (
   `UserID` varchar(50) NOT NULL,
   `MembershipLevel` enum('Silver','Gold','Platinum') NOT NULL,
   `MembershipStart` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dataark for tabell `members`
+-- Dataark for tabell `Members`
 --
 
-INSERT INTO `members` (`UserID`, `MembershipLevel`, `MembershipStart`) VALUES
-('1a85843f-cfd1-44b6-972a-7d2f1c5e8529', 'Silver', '2025-05-13'),
-('96116344-b23e-49cf-868a-c67656ec17d7', 'Gold', '2025-05-13'),
-('bd25f99d-e779-4eca-af91-cd7507d987ed', 'Platinum', '2025-05-13');
+INSERT INTO `Members` (`UserID`, `MembershipLevel`, `MembershipStart`) VALUES
+('2e20bf33-a493-4741-8047-99bcdbf7188d', 'Platinum', '2025-05-14'),
+('9744e8eb-4c01-44c1-8a56-3a3767f1cfe1', 'Silver', '2025-05-14'),
+('e156ef59-bc21-4c72-9699-42a80be9f97a', 'Gold', '2025-05-14');
 
 -- --------------------------------------------------------
 
 --
--- Tabellstruktur for tabell `orderitem`
+-- Tabellstruktur for tabell `OrderItem`
 --
 
-CREATE TABLE `orderitem` (
+CREATE TABLE `OrderItem` (
   `OrderID` varchar(50) NOT NULL,
   `ProductID` varchar(50) NOT NULL,
   `Quantity` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dataark for tabell `orderitem`
+-- Dataark for tabell `OrderItem`
 --
 
-INSERT INTO `orderitem` (`OrderID`, `ProductID`, `Quantity`) VALUES
-('02734e5d-c21d-4a34-95f2-852e89c5af00', '56c85d36-342a-470f-8a90-482ab72774d1', 3),
-('02734e5d-c21d-4a34-95f2-852e89c5af00', '8946f411-b179-4d73-bc9c-6b75cac1c738', 2),
-('0833dc39-917c-4097-93d7-8398547aef0d', '4676c18d-433a-4002-bdb6-97c0dbb93ee3', 2),
-('0833dc39-917c-4097-93d7-8398547aef0d', 'd84e12b7-4b48-4727-b1eb-dc9d9006cedc', 3),
-('18b0fd98-fd82-43f8-826c-66173fbe1345', 'a7d3632d-58fb-4627-a5d3-d8699c80256c', 3),
-('18b0fd98-fd82-43f8-826c-66173fbe1345', 'f2486224-7101-44a2-bfd1-23b032eb1d41', 3),
-('4bde1d53-afab-4cbd-967c-ff1c2630e935', '108c322d-d851-40e2-9f1c-e003fbceea3a', 3),
-('4bde1d53-afab-4cbd-967c-ff1c2630e935', 'e1d19c6d-da9b-455e-b351-e20c015706da', 3),
-('682398d4-ef70-4947-8d64-f7a566d51221', '65772b1e-d9e6-4cee-a2f3-879f0a8c409c', 2),
-('682398d4-ef70-4947-8d64-f7a566d51221', 'd24e3e4d-5e1f-495b-aaa8-f9347bbbd6d0', 1),
-('b08732de-9f1b-4401-9183-d934c972d7cd', '49740001-b32a-4ac7-81b3-3e342b59929b', 2),
-('b08732de-9f1b-4401-9183-d934c972d7cd', '7fcaa398-4e28-4c6f-9bb4-b5386e7259c4', 1),
-('b8c2c8d7-497a-4cbb-b454-813b68af3d2a', 'b8c71477-5ae3-4ec5-924f-e087aed135c0', 3),
-('b8c2c8d7-497a-4cbb-b454-813b68af3d2a', 'bd71a543-ce71-4fd1-bd45-da411f9b91fc', 1),
-('ba5d8cfe-fc31-422c-b14e-f6ad410023db', '9a8c7da7-c5f5-4676-8743-37aafdee8c02', 3),
-('ba5d8cfe-fc31-422c-b14e-f6ad410023db', 'be29513b-b9e7-4df7-8f4e-745ac2f82fcf', 3),
-('c51b335a-7e4c-4859-af3e-90aface87137', '28633bd5-b5ea-47c4-b8d7-b096cb2be139', 2),
-('c51b335a-7e4c-4859-af3e-90aface87137', 'b0c1aee9-b4f8-4c74-80bd-d8d61d9f0704', 3),
-('e758392d-c869-4204-ad95-9afee9e10866', '1c184f45-dbec-4e34-b070-c13359798f19', 3),
-('e758392d-c869-4204-ad95-9afee9e10866', 'f8028536-7055-4c3f-aea1-2f7f8fa2102d', 3);
+INSERT INTO `OrderItem` (`OrderID`, `ProductID`, `Quantity`) VALUES
+('04f652ff-d4b9-4755-ad74-946fadfdbefb', '502ef50e-11d4-4198-9edd-800b87833a28', 3),
+('04f652ff-d4b9-4755-ad74-946fadfdbefb', '7fc631a0-0c4d-4e9b-9176-40064d92b1dc', 3),
+('0688ed91-2b84-4d30-894b-665dbcf2b8df', '35107d01-c99b-43d3-8203-38ab776ad589', 1),
+('0688ed91-2b84-4d30-894b-665dbcf2b8df', 'c4b1ad2a-98c8-4bf0-bb77-70c52c8a756d', 1),
+('2d820e70-d46d-4da0-bb6e-039a11935fe7', '41af6698-6dff-44dc-b5a7-13c145adba57', 3),
+('2d820e70-d46d-4da0-bb6e-039a11935fe7', '9d5acb94-b1a6-4d9c-b7c3-3ea080b74cac', 3),
+('49138e06-cf6f-4bb2-bae1-d254f0455b3c', '1fdb86ac-1dd8-4022-a19a-a10aefef393b', 3),
+('49138e06-cf6f-4bb2-bae1-d254f0455b3c', 'dc6127b0-e5f8-4f0f-bdc8-afe6394217b8', 3),
+('8e012d47-ac88-435d-8983-dc750d550408', '00ca2bb5-f537-418d-8c7e-db595a9e17b6', 2),
+('8e012d47-ac88-435d-8983-dc750d550408', 'e4d7426d-770f-4e4b-8177-024462a9913a', 1),
+('bcdeb2bb-4f26-44cb-9659-cc193bc254ac', 'b920bf4a-b8f7-40b4-898e-1184700d5fb0', 1),
+('bcdeb2bb-4f26-44cb-9659-cc193bc254ac', 'e1d61285-db0c-4d34-af41-828d7debc6ed', 2),
+('d659d330-6aa7-4f35-beff-10d0e544cca5', '307b17d5-8dfb-4ccb-aafe-c5bc30f4ddaa', 2),
+('d659d330-6aa7-4f35-beff-10d0e544cca5', '98471267-f1c6-4306-b37f-dfdcec1c96e7', 2),
+('e811443c-1822-47c6-8fb2-2f40da3278b2', '864f398f-301b-434a-87a9-ff56a0d8be56', 1),
+('e811443c-1822-47c6-8fb2-2f40da3278b2', 'c9ada754-017c-4762-95c4-893e8bc108f4', 1),
+('ea5c094c-a603-4c8e-a724-9582f7f47099', '596b777a-74ba-4919-ab2e-53d61fc006c0', 2),
+('ea5c094c-a603-4c8e-a724-9582f7f47099', '99c699bd-05ff-4e84-80ed-973fa3d8b7b6', 1),
+('ea969b83-9f44-44fa-887f-cb00398c94e3', 'a628c7ce-f23b-40fe-a8b9-ac6ec650b623', 1),
+('ea969b83-9f44-44fa-887f-cb00398c94e3', 'b147738f-6f21-4565-b81e-000df750b4df', 2);
 
 -- --------------------------------------------------------
 
 --
--- Tabellstruktur for tabell `orderstatus`
+-- Tabellstruktur for tabell `OrderStatus`
 --
 
-CREATE TABLE `orderstatus` (
+CREATE TABLE `OrderStatus` (
   `StatusName` varchar(50) NOT NULL,
   `StatusDesc` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dataark for tabell `orderstatus`
+-- Dataark for tabell `OrderStatus`
 --
 
-INSERT INTO `orderstatus` (`StatusName`, `StatusDesc`) VALUES
+INSERT INTO `OrderStatus` (`StatusName`, `StatusDesc`) VALUES
 ('Cancelled', 'Order was cancelled by the customer or store.'),
 ('Delivered', 'Order successfully delivered to the customer.'),
 ('Failed', 'Order payment failed or could not be processed.'),
@@ -201,71 +201,71 @@ INSERT INTO `orderstatus` (`StatusName`, `StatusDesc`) VALUES
 -- --------------------------------------------------------
 
 --
--- Tabellstruktur for tabell `ordertable`
+-- Tabellstruktur for tabell `OrderTable`
 --
 
-CREATE TABLE `ordertable` (
+CREATE TABLE `OrderTable` (
   `OrderID` varchar(50) NOT NULL,
   `UserID` varchar(50) NOT NULL,
   `OrderDate` date DEFAULT NULL,
   `OrderStatus` varchar(50) NOT NULL,
   `OrderTotal` decimal(10,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dataark for tabell `ordertable`
+-- Dataark for tabell `OrderTable`
 --
 
-INSERT INTO `ordertable` (`OrderID`, `UserID`, `OrderDate`, `OrderStatus`, `OrderTotal`) VALUES
-('02734e5d-c21d-4a34-95f2-852e89c5af00', '1b23667e-3f65-496c-92df-00de0ad36931', '2025-04-30', 'Failed', 15499.95),
-('0833dc39-917c-4097-93d7-8398547aef0d', '1a85843f-cfd1-44b6-972a-7d2f1c5e8529', '2025-04-14', 'Processing', 40599.95),
-('18b0fd98-fd82-43f8-826c-66173fbe1345', '96116344-b23e-49cf-868a-c67656ec17d7', '2025-02-18', 'Cancelled', 8999.94),
-('4bde1d53-afab-4cbd-967c-ff1c2630e935', '96116344-b23e-49cf-868a-c67656ec17d7', '2025-03-28', 'Pending', 29999.94),
-('682398d4-ef70-4947-8d64-f7a566d51221', '96116344-b23e-49cf-868a-c67656ec17d7', '2025-05-08', 'Pending', 1599.97),
-('b08732de-9f1b-4401-9183-d934c972d7cd', '1a85843f-cfd1-44b6-972a-7d2f1c5e8529', '2025-02-04', 'Returned', 2299.97),
-('b8c2c8d7-497a-4cbb-b454-813b68af3d2a', '1b23667e-3f65-496c-92df-00de0ad36931', '2025-04-29', 'Delivered', 17999.96),
-('ba5d8cfe-fc31-422c-b14e-f6ad410023db', 'bd25f99d-e779-4eca-af91-cd7507d987ed', '2025-03-06', 'Shipped', 32999.94),
-('c51b335a-7e4c-4859-af3e-90aface87137', 'bd25f99d-e779-4eca-af91-cd7507d987ed', '2025-02-13', 'Refunded', 8899.95),
-('e758392d-c869-4204-ad95-9afee9e10866', '1a85843f-cfd1-44b6-972a-7d2f1c5e8529', '2025-03-24', 'Processing', 56999.94);
+INSERT INTO `OrderTable` (`OrderID`, `UserID`, `OrderDate`, `OrderStatus`, `OrderTotal`) VALUES
+('04f652ff-d4b9-4755-ad74-946fadfdbefb', '2e20bf33-a493-4741-8047-99bcdbf7188d', '2025-03-02', 'Refunded', 12899.94),
+('0688ed91-2b84-4d30-894b-665dbcf2b8df', '9744e8eb-4c01-44c1-8a56-3a3767f1cfe1', '2025-03-08', 'Processing', 18999.98),
+('2d820e70-d46d-4da0-bb6e-039a11935fe7', 'e156ef59-bc21-4c72-9699-42a80be9f97a', '2025-02-17', 'Pending', 29999.94),
+('49138e06-cf6f-4bb2-bae1-d254f0455b3c', '9744e8eb-4c01-44c1-8a56-3a3767f1cfe1', '2025-03-19', 'Processing', 41399.94),
+('8e012d47-ac88-435d-8983-dc750d550408', '9744e8eb-4c01-44c1-8a56-3a3767f1cfe1', '2025-02-17', 'Returned', 2499.97),
+('bcdeb2bb-4f26-44cb-9659-cc193bc254ac', '2e20bf33-a493-4741-8047-99bcdbf7188d', '2025-03-31', 'Shipped', 19999.97),
+('d659d330-6aa7-4f35-beff-10d0e544cca5', 'e156ef59-bc21-4c72-9699-42a80be9f97a', '2025-02-21', 'Cancelled', 5999.96),
+('e811443c-1822-47c6-8fb2-2f40da3278b2', 'a3e8eabb-ee71-4892-ba06-7f011a42954c', '2025-02-13', 'Failed', 6499.98),
+('ea5c094c-a603-4c8e-a724-9582f7f47099', 'a3e8eabb-ee71-4892-ba06-7f011a42954c', '2025-03-27', 'Delivered', 12999.97),
+('ea969b83-9f44-44fa-887f-cb00398c94e3', 'e156ef59-bc21-4c72-9699-42a80be9f97a', '2025-02-23', 'Pending', 1699.97);
 
 -- --------------------------------------------------------
 
 --
--- Tabellstruktur for tabell `payment`
+-- Tabellstruktur for tabell `Payment`
 --
 
-CREATE TABLE `payment` (
+CREATE TABLE `Payment` (
   `PaymentID` varchar(50) NOT NULL,
   `OrderID` varchar(50) NOT NULL,
   `PaymentMethod` enum('card','vipps','bank_transfer') NOT NULL,
   `Amount` decimal(10,2) NOT NULL,
   `PaymentDate` date NOT NULL,
   `PaymentStatus` enum('pending','successful','failed') DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dataark for tabell `payment`
+-- Dataark for tabell `Payment`
 --
 
-INSERT INTO `payment` (`PaymentID`, `OrderID`, `PaymentMethod`, `Amount`, `PaymentDate`, `PaymentStatus`) VALUES
-('07930cbc-061d-4b48-a3fe-446b3b44fab4', '682398d4-ef70-4947-8d64-f7a566d51221', 'bank_transfer', 1599.97, '2025-02-26', 'pending'),
-('268a59ae-2765-462b-81e9-23b4538cfdf5', 'b08732de-9f1b-4401-9183-d934c972d7cd', 'bank_transfer', 2299.97, '2025-02-18', 'failed'),
-('3563f618-fe17-46f7-af5a-fac1f13e3947', '0833dc39-917c-4097-93d7-8398547aef0d', 'vipps', 40599.95, '2025-05-07', 'pending'),
-('56009f0a-086b-4995-a1f9-dc7d1b83044c', '18b0fd98-fd82-43f8-826c-66173fbe1345', 'vipps', 8999.94, '2025-04-18', 'failed'),
-('5c0f49b1-1790-49d5-a05d-6376961d96c1', '4bde1d53-afab-4cbd-967c-ff1c2630e935', 'card', 29999.94, '2025-03-08', 'pending'),
-('6483b204-49e8-4416-9e60-8210d2828c6b', 'ba5d8cfe-fc31-422c-b14e-f6ad410023db', 'bank_transfer', 32999.94, '2025-02-26', 'successful'),
-('a6bed5e3-f642-4f6b-98bc-3fe438f27984', 'e758392d-c869-4204-ad95-9afee9e10866', 'card', 56999.94, '2025-04-20', 'pending'),
-('a70e6e03-cef4-41cc-92d4-17521868f7d2', 'b8c2c8d7-497a-4cbb-b454-813b68af3d2a', 'card', 17999.96, '2025-03-16', 'successful'),
-('c624f74c-835a-47a4-97b1-e75f252f6696', 'c51b335a-7e4c-4859-af3e-90aface87137', 'card', 8899.95, '2025-04-10', 'failed'),
-('f700d8bd-c0db-4c1f-b9bc-c9b483edff07', '02734e5d-c21d-4a34-95f2-852e89c5af00', 'vipps', 15499.95, '2025-04-04', 'failed');
+INSERT INTO `Payment` (`PaymentID`, `OrderID`, `PaymentMethod`, `Amount`, `PaymentDate`, `PaymentStatus`) VALUES
+('0173108d-675f-43b0-b0bc-648c48f88de8', '8e012d47-ac88-435d-8983-dc750d550408', 'bank_transfer', 2499.97, '2025-04-28', 'failed'),
+('29762b35-2d99-41cd-9cc0-e3cbb0cedb04', 'ea969b83-9f44-44fa-887f-cb00398c94e3', 'bank_transfer', 1699.97, '2025-04-06', 'pending'),
+('32a7e313-7447-4132-aeeb-76a251972c79', 'bcdeb2bb-4f26-44cb-9659-cc193bc254ac', 'bank_transfer', 19999.97, '2025-02-20', 'successful'),
+('36c36e71-a91a-4b09-b726-809cdc55bfce', '04f652ff-d4b9-4755-ad74-946fadfdbefb', 'card', 12899.94, '2025-02-18', 'failed'),
+('461d12a6-26f3-460b-b65f-5aa8fa32eb60', '49138e06-cf6f-4bb2-bae1-d254f0455b3c', 'vipps', 41399.94, '2025-04-30', 'pending'),
+('4b74408c-4165-4c59-9c39-7b2ac0a02d75', '2d820e70-d46d-4da0-bb6e-039a11935fe7', 'card', 29999.94, '2025-04-19', 'pending'),
+('b19e8338-c47d-4b75-8c5b-46a7698f4306', '0688ed91-2b84-4d30-894b-665dbcf2b8df', 'card', 18999.98, '2025-03-21', 'pending'),
+('c05faedd-d456-462c-a4d3-15955eb63253', 'd659d330-6aa7-4f35-beff-10d0e544cca5', 'vipps', 5999.96, '2025-04-30', 'failed'),
+('c6f9c513-1528-47dd-becb-948e6b258fb8', 'e811443c-1822-47c6-8fb2-2f40da3278b2', 'vipps', 6499.98, '2025-04-14', 'failed'),
+('de0f36a0-9fbc-4388-8abc-296012b981bf', 'ea5c094c-a603-4c8e-a724-9582f7f47099', 'card', 12999.97, '2025-04-09', 'successful');
 
 -- --------------------------------------------------------
 
 --
--- Tabellstruktur for tabell `product`
+-- Tabellstruktur for tabell `Product`
 --
 
-CREATE TABLE `product` (
+CREATE TABLE `Product` (
   `ProductID` varchar(50) NOT NULL,
   `ProductName` varchar(100) NOT NULL,
   `ProductDesc` varchar(255) DEFAULT NULL,
@@ -274,71 +274,71 @@ CREATE TABLE `product` (
   `StockQuantity` int(11) NOT NULL,
   `Brand` varchar(50) DEFAULT NULL,
   `Category` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dataark for tabell `product`
+-- Dataark for tabell `Product`
 --
 
-INSERT INTO `product` (`ProductID`, `ProductName`, `ProductDesc`, `ProductImgUrl`, `Price`, `StockQuantity`, `Brand`, `Category`) VALUES
-('108c322d-d851-40e2-9f1c-e003fbceea3a', 'TechBrave X100 Smartphone', 'High-end smartphone with AI features.', 'https://example.com/img1.jpg', 8999.99, 100, NULL, 'Mobile Phones & Tablets'),
-('1c184f45-dbec-4e34-b070-c13359798f19', 'E-Gadgets Robot Vacuum', 'Smart robot vacuum cleaner.', 'https://example.com/img20.jpg', 2999.99, 30, 'E-Gadgets', 'Smart Home'),
-('28633bd5-b5ea-47c4-b8d7-b096cb2be139', 'TechBrave Tablet 10\"', 'Lightweight tablet for work and play.', 'https://example.com/img7.jpg', 3999.99, 90, 'TechBrave', 'Mobile Phones & Tablets'),
-('4676c18d-433a-4002-bdb6-97c0dbb93ee3', 'DigiTech Gaming Mouse', 'Precision gaming mouse.', 'https://example.com/img12.jpg', 799.99, 120, 'DigiTech', 'Gaming'),
-('49740001-b32a-4ac7-81b3-3e342b59929b', 'TechBrave Fitness Band', 'Basic fitness tracker with heart monitor.', 'https://example.com/img16.jpg', 699.99, 110, 'TechBrave', 'Wearable Technology'),
-('56c85d36-342a-470f-8a90-482ab72774d1', 'E-Gadgets Noise Cancelling Headphones', 'Noise-free music experience.', 'https://example.com/img8.jpg', 2499.99, 70, 'E-Gadgets', 'Audio & Headphones'),
-('65772b1e-d9e6-4cee-a2f3-879f0a8c409c', 'TechBrave Power Bank 20000mAh', 'Portable charger for mobile devices.', 'https://example.com/img19.jpg', 499.99, 250, 'TechBrave', 'Mobile Phones & Tablets'),
-('7fcaa398-4e28-4c6f-9bb4-b5386e7259c4', 'DigiTech Bluetooth Speaker', 'Portable speaker with rich bass.', 'https://example.com/img6.jpg', 899.99, 200, 'DigiTech', 'Audio & Headphones'),
-('8946f411-b179-4d73-bc9c-6b75cac1c738', 'DigiTech VR Headset', 'Immersive VR gaming experience.', 'https://example.com/img18.jpg', 3999.99, 60, 'DigiTech', 'Gaming'),
-('9a8c7da7-c5f5-4676-8743-37aafdee8c02', 'DigiTech Gaming Headset Pro', 'Immersive gaming headset with surround sound.', 'https://example.com/img3.jpg', 1999.99, 80, 'DigiTech', 'Audio & Headphones'),
-('a7d3632d-58fb-4627-a5d3-d8699c80256c', 'E-Gadgets Home Assistant', 'Voice-controlled smart home hub.', 'https://example.com/img5.jpg', 1499.99, 50, 'E-Gadgets', 'Smart Home'),
-('b0c1aee9-b4f8-4c74-80bd-d8d61d9f0704', 'E-Gadgets Smart Light Bulb', 'WiFi-enabled color-changing bulb.', 'https://example.com/img17.jpg', 299.99, 500, 'E-Gadgets', 'Smart Home'),
-('b8c71477-5ae3-4ec5-924f-e087aed135c0', 'E-Gadgets 4K Projector', 'Cinema-quality projector for home.', 'https://example.com/img14.jpg', 4999.99, 45, 'E-Gadgets', 'TV & Home Theater'),
-('bd71a543-ce71-4fd1-bd45-da411f9b91fc', 'TechBrave Smartwatch 2', 'Fitness tracking smartwatch.', 'https://example.com/img4.jpg', 2999.99, 150, 'TechBrave', 'Wearable Technology'),
-('be29513b-b9e7-4df7-8f4e-745ac2f82fcf', 'TechBrave Drone Pro', 'Professional drone with 4K camera.', 'https://example.com/img13.jpg', 8999.99, 25, 'TechBrave', 'Cameras & Photography'),
-('d24e3e4d-5e1f-495b-aaa8-f9347bbbd6d0', 'DigiTech Wireless Charger', 'Fast wireless charging pad.', 'https://example.com/img9.jpg', 599.99, 300, 'DigiTech', 'Mobile Phones & Tablets'),
-('d84e12b7-4b48-4727-b1eb-dc9d9006cedc', 'E-Gadgets Ultra HD TV 55\"', 'Ultra HD smart TV with vibrant colors.', 'https://example.com/img2.jpg', 12999.99, 30, 'E-Gadgets', 'TV & Home Theater'),
-('e1d19c6d-da9b-455e-b351-e20c015706da', 'E-Gadgets Security Camera', 'Smart WiFi home security camera.', 'https://example.com/img11.jpg', 999.99, 100, 'E-Gadgets', 'Smart Home'),
-('f2486224-7101-44a2-bfd1-23b032eb1d41', 'DigiTech Portable SSD 1TB', 'High-speed portable storage.', 'https://example.com/img15.jpg', 1499.99, 70, 'DigiTech', 'Computers & Accessories'),
-('f8028536-7055-4c3f-aea1-2f7f8fa2102d', 'TechBrave Laptop Pro', 'Powerful laptop for professionals.', 'https://example.com/img10.jpg', 15999.99, 40, 'TechBrave', 'Computers & Accessories');
+INSERT INTO `Product` (`ProductID`, `ProductName`, `ProductDesc`, `ProductImgUrl`, `Price`, `StockQuantity`, `Brand`, `Category`) VALUES
+('00ca2bb5-f537-418d-8c7e-db595a9e17b6', 'DigiTech Bluetooth Speaker', 'Portable speaker with rich bass.', 'https://example.com/img6.jpg', 899.99, 200, 'DigiTech', 'Audio & Headphones'),
+('1fdb86ac-1dd8-4022-a19a-a10aefef393b', 'DigiTech Gaming Mouse', 'Precision gaming mouse.', 'https://example.com/img12.jpg', 799.99, 120, 'DigiTech', 'Gaming'),
+('307b17d5-8dfb-4ccb-aafe-c5bc30f4ddaa', 'DigiTech Portable SSD 1TB', 'High-speed portable storage.', 'https://example.com/img15.jpg', 1499.99, 70, 'DigiTech', 'Computers & Accessories'),
+('35107d01-c99b-43d3-8203-38ab776ad589', 'TechBrave Laptop Pro', 'Powerful laptop for professionals.', 'https://example.com/img10.jpg', 15999.99, 40, 'TechBrave', 'Computers & Accessories'),
+('41af6698-6dff-44dc-b5a7-13c145adba57', 'TechBrave X100 Smartphone', 'High-end smartphone with AI features.', 'https://example.com/img1.jpg', 8999.99, 100, NULL, 'Mobile Phones & Tablets'),
+('502ef50e-11d4-4198-9edd-800b87833a28', 'E-Gadgets Smart Light Bulb', 'WiFi-enabled color-changing bulb.', 'https://example.com/img17.jpg', 299.99, 500, 'E-Gadgets', 'Smart Home'),
+('596b777a-74ba-4919-ab2e-53d61fc006c0', 'E-Gadgets 4K Projector', 'Cinema-quality projector for home.', 'https://example.com/img14.jpg', 4999.99, 45, 'E-Gadgets', 'TV & Home Theater'),
+('7fc631a0-0c4d-4e9b-9176-40064d92b1dc', 'TechBrave Tablet 10\"', 'Lightweight tablet for work and play.', 'https://example.com/img7.jpg', 3999.99, 90, 'TechBrave', 'Mobile Phones & Tablets'),
+('864f398f-301b-434a-87a9-ff56a0d8be56', 'DigiTech VR Headset', 'Immersive VR gaming experience.', 'https://example.com/img18.jpg', 3999.99, 60, 'DigiTech', 'Gaming'),
+('98471267-f1c6-4306-b37f-dfdcec1c96e7', 'E-Gadgets Home Assistant', 'Voice-controlled smart home hub.', 'https://example.com/img5.jpg', 1499.99, 50, 'E-Gadgets', 'Smart Home'),
+('99c699bd-05ff-4e84-80ed-973fa3d8b7b6', 'TechBrave Smartwatch 2', 'Fitness tracking smartwatch.', 'https://example.com/img4.jpg', 2999.99, 150, 'TechBrave', 'Wearable Technology'),
+('9d5acb94-b1a6-4d9c-b7c3-3ea080b74cac', 'E-Gadgets Security Camera', 'Smart WiFi home security camera.', 'https://example.com/img11.jpg', 999.99, 100, 'E-Gadgets', 'Smart Home'),
+('a628c7ce-f23b-40fe-a8b9-ac6ec650b623', 'TechBrave Power Bank 20000mAh', 'Portable charger for mobile devices.', 'https://example.com/img19.jpg', 499.99, 250, 'TechBrave', 'Mobile Phones & Tablets'),
+('b147738f-6f21-4565-b81e-000df750b4df', 'DigiTech Wireless Charger', 'Fast wireless charging pad.', 'https://example.com/img9.jpg', 599.99, 300, 'DigiTech', 'Mobile Phones & Tablets'),
+('b920bf4a-b8f7-40b4-898e-1184700d5fb0', 'DigiTech Gaming Headset Pro', 'Immersive gaming headset with surround sound.', 'https://example.com/img3.jpg', 1999.99, 80, 'DigiTech', 'Audio & Headphones'),
+('c4b1ad2a-98c8-4bf0-bb77-70c52c8a756d', 'E-Gadgets Robot Vacuum', 'Smart robot vacuum cleaner.', 'https://example.com/img20.jpg', 2999.99, 30, 'E-Gadgets', 'Smart Home'),
+('c9ada754-017c-4762-95c4-893e8bc108f4', 'E-Gadgets Noise Cancelling Headphones', 'Noise-free music experience.', 'https://example.com/img8.jpg', 2499.99, 70, 'E-Gadgets', 'Audio & Headphones'),
+('dc6127b0-e5f8-4f0f-bdc8-afe6394217b8', 'E-Gadgets Ultra HD TV 55\"', 'Ultra HD smart TV with vibrant colors.', 'https://example.com/img2.jpg', 12999.99, 30, 'E-Gadgets', 'TV & Home Theater'),
+('e1d61285-db0c-4d34-af41-828d7debc6ed', 'TechBrave Drone Pro', 'Professional drone with 4K camera.', 'https://example.com/img13.jpg', 8999.99, 25, 'TechBrave', 'Cameras & Photography'),
+('e4d7426d-770f-4e4b-8177-024462a9913a', 'TechBrave Fitness Band', 'Basic fitness tracker with heart monitor.', 'https://example.com/img16.jpg', 699.99, 110, 'TechBrave', 'Wearable Technology');
 
 -- --------------------------------------------------------
 
 --
--- Tabellstruktur for tabell `review`
+-- Tabellstruktur for tabell `Review`
 --
 
-CREATE TABLE `review` (
+CREATE TABLE `Review` (
   `UserID` varchar(50) NOT NULL,
   `ProductID` varchar(50) NOT NULL,
   `Comment` varchar(500) DEFAULT NULL,
   `Rating` int(11) DEFAULT NULL CHECK (`Rating` between 1 and 10),
   `PostDate` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dataark for tabell `review`
+-- Dataark for tabell `Review`
 --
 
-INSERT INTO `review` (`UserID`, `ProductID`, `Comment`, `Rating`, `PostDate`) VALUES
-('1a85843f-cfd1-44b6-972a-7d2f1c5e8529', '7fcaa398-4e28-4c6f-9bb4-b5386e7259c4', 'Good, but could be better.', 4, '2025-05-02'),
-('1a85843f-cfd1-44b6-972a-7d2f1c5e8529', 'd84e12b7-4b48-4727-b1eb-dc9d9006cedc', 'Very disappointing.', 2, '2025-05-06'),
-('1a85843f-cfd1-44b6-972a-7d2f1c5e8529', 'f8028536-7055-4c3f-aea1-2f7f8fa2102d', 'Amazing quality!', 9, '2025-02-04'),
-('1b23667e-3f65-496c-92df-00de0ad36931', '56c85d36-342a-470f-8a90-482ab72774d1', 'Highly recommend it!', 10, '2025-05-05'),
-('1b23667e-3f65-496c-92df-00de0ad36931', 'bd71a543-ce71-4fd1-bd45-da411f9b91fc', 'Average, nothing special.', 7, '2025-04-19'),
-('96116344-b23e-49cf-868a-c67656ec17d7', '108c322d-d851-40e2-9f1c-e003fbceea3a', 'Average, nothing special.', 4, '2025-03-10'),
-('96116344-b23e-49cf-868a-c67656ec17d7', 'a7d3632d-58fb-4627-a5d3-d8699c80256c', 'Exceeded my expectations.', 10, '2025-02-20'),
-('96116344-b23e-49cf-868a-c67656ec17d7', 'd24e3e4d-5e1f-495b-aaa8-f9347bbbd6d0', 'Good, but could be better.', 4, '2025-02-18'),
-('bd25f99d-e779-4eca-af91-cd7507d987ed', '28633bd5-b5ea-47c4-b8d7-b096cb2be139', 'Very disappointing.', 1, '2025-04-22'),
-('bd25f99d-e779-4eca-af91-cd7507d987ed', '9a8c7da7-c5f5-4676-8743-37aafdee8c02', 'Fantastic product!', 8, '2025-03-16');
+INSERT INTO `Review` (`UserID`, `ProductID`, `Comment`, `Rating`, `PostDate`) VALUES
+('2e20bf33-a493-4741-8047-99bcdbf7188d', '7fc631a0-0c4d-4e9b-9176-40064d92b1dc', 'Good, but could be better.', 4, '2025-04-30'),
+('2e20bf33-a493-4741-8047-99bcdbf7188d', 'b920bf4a-b8f7-40b4-898e-1184700d5fb0', 'Terrible quality!', 2, '2025-03-27'),
+('9744e8eb-4c01-44c1-8a56-3a3767f1cfe1', '00ca2bb5-f537-418d-8c7e-db595a9e17b6', 'Very disappointing.', 2, '2025-04-19'),
+('9744e8eb-4c01-44c1-8a56-3a3767f1cfe1', '35107d01-c99b-43d3-8203-38ab776ad589', 'Fantastic product!', 10, '2025-04-12'),
+('9744e8eb-4c01-44c1-8a56-3a3767f1cfe1', 'dc6127b0-e5f8-4f0f-bdc8-afe6394217b8', 'Average, nothing special.', 4, '2025-03-09'),
+('a3e8eabb-ee71-4892-ba06-7f011a42954c', '99c699bd-05ff-4e84-80ed-973fa3d8b7b6', 'Average, nothing special.', 6, '2025-03-13'),
+('a3e8eabb-ee71-4892-ba06-7f011a42954c', 'c9ada754-017c-4762-95c4-893e8bc108f4', 'Broke after a few days.', 3, '2025-04-25'),
+('e156ef59-bc21-4c72-9699-42a80be9f97a', '41af6698-6dff-44dc-b5a7-13c145adba57', 'Exceeded my expectations.', 8, '2025-04-09'),
+('e156ef59-bc21-4c72-9699-42a80be9f97a', '98471267-f1c6-4306-b37f-dfdcec1c96e7', 'Good, but could be better.', 4, '2025-05-12'),
+('e156ef59-bc21-4c72-9699-42a80be9f97a', 'b147738f-6f21-4565-b81e-000df750b4df', 'Highly recommend it!', 8, '2025-03-10');
 
 -- --------------------------------------------------------
 
 --
--- Tabellstruktur for tabell `users`
+-- Tabellstruktur for tabell `Users`
 --
 
-CREATE TABLE `users` (
+CREATE TABLE `Users` (
   `UserID` varchar(50) NOT NULL,
   `Username` varchar(100) NOT NULL,
   `Password` varchar(100) NOT NULL,
@@ -346,100 +346,100 @@ CREATE TABLE `users` (
   `FirstName` varchar(50) NOT NULL,
   `LastName` varchar(50) NOT NULL,
   `Address` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dataark for tabell `users`
+-- Dataark for tabell `Users`
 --
 
-INSERT INTO `users` (`UserID`, `Username`, `Password`, `Email`, `FirstName`, `LastName`, `Address`) VALUES
-('1a85843f-cfd1-44b6-972a-7d2f1c5e8529', 'janedoe', '$2a$10$yaEiDbQUZfC/8jadySvIwu.j7Dp5u9fHOdp7tfMqW1rIl24cB9dy2', 'jane_doe@gmail.com', 'Jane', 'Doe', 'Main Street 5'),
-('1b23667e-3f65-496c-92df-00de0ad36931', 'bob88', '$2a$10$5FVzzxKcOwylCqXOf.E2Zun/8WN8OXnqBasIiMCcpsZd0rNIkqN8y', 'bob88@gmail.com', 'Bob', 'Johnson', 'Mountain View 10'),
-('96116344-b23e-49cf-868a-c67656ec17d7', 'helloWorld', '$2a$10$YkNok2pbmVg4ivuEv5G42Og455.kqQ84iMaZhdTu1tOaeZ4LwgA/6', 'john_doe@gmail.com', 'John', 'Doe', 'Yolostreet 15'),
-('bd25f99d-e779-4eca-af91-cd7507d987ed', 'alice123', '$2a$10$78vQiqW1fw5S/eDnFxKvz.Rc9McOs2/neAuhsB5xC2KSmEHTElJq2', 'alice@gmail.com', 'Alice', 'Smith', 'River Road 42');
+INSERT INTO `Users` (`UserID`, `Username`, `Password`, `Email`, `FirstName`, `LastName`, `Address`) VALUES
+('2e20bf33-a493-4741-8047-99bcdbf7188d', 'alice123', '$2a$10$9ePvNDa2g8HqjC6oj6zQkejE0NMvcaj0EkyhJf1rmTM/m8pKjA0GS', 'alice@gmail.com', 'Alice', 'Smith', 'River Road 42'),
+('9744e8eb-4c01-44c1-8a56-3a3767f1cfe1', 'janedoe', '$2a$10$.9cKdixENsUjSAg32OC8x.xRQZeHJLm4ORXTez.HQfgEpuqw5FLKO', 'jane_doe@gmail.com', 'Jane', 'Doe', 'Main Street 5'),
+('a3e8eabb-ee71-4892-ba06-7f011a42954c', 'bob88', '$2a$10$i..HvUxZiN.oIugZcmdSaOJTR9Qm98I2AJUzVl3tOYbd4lWlPsGeS', 'bob88@gmail.com', 'Bob', 'Johnson', 'Mountain View 10'),
+('e156ef59-bc21-4c72-9699-42a80be9f97a', 'helloWorld', '$2a$10$iPefuaAX/QfRCW55rVBIkOlPntB9CSvRrZ6jWICE4SU8J0P/R06jG', 'john_doe@gmail.com', 'John', 'Doe', 'Yolostreet 15');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `administrators`
+-- Indexes for table `Administrators`
 --
-ALTER TABLE `administrators`
+ALTER TABLE `Administrators`
   ADD PRIMARY KEY (`UserID`);
 
 --
--- Indexes for table `brand`
+-- Indexes for table `Brand`
 --
-ALTER TABLE `brand`
+ALTER TABLE `Brand`
   ADD PRIMARY KEY (`BrandName`);
 
 --
--- Indexes for table `cartitem`
+-- Indexes for table `CartItem`
 --
-ALTER TABLE `cartitem`
+ALTER TABLE `CartItem`
   ADD PRIMARY KEY (`UserID`,`ProductID`),
   ADD KEY `ProductID` (`ProductID`);
 
 --
--- Indexes for table `category`
+-- Indexes for table `Category`
 --
-ALTER TABLE `category`
+ALTER TABLE `Category`
   ADD PRIMARY KEY (`CategoryName`);
 
 --
--- Indexes for table `members`
+-- Indexes for table `Members`
 --
-ALTER TABLE `members`
+ALTER TABLE `Members`
   ADD PRIMARY KEY (`UserID`);
 
 --
--- Indexes for table `orderitem`
+-- Indexes for table `OrderItem`
 --
-ALTER TABLE `orderitem`
+ALTER TABLE `OrderItem`
   ADD PRIMARY KEY (`OrderID`,`ProductID`),
   ADD KEY `ProductID` (`ProductID`);
 
 --
--- Indexes for table `orderstatus`
+-- Indexes for table `OrderStatus`
 --
-ALTER TABLE `orderstatus`
+ALTER TABLE `OrderStatus`
   ADD PRIMARY KEY (`StatusName`);
 
 --
--- Indexes for table `ordertable`
+-- Indexes for table `OrderTable`
 --
-ALTER TABLE `ordertable`
+ALTER TABLE `OrderTable`
   ADD PRIMARY KEY (`OrderID`),
   ADD KEY `UserID` (`UserID`),
   ADD KEY `OrderStatus` (`OrderStatus`);
 
 --
--- Indexes for table `payment`
+-- Indexes for table `Payment`
 --
-ALTER TABLE `payment`
+ALTER TABLE `Payment`
   ADD PRIMARY KEY (`PaymentID`),
   ADD KEY `OrderID` (`OrderID`);
 
 --
--- Indexes for table `product`
+-- Indexes for table `Product`
 --
-ALTER TABLE `product`
+ALTER TABLE `Product`
   ADD PRIMARY KEY (`ProductID`),
   ADD KEY `Brand` (`Brand`),
   ADD KEY `Category` (`Category`);
 
 --
--- Indexes for table `review`
+-- Indexes for table `Review`
 --
-ALTER TABLE `review`
+ALTER TABLE `Review`
   ADD PRIMARY KEY (`UserID`,`ProductID`),
   ADD KEY `ProductID` (`ProductID`);
 
 --
--- Indexes for table `users`
+-- Indexes for table `Users`
 --
-ALTER TABLE `users`
+ALTER TABLE `Users`
   ADD PRIMARY KEY (`UserID`);
 
 --
@@ -447,57 +447,57 @@ ALTER TABLE `users`
 --
 
 --
--- Begrensninger for tabell `administrators`
+-- Begrensninger for tabell `Administrators`
 --
-ALTER TABLE `administrators`
-  ADD CONSTRAINT `administrators_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Administrators`
+  ADD CONSTRAINT `Administrators_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Begrensninger for tabell `cartitem`
+-- Begrensninger for tabell `CartItem`
 --
-ALTER TABLE `cartitem`
-  ADD CONSTRAINT `cartitem_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `cartitem_ibfk_2` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON UPDATE CASCADE;
+ALTER TABLE `CartItem`
+  ADD CONSTRAINT `CartItem_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `CartItem_ibfk_2` FOREIGN KEY (`ProductID`) REFERENCES `Product` (`ProductID`) ON UPDATE CASCADE;
 
 --
--- Begrensninger for tabell `members`
+-- Begrensninger for tabell `Members`
 --
-ALTER TABLE `members`
-  ADD CONSTRAINT `members_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Members`
+  ADD CONSTRAINT `Members_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Begrensninger for tabell `orderitem`
+-- Begrensninger for tabell `OrderItem`
 --
-ALTER TABLE `orderitem`
-  ADD CONSTRAINT `orderitem_ibfk_1` FOREIGN KEY (`OrderID`) REFERENCES `ordertable` (`OrderID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `orderitem_ibfk_2` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON UPDATE CASCADE;
+ALTER TABLE `OrderItem`
+  ADD CONSTRAINT `OrderItem_ibfk_1` FOREIGN KEY (`OrderID`) REFERENCES `OrderTable` (`OrderID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `OrderItem_ibfk_2` FOREIGN KEY (`ProductID`) REFERENCES `Product` (`ProductID`) ON UPDATE CASCADE;
 
 --
--- Begrensninger for tabell `ordertable`
+-- Begrensninger for tabell `OrderTable`
 --
-ALTER TABLE `ordertable`
-  ADD CONSTRAINT `ordertable_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `users` (`UserID`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `ordertable_ibfk_2` FOREIGN KEY (`OrderStatus`) REFERENCES `orderstatus` (`StatusName`) ON UPDATE CASCADE;
+ALTER TABLE `OrderTable`
+  ADD CONSTRAINT `OrderTable_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `OrderTable_ibfk_2` FOREIGN KEY (`OrderStatus`) REFERENCES `OrderStatus` (`StatusName`) ON UPDATE CASCADE;
 
 --
--- Begrensninger for tabell `payment`
+-- Begrensninger for tabell `Payment`
 --
-ALTER TABLE `payment`
-  ADD CONSTRAINT `payment_ibfk_1` FOREIGN KEY (`OrderID`) REFERENCES `ordertable` (`OrderID`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Payment`
+  ADD CONSTRAINT `Payment_ibfk_1` FOREIGN KEY (`OrderID`) REFERENCES `OrderTable` (`OrderID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Begrensninger for tabell `product`
+-- Begrensninger for tabell `Product`
 --
-ALTER TABLE `product`
-  ADD CONSTRAINT `product_ibfk_1` FOREIGN KEY (`Brand`) REFERENCES `brand` (`BrandName`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `product_ibfk_2` FOREIGN KEY (`Category`) REFERENCES `category` (`CategoryName`) ON UPDATE CASCADE;
+ALTER TABLE `Product`
+  ADD CONSTRAINT `Product_ibfk_1` FOREIGN KEY (`Brand`) REFERENCES `Brand` (`BrandName`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `Product_ibfk_2` FOREIGN KEY (`Category`) REFERENCES `Category` (`CategoryName`) ON UPDATE CASCADE;
 
 --
--- Begrensninger for tabell `review`
+-- Begrensninger for tabell `Review`
 --
-ALTER TABLE `review`
-  ADD CONSTRAINT `review_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `review_ibfk_2` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Review`
+  ADD CONSTRAINT `Review_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `Review_ibfk_2` FOREIGN KEY (`ProductID`) REFERENCES `Product` (`ProductID`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
