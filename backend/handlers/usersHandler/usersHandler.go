@@ -90,8 +90,8 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 		//Extract the id to delete
 		userID := r.PathValue("user_id")
 
-		// Check if the user is admin
-		if !utility.CheckPrivileges(r, w, nil) {
+		// Check if the user is either trying to delete their own account or an admin deleting 
+		if !utility.CheckPrivileges(r, w, &userID) {
 			return
 		}
 
