@@ -45,14 +45,18 @@ Example usage:
 Deletes a user from the database, users can delete their own users, admins are allowed to delete other users.
 
 General function flow:
-->
+-> Extracts the userID to delete
+-> Checking priviliges
+-> Set the userID in ordertable to NULL
+-> Delete the user from users
+-> Write a respond to the client (204 No Content)
 
 Example usage:
 
 	Method: DELETE
 	Route: /users/0df01f83-a9a7-4afa-9b62-8d0bb9722849
 	Response:
-	HTTP code: ----
+	HTTP code: 204 No Content
 */
 func UserHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("UserHandler called with method: ", r.Method)
@@ -79,7 +83,31 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPatch:
 		http.Error(w, "Method not implemented", http.StatusNotImplemented)
 	case http.MethodDelete:
-		http.Error(w, "Method not implemented", http.StatusNotImplemented)
+		
+		//Extract the id to delete
+		userID := r.PathValue("user_id")
+
+		// Check if the user is either trying to delete their own account or an admin deleting 
+		if !(utility.CheckPrivileges(r, w, &userID) || utility.CheckPrivileges(r, w, nil)) {
+			return
+		}
+
+		//Setting the userID in ordertable = NULL. This is to indicate that the user is deleted
+		_, err := cons.DB.Exec("UPDATE OrderTable SET UserID = NULL WHERE UserID = ?", userID)
+		if err != nil {
+			http.Error(w, "Failed to nullify user on ordertable", http.StatusInternalServerError)
+			return 
+		}
+
+		//Deleting the user 
+		_, err = cons.DB.Exec(cons.DeleteUser, userID)
+		if err != nil {
+			http.Error(w, "Failed to delete user.", http.StatusInternalServerError)
+			return 
+		}
+
+
+		w.WriteHeader(http.StatusNoContent)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
