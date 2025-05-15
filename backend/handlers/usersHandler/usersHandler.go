@@ -43,6 +43,9 @@ Example usage:
 # DELETE
 
 Deletes a user from the database, users can delete their own users, admins are allowed to delete other users.
+Due to GDPR and Accounting law in Norway, we have a duty to log our transactions, but we still need to delete personal informations.
+So we want to keep our orderstable and set the userID to NULL, while deleting the user.
+This way, ordertable won't have a conflict with having its Foreign key being deleted.
 
 General function flow:
 -> Extracts the userID to delete
