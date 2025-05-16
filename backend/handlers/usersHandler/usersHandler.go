@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
+	"github.com/jmoiron/sqlx"
 )
 
 /*
@@ -137,29 +138,18 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 
 		//Set a bool to check if Admin was given or not
 		adminGiven := false
+		var newAdmin Administrators
 		//Checks if role is being changed
 		if updateFields.RoleName.Set && updateFields.RoleName.Value != nil  {
 			if !utility.CheckPrivileges(r, w, nil) {
 				return
 			}
 
-			newAdmin := Administrators{
+			newAdmin = Administrators{
 				UserID: userID,
 				RoleName: "admin",
 			}
 
-			//Create a new entry for administrator table if user is to be given admin privileges
-			_, err = cons.DB.NamedExec(cons.InsertAdministrator, newAdmin)
-			if err != nil {
-				// If the error is a MySQL error, return
-				if utility.CheckSQLErr(err, w) {
-					return
-				}
-
-				log.Println("Error giving admin privileges: ", err)
-				http.Error(w, "Error giving admin privileges", http.StatusInternalServerError)
-				return
-			}
 			adminGiven = true
 		}
 
@@ -193,17 +183,36 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 		if setClause != "" {
 			query += setClause + " WHERE " + cons.USER_ID + " = ?"
 			args = append(args, userID)
-	
-			_, err = cons.DB.Exec(query, args...)
-			if err != nil {
-				if utility.CheckSQLErr(err, w) {
-					return
+		}
+
+		transactError := utility.Transact(func(tx *sqlx.Tx) error {
+			//Create a new entry for administrator table if user is to be given admin privileges
+
+			if adminGiven {
+				_, err = tx.NamedExec(cons.InsertAdministrator, newAdmin)
+				if err != nil {
+					return err
 				}
-	
-				log.Println("Error updating user: ", err)
-				http.Error(w, "Error updating user", http.StatusInternalServerError)
+			}
+
+			if setClause != "" {
+				//Update the user fields
+				_, err = tx.Exec(query, args...)
+				if err != nil {
+					return err
+				}
+			}
+
+			return nil // no errors! :D
+		})
+
+		if transactError != nil {
+			if utility.CheckSQLErr(transactError, w) {
 				return
 			}
+			log.Println("Error updating user: ", transactError)
+			http.Error(w, "Error updating user", http.StatusInternalServerError)
+			return
 		}
 
 		w.WriteHeader(http.StatusNoContent)
