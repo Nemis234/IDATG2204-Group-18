@@ -88,6 +88,7 @@ type UserPatch struct {
 	FirstName NullField[string] `json:"first_name" db:"FirstName"`
 	LastName  NullField[string] `json:"last_name" db:"LastName"`
 	Address   NullField[string] `json:"address" db:"Address"`
+	Role      NullField[string] `json:"role" db:"RoleName"`
 }
 
 type Member struct {

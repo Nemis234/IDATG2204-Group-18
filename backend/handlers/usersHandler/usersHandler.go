@@ -15,6 +15,7 @@ import (
 UserHandler support these methods:
 
   - GET retrieve user info with the given user id.
+  - PATCH requests to update indevidual fields for a user.
   - DELETE deletes a use from the database.
 
 # GET
@@ -35,10 +36,37 @@ Example usage:
 			"email": "john_doe@gmail.com",
 			"first_name": "John",
 			"last_name": "Doe",
-			"address": "Yolostreet 15",
+			"address": "Yolostreet 15"
+		},
+	]
+
+# PATCH
+
+Updating individual fields for the user. Some fields require specific attention:
+
+Password: Password is recieved in Raw form and hashed before used to update the field.
+Role: Must first check privileges, only admins can grant another user admin privileges.
+
+General function flow:
+->
+
+Example usage:
+
+	Method: PATCH
+	Route: /users/d2054caf-1155-47a6-8791-3222c9d6beb8
+
+	Request:
+	[
+		{
+			"password": "newPassword",
+			"email": "newEmail@gmail.com",
 			"role": "admin"
 		},
 	]
+
+	Response:
+	HTTP code: 204 NO Content
+
 
 # DELETE
 
@@ -84,7 +112,18 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPut:
 		http.Error(w, "Method not implemented", http.StatusNotImplemented)
 	case http.MethodPatch:
-		http.Error(w, "Method not implemented", http.StatusNotImplemented)
+		//Extract the id to delete
+		userID := r.PathValue("user_id")
+
+		// Check if user is logged in with a JWT token
+		if !utility.CheckPrivileges(r, w, &userID) {
+			return
+		}
+
+		
+
+
+		w.WriteHeader(http.StatusNoContent)
 	case http.MethodDelete:
 		
 		//Extract the id to delete
@@ -146,8 +185,7 @@ Example usage:
 			"email": "john_doe@gmail.com",
 			"first_name": "John",
 			"last_name": "Doe",
-			"address": "Yolostreet 15",
-			"role": "admin"
+			"address": "Yolostreet 15"
 		},
 		{
 			"user_id": "8d29df7f-887d-4a02-aa78-89f25a669a3a",
@@ -156,8 +194,7 @@ Example usage:
 			"email": "jane_doe@gmail.com",
 			"first_name": "Jane",
 			"last_name": "Doe",
-			"address": "Main Street 5",
-			"role": "user"
+			"address": "Main Street 5"
 		}
 	]
 
