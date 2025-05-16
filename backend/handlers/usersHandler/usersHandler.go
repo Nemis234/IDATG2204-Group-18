@@ -48,7 +48,12 @@ Password: Password is recieved in Raw form and hashed before used to update the 
 Role: Must first check privileges, only admins can grant another user admin privileges.
 
 General function flow:
-->
+-> Checks if user i logged in with privileges
+-> Extracts the fields to update from payload
+-> Check if admin role is being updated, if so check admin privileges, then insert into the administrator table
+-> Check if password is being updated, if so hash the password.
+-> Update the user table.
+-> Write a respond to the client (204 No Content)
 
 Example usage:
 
@@ -112,6 +117,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPut:
 		http.Error(w, "Method not implemented", http.StatusNotImplemented)
 	case http.MethodPatch:
+
 		//Extract the id to delete
 		userID := r.PathValue("user_id")
 
@@ -129,6 +135,8 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		//Set a bool to check if Admin was given or not
+		adminGiven := false
 		//Checks if role is being changed
 		if updateFields.RoleName.Set && updateFields.RoleName.Value != nil  {
 			if !utility.CheckPrivileges(r, w, nil) {
@@ -152,12 +160,50 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, "Error giving admin privileges", http.StatusInternalServerError)
 				return
 			}
+			adminGiven = true
 		}
 
 		//Checks if pasword is one of the fields to update
 		if updateFields.Password.Set && updateFields.Password.Value != nil  {
-			log.Println("Password is being changed") 
-			//hash the password here 
+
+			//Encrypting the new password
+			hashedPassword, err := utility.HashPassword(*updateFields.Password.Value)
+			if err != nil {
+				log.Println("Failed to hash password.")
+				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+				return
+			}
+
+			updateFields.Password.Value = &hashedPassword
+		}
+
+
+		//Update the fields 
+		updateFields.RoleName = NullField[string]{}  // Must be set back to custom NullField, this is due to user table in database does not have a Role Field
+
+		query := "UPDATE " + cons.USERS_TABLE + " SET "
+
+		setClause, args := utility.BuildUpdateQuery(updateFields)
+
+		if setClause == "" && !adminGiven{
+			http.Error(w, "No fields to update", http.StatusBadRequest)
+			return
+		}
+		
+		if setClause != "" {
+			query += setClause + " WHERE " + cons.USER_ID + " = ?"
+			args = append(args, userID)
+	
+			_, err = cons.DB.Exec(query, args...)
+			if err != nil {
+				if utility.CheckSQLErr(err, w) {
+					return
+				}
+	
+				log.Println("Error updating user: ", err)
+				http.Error(w, "Error updating user", http.StatusInternalServerError)
+				return
+			}
 		}
 
 		w.WriteHeader(http.StatusNoContent)
