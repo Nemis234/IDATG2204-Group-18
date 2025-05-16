@@ -60,7 +60,7 @@ Example usage:
 		{
 			"password": "newPassword",
 			"email": "newEmail@gmail.com",
-			"role": "admin"
+			"role_name": "admin"
 		},
 	]
 
@@ -120,8 +120,45 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		
+		//Extract the data from the payload
+		var updateFields UserPatch
+		err := json.NewDecoder(r.Body).Decode(&updateFields)
+		if err != nil {
+			log.Println("Error decoding request body: ", err)
+			http.Error(w, "Invalid request body", http.StatusBadRequest)
+			return
+		}
 
+		//Checks if role is being changed
+		if updateFields.RoleName.Set && updateFields.RoleName.Value != nil  {
+			if !utility.CheckPrivileges(r, w, nil) {
+				return
+			}
+
+			newAdmin := Administrators{
+				UserID: userID,
+				RoleName: "admin",
+			}
+
+			//Create a new entry for administrator table if user is to be given admin privileges
+			_, err = cons.DB.NamedExec(cons.InsertAdministrator, newAdmin)
+			if err != nil {
+				// If the error is a MySQL error, return
+				if utility.CheckSQLErr(err, w) {
+					return
+				}
+
+				log.Println("Error giving admin privileges: ", err)
+				http.Error(w, "Error giving admin privileges", http.StatusInternalServerError)
+				return
+			}
+		}
+
+		//Checks if pasword is one of the fields to update
+		if updateFields.Password.Set && updateFields.Password.Value != nil  {
+			log.Println("Password is being changed") 
+			//hash the password here 
+		}
 
 		w.WriteHeader(http.StatusNoContent)
 	case http.MethodDelete:

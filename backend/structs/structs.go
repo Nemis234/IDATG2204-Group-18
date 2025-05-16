@@ -88,7 +88,7 @@ type UserPatch struct {
 	FirstName NullField[string] `json:"first_name" db:"FirstName"`
 	LastName  NullField[string] `json:"last_name" db:"LastName"`
 	Address   NullField[string] `json:"address" db:"Address"`
-	Role      NullField[string] `json:"role" db:"RoleName"`
+	RoleName      NullField[string] `json:"role_name" db:"RoleName"`
 }
 
 type Member struct {
@@ -170,4 +170,9 @@ type JWTToken struct {
     UserID string `json:"user_id" db:"UserID"`
     Role   *string `json:"role" db:"Role"`
     jwt.RegisteredClaims
+}
+
+type Administrators struct {
+	UserID    string	`json:"user_id" db:"UserID"`
+	RoleName      string	`json:"role_name" db:"RoleName"`
 }
