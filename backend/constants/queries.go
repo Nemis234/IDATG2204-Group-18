@@ -51,6 +51,11 @@ var DeleteUser = "DELETE FROM " + USERS_TABLE + " WHERE " + USER_ID + " = ?"
 var QueryUser = "SELECT * FROM " + USERS_TABLE + " WHERE " + USER_ID + " = ?"
 var QueryUsers = "SELECT * FROM " + USERS_TABLE
 
+var QueryMember = "SELECT * FROM " + MEMBER_TABLE + " WHERE " + USER_ID + " = ?"
+var InsertMember = "INSERT INTO " + MEMBER_TABLE + " (" + USER_ID + ", " + MEMBERSHIP_LEVEL + ", " + MEMBERSHIP_START + ") VALUES (:" + USER_ID + ", :" + MEMBERSHIP_LEVEL + ", :" + MEMBERSHIP_START + ")"
+var UpdateMember = "UPDATE " + MEMBER_TABLE + " SET " + MEMBERSHIP_LEVEL + " = :" + MEMBERSHIP_LEVEL + ", " + MEMBERSHIP_START + " = :" + MEMBERSHIP_START + " WHERE " + USER_ID + " = :" + USER_ID
+var DeleteMember = "DELETE FROM " + MEMBER_TABLE + " WHERE " + USER_ID + " = ?"
+
 var QueryCart = "SELECT * FROM " + CART_TABLE + " WHERE " + USER_ID + " = ?"
 var QueryCartItem = "SELECT * FROM " + CART_TABLE + " WHERE " + USER_ID + " = ? AND " + PRODUCT_ID + " = ?"
 var InsertCartItem = "INSERT INTO " + CART_TABLE + " (" + USER_ID + ", " + PRODUCT_ID + ", " + CART_QUANTITY + ") VALUES (:" + USER_ID + ", :" + PRODUCT_ID + ", :" + CART_QUANTITY + ")"
