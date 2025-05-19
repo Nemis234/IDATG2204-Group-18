@@ -31,7 +31,8 @@
 - [`GET /users` → `UsersHandler`](#users)
 - [`GET /users/{user_id}` → `UserHandler`](#user) WIP
 - [`GET /users/{user_id}/member` → `MemberHandler`](#member) WIP
-- [`GET /user/{user_id}/cart` → `CartHandler`](#cart) WIP
+- [`GET /user/{user_id}/cart` → `CartHandler`](#cart)
+- [`GET /user/{user_id}/cart/{product_id}` → `CartItemHandler`](#cart-item)
 - [`GET /users/{user_id}/reviews` → `UserReviewsHandler`](#userreviews)
 - [`GET /users/{user_id}/reviews/{product_id}` → `ReviewHandler`](#review)
 - [`POST /users/login` → `LoginHandler`](#login)
@@ -1102,7 +1103,125 @@ Example usage:
 <details>
 <summary>Details about `CartHandler`</summary>
 
-...
+CartHandler supports the following methods:
+  - GET: Get all cart items for a user
+  - POST: Add a new item to the cart
+  - DELETE: Delete all car items for a user
+
+Only administrators and the user themselves can access any endpoint.
+
+#### GET
+
+This method retrieves all cart items for a user. It requires the user ID to be passed in the URL path.
+
+Example usage:
+
+	Method: GET
+	URL: /users/456/cart
+
+	Response:
+	HTTP Status: 200 OK
+	Body:
+	[
+		{
+			"ProductID": "123",
+			"UserID": "456",
+			"Quantity": 2
+		},
+		{
+			"ProductID": "789",
+			"UserID": "456",
+			"Quantity": 1
+		}
+	]
+
+#### POST
+
+This method adds a new item to the cart for a user. It requires the user ID to be passed in the URL path and the product ID and quantity to be passed in the request body.
+
+Example usage:
+
+	Method: POST
+	URL: /users/456/cart
+	Body:
+	{
+		"ProductID": "123",
+		"Quantity": 2
+	}
+
+	Response:
+	HTTP Status: 201 Created
+
+#### DELETE
+
+This method deletes all cart items for a user. It requires the user ID to be passed in the URL path.
+
+Example usage:
+
+	Method: DELETE
+	URL: /users/456/cart
+	Response:
+	HTTP Status: 204 No Content
+
+
+</details>
+
+### Cart item
+<details>
+<summary>Details about `CartItemHandler`</summary>
+
+
+CartItemHandler supports the following methods:
+  - GET: Get a specific cart item for a user
+  - PUT: Update a specific cart item for a user
+  - DELETE: Delete a specific cart item for a user
+
+Only administrators and the user themselves can access any endpoint.
+
+#### GET
+
+This method retrieves a specific cart item for a user.
+It requires the user ID and product ID to be passed in the URL path.
+
+Example usage:
+
+	Method: GET
+	URL: /users/456/cart/123
+	Response:
+	HTTP Status: 200 OK
+	Body:
+	{
+		"ProductID": "123",
+		"UserID": "456",
+		"Quantity": 2
+	}
+
+#### PUT
+
+This method updates a specific cart item for a user.
+It requires the user ID and product ID to be passed in the URL path and the new quantity to be passed in the request body.
+Example usage:
+
+	Method: PUT
+	URL: /users/456/cart/123
+	Body:
+	{
+		"Quantity": 3
+	}
+	Response:
+	HTTP Status: 200 OK
+
+#### DELETE
+
+This method deletes a specific cart item for a user.
+It requires the user ID and product ID to be passed in the URL path.
+
+Example usage:
+
+	Method: DELETE
+	URL: /users/456/cart/123
+	Response:
+	HTTP Status: 204 No Content
 
 </details>
 
