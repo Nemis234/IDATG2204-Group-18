@@ -1363,16 +1363,7 @@ Example usage:
 #### Product review - Done
 
 
-#### Cart - WIP
-- Commenting - WIP
-- Plural
-    - GET - WIP
-    - POST - WIP
-- Singluar
-    - GET - WIP
-    - PUT - WIP
-    - PATCH - WIP
-    - DELETE - WIP
+#### Cart - Done
 
 #### Login - WIP
  - Commenting - WIP
