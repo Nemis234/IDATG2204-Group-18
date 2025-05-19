@@ -1434,21 +1434,10 @@ Example usage:
 
 #### Cart - Done
 
-#### Login - WIP
- - Commenting - WIP
- - POST - done
+#### Login - Done
 
 #### Members - Done
 
 #### Users review - Done
 
-#### Users - WIP
-- Commenting - WIP
-- Plural
-    - GET - done
-    - POST - done
-- Singluar
-    - GET - done
-    - PUT - WIP
-    - PATCH - WIP
-    - DELETE - WIP
+#### Users - Done
