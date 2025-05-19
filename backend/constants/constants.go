@@ -51,6 +51,10 @@ const (
 	USER_LASTNAME  = "LastName"
 	USER_ADDRESS   = "Address"
 
+	MEMBER_TABLE     = "Members"
+	MEMBERSHIP_LEVEL = "MembershipLevel"
+	MEMBERSHIP_START = "MembershipStart"
+
 	CART_TABLE    = "CartItem"
 	CART_QUANTITY = "Quantity"
 
