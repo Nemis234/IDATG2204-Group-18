@@ -1095,7 +1095,76 @@ Example usage:
 <details>
 <summary>Details about `MemberHandler`</summary>
 
-...
+
+MemberHandler supports the following methods:
+  - GET: Get member data for a user
+  - POST: Add a new member
+  - PUT: Update member data for a user
+  - DELETE: Delete member data for a user
+
+Only administrators and the user themselves can access any endpoint.
+
+#### GET
+
+This method retrieves member data for a user. It requires the user ID to be passed in the URL path.
+Example usage:
+
+	Method: GET
+	URL: /users/456/member
+	Response:
+	HTTP Status: 200 OK
+	Body:
+	{
+		"UserID": "456",
+		"MembershipLevel": "Gold",
+		"MembershipStart": "2023-01-01"
+	}
+
+#### POST
+
+This method adds a new member.
+It requires the user ID to be passed in the URL path and the membership level and start date to be passed in the request body.
+
+Example usage:
+
+	Method: POST
+	URL: /users/456/member
+	Body:
+	{
+		"MembershipLevel": "Gold",
+		"MembershipStart": "2023-01-01"
+	}
+	Response:
+	HTTP Status: 201 Created
+
+#### PUT
+
+This method updates member data for a user.
+It requires the user ID to be passed in the URL path and the membership level and start date to be passed in the request body.
+
+Example usage:
+
+	Method: PUT
+	URL: /users/456/member
+	Body:
+	{
+		"MembershipLevel": "Platinum",
+		"MembershipStart": "2023-01-01"
+	}
+	Response:
+	HTTP Status: 200 OK
+
+#### DELETE
+
+This method deletes member data for a user.
+It requires the user ID to be passed in the URL path.
+
+Example usage:
+
+	Method: DELETE
+	URL: /users/456/member
+	Response:
+	HTTP Status: 204 No Content
 
 </details>
 
