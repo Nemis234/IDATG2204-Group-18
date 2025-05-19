@@ -51,6 +51,9 @@ const (
 	USER_LASTNAME  = "LastName"
 	USER_ADDRESS   = "Address"
 
+	CART_TABLE    = "CartItem"
+	CART_QUANTITY = "Quantity"
+
 	ADMINSTRATORS_TABLE    = "Administrators"
 	ADMINSTRATORS_ROLENAME = "RoleName"
 )
