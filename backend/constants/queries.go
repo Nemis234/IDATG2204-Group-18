@@ -43,13 +43,20 @@ var InsertOrderStatus = "INSERT INTO " + ORDER_STATUS_TABLE + " (" + ORDER_STATU
 var UpdateOrderStatus = "UPDATE " + ORDER_STATUS_TABLE + " SET " + ORDER_STATUS_DESC + " = :" + ORDER_STATUS_DESC + " WHERE " + ORDER_STATUS_NAME + " = :" + ORDER_STATUS_NAME
 var DeleteOrderStatus = "DELETE FROM " + ORDER_STATUS_TABLE + " WHERE " + ORDER_STATUS_NAME + " = ?"
 
-var QueryUserLoginByEmail =  "SELECT u."+USER_ID+", u."+USER_USERNAME+", u."+USER_PASSWORD+", u."+USER_EMAIL+", u."+USER_FIRSTNAME+", u."+USER_LASTNAME+", u."+USER_LASTNAME+", a."+ADMINSTRATORS_ROLENAME+" FROM "+ USERS_TABLE +" u LEFT JOIN " + ADMINSTRATORS_TABLE + " a ON u."+USER_ID+" = a."+USER_ID+" WHERE u."+USER_EMAIL+"= ?"
-var QueryUserLoginByUsername = "SELECT u."+USER_ID+", u."+USER_USERNAME+", u."+USER_PASSWORD+", u."+USER_EMAIL+", u."+USER_FIRSTNAME+", u."+USER_LASTNAME+", u."+USER_LASTNAME+", a."+ADMINSTRATORS_ROLENAME+" FROM "+ USERS_TABLE +" u LEFT JOIN " + ADMINSTRATORS_TABLE + " a ON u."+USER_ID+" = a."+USER_ID+" WHERE u."+USER_USERNAME+"= ?"
+var QueryUserLoginByEmail = "SELECT u." + USER_ID + ", u." + USER_USERNAME + ", u." + USER_PASSWORD + ", u." + USER_EMAIL + ", u." + USER_FIRSTNAME + ", u." + USER_LASTNAME + ", u." + USER_LASTNAME + ", a." + ADMINSTRATORS_ROLENAME + " FROM " + USERS_TABLE + " u LEFT JOIN " + ADMINSTRATORS_TABLE + " a ON u." + USER_ID + " = a." + USER_ID + " WHERE u." + USER_EMAIL + "= ?"
+var QueryUserLoginByUsername = "SELECT u." + USER_ID + ", u." + USER_USERNAME + ", u." + USER_PASSWORD + ", u." + USER_EMAIL + ", u." + USER_FIRSTNAME + ", u." + USER_LASTNAME + ", u." + USER_LASTNAME + ", a." + ADMINSTRATORS_ROLENAME + " FROM " + USERS_TABLE + " u LEFT JOIN " + ADMINSTRATORS_TABLE + " a ON u." + USER_ID + " = a." + USER_ID + " WHERE u." + USER_USERNAME + "= ?"
 var QueryUserCountByEmailOrUsername = "SELECT COUNT(*) FROM " + USERS_TABLE + " WHERE Email = ? OR Username = ?"
-var InsertUser = "INSERT INTO " + USERS_TABLE + " (" + USER_ID + ", " + USER_USERNAME + ", " + USER_PASSWORD + ", " + USER_EMAIL + ", " + USER_FIRSTNAME + ", " + USER_LASTNAME + ", " + USER_ADDRESS + ") VALUES (:" + USER_ID + ", :" + USER_USERNAME + ", :" + USER_PASSWORD + ", :" + USER_EMAIL + ", :" + USER_FIRSTNAME + ", :" + USER_LASTNAME + ", :" + USER_ADDRESS +")"
-var DeleteUser = "DELETE FROM "+USERS_TABLE+" WHERE "+USER_ID+" = ?"
+var InsertUser = "INSERT INTO " + USERS_TABLE + " (" + USER_ID + ", " + USER_USERNAME + ", " + USER_PASSWORD + ", " + USER_EMAIL + ", " + USER_FIRSTNAME + ", " + USER_LASTNAME + ", " + USER_ADDRESS + ") VALUES (:" + USER_ID + ", :" + USER_USERNAME + ", :" + USER_PASSWORD + ", :" + USER_EMAIL + ", :" + USER_FIRSTNAME + ", :" + USER_LASTNAME + ", :" + USER_ADDRESS + ")"
+var DeleteUser = "DELETE FROM " + USERS_TABLE + " WHERE " + USER_ID + " = ?"
 var QueryUser = "SELECT * FROM " + USERS_TABLE + " WHERE " + USER_ID + " = ?"
 var QueryUsers = "SELECT * FROM " + USERS_TABLE
 
+var QueryCart = "SELECT * FROM " + CART_TABLE + " WHERE " + USER_ID + " = ?"
+var QueryCartItem = "SELECT * FROM " + CART_TABLE + " WHERE " + USER_ID + " = ? AND " + PRODUCT_ID + " = ?"
+var InsertCartItem = "INSERT INTO " + CART_TABLE + " (" + USER_ID + ", " + PRODUCT_ID + ", " + CART_QUANTITY + ") VALUES (:" + USER_ID + ", :" + PRODUCT_ID + ", :" + CART_QUANTITY + ")"
+var UpdateCartItem = "UPDATE " + CART_TABLE + " SET " + CART_QUANTITY + " = :" + CART_QUANTITY + " WHERE " + USER_ID + " = :" + USER_ID + " AND " + PRODUCT_ID + " = :" + PRODUCT_ID
+var DeleteCartItem = "DELETE FROM " + CART_TABLE + " WHERE " + USER_ID + " = ? AND " + PRODUCT_ID + " = ?"
+var DeleteCart = "DELETE FROM " + CART_TABLE + " WHERE " + USER_ID + " = ?"
+
 var QueryAdministrator = "SELECT * FROM " + ADMINSTRATORS_TABLE
-var InsertAdministrator = "INSERT INTO "+ ADMINSTRATORS_TABLE +" ("+USER_ID+", "+ADMINSTRATORS_ROLENAME+") VALUES (:"+USER_ID+", :"+ADMINSTRATORS_ROLENAME+")"
+var InsertAdministrator = "INSERT INTO " + ADMINSTRATORS_TABLE + " (" + USER_ID + ", " + ADMINSTRATORS_ROLENAME + ") VALUES (:" + USER_ID + ", :" + ADMINSTRATORS_ROLENAME + ")"
