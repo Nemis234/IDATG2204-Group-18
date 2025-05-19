@@ -30,7 +30,7 @@
 ### 👤 Users
 - [`GET /users` → `UsersHandler`](#users)
 - [`GET /users/{user_id}` → `UserHandler`](#user) WIP
-- [`GET /users/{user_id}/member` → `MemberHandler`](#member) WIP
+- [`GET /users/{user_id}/member` → `MemberHandler`](#member)
 - [`GET /user/{user_id}/cart` → `CartHandler`](#cart)
 - [`GET /user/{user_id}/cart/{product_id}` → `CartItemHandler`](#cart-item)
 - [`GET /users/{user_id}/reviews` → `UserReviewsHandler`](#userreviews)
@@ -1438,12 +1438,7 @@ Example usage:
  - Commenting - WIP
  - POST - done
 
-#### Members - WIP
-- Commenting - WIP
-- GET - WIP
-- POST - WIP
-- PUT - WIP
-- DELETE - WIP
+#### Members - Done
 
 #### Users review - Done
 
