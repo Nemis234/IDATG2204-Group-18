@@ -42,19 +42,6 @@ const (
 	ORDER_STATUS_NAME  = "StatusName"
 	ORDER_STATUS_DESC  = "StatusDesc"
 
-	ORDER_TABLE  = "OrderTable"
-	ORDER_ID     = "OrderID"
-	ORDER_DATE   = "OrderDate"
-	ORDER_STATUS = "OrderStatus"
-	ORDER_TOTAL  = "OrderTotal"
-
-	ORDER_ITEMS_TABLE = "OrderItem"
-	ORDER_QUANTITY    = "Quantity"
-
-	ORDER_STATUS_TABLE = "OrderStatus"
-	ORDER_STATUS_NAME  = "StatusName"
-	ORDER_STATUS_DESC  = "StatusDesc"
-
 	PAYMENT_TABLE  = "Payment"
 	PAYMENT_ID     = "PaymentID"
 	PAYMENT_METHOD = "PaymentMethod"
