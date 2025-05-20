@@ -97,3 +97,13 @@ CREATE TABLE Review (
     FOREIGN KEY (UserID) REFERENCES Users(UserID) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (ProductID) REFERENCES Product(ProductID) ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+CREATE INDEX idx_product_brand ON Product(Brand);
+
+CREATE INDEX idx_product_category ON Product(Category);
+
+CREATE INDEX ind_ordertable_userid ON OrderTable(UserID);
+
+CREATE INDEX idx_payment_orderid ON Payment(OrderID);
+
+CREATE INDEX idx_review_productid ON Review(ProductID);
