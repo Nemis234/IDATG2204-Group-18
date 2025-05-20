@@ -11,8 +11,8 @@ import (
 
 /*
 CategoriesHandler supports these HTTP methods:
-- GET: Retrieves a list of all categories from the database.
-- POST: Inserts a new category into the database.
+  - GET: Retrieves a list of all categories from the database.
+  - POST: Inserts a new category into the database.
 
 # GET
 
@@ -39,6 +39,9 @@ Example usage:
 
 POST handles requests to insert a new category into the database.
 It expects a JSON payload with the category details.
+
+Only admins can access this endpoint.
+
 Example usage:
 
 	Method: POST
@@ -60,9 +63,18 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 		cons.DB.Select(&categories, cons.QueryCategories)
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(categories)
+		if err := json.NewEncoder(w).Encode(categories); err != nil {
+			log.Println("Error encoding categories to JSON: ", err)
+			http.Error(w, "Error encoding categories to JSON", http.StatusInternalServerError)
+			return
+		}
 
 	case http.MethodPost:
+		// Check admin privileges
+		if !utility.CheckPrivileges(r, w, nil) {
+			return
+		}
+
 		var c Category
 		if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
 			http.Error(w, "Invalid request payload", http.StatusBadRequest)
@@ -89,9 +101,9 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 
 /*
 CategoryHandler supports these HTTP methods:
-- GET: Retrieves details of a specific category based on the name in the URL path.
-- PUT: Updates the details of a specific category.
-- DELETE: Deletes a specific category based on the name in the URL path.
+  - GET: Retrieves details of a specific category based on the name in the URL path.
+  - PUT: Updates the details of a specific category.
+  - DELETE: Deletes a specific category based on the name in the URL path.
 
 # GET
 
@@ -113,6 +125,9 @@ Example usage:
 
 PUT handles requests to update a specific category in the database.
 It expects a JSON payload with the category details.
+
+Only admins can access this endpoint.
+
 Example usage:
 
 	Method: PUT
@@ -129,6 +144,9 @@ Example usage:
 DELETE handles requests to delete a specific category from the database.
 It retrieves the category details from the database based on the provided name in the URL path,
 and deletes the category from the database.
+
+Only admins can access this endpoint.
+
 Example usage:
 
 	Method: DELETE
@@ -151,7 +169,11 @@ func CategoryHandler(w http.ResponseWriter, r *http.Request) {
 		cons.DB.Get(&cat, cons.QueryCategory, categoryName)
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(cat)
+		if err := json.NewEncoder(w).Encode(cat); err != nil {
+			log.Println("Error encoding category to JSON: ", err)
+			http.Error(w, "Error encoding category to JSON", http.StatusInternalServerError)
+			return
+		}
 
 	case http.MethodPut:
 		categoryName := r.PathValue("id")
@@ -159,6 +181,11 @@ func CategoryHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Category name is required", http.StatusBadRequest)
 			return
 		}
+		// Check admin privileges
+		if !utility.CheckPrivileges(r, w, nil) {
+			return
+		}
+
 		var c Category
 		if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
 			http.Error(w, "Invalid request payload", http.StatusBadRequest)
@@ -183,12 +210,20 @@ func CategoryHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Category name is required", http.StatusBadRequest)
 			return
 		}
-		_, err := cons.DB.Exec(cons.DeleteCategory, categoryName)
+		// Check admin privileges
+		if !utility.CheckPrivileges(r, w, nil) {
+			return
+		}
+
+		result, err := cons.DB.Exec(cons.DeleteCategory, categoryName)
 		if err != nil {
 			if utility.CheckSQLErr(err, w) {
 				return
 			}
 			http.Error(w, "Failed to delete category", http.StatusInternalServerError)
+			return
+		}
+		if utility.CheckDeleteResult(result, w) {
 			return
 		}
 		w.WriteHeader(http.StatusNoContent)

@@ -3,6 +3,8 @@ package structs
 import (
 	"encoding/json"
 	"time"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type NullField[T any] struct {
@@ -36,7 +38,7 @@ type Product struct {
 	BrandName     *string `json:"brand_name" db:"Brand"`
 }
 
-type PatchProduct struct {
+type ProductPatch struct {
 	ProductID     string             `json:"product_id" db:"ProductID"`
 	Name          NullField[string]  `json:"name" db:"ProductName"`
 	Description   NullField[string]  `json:"description" db:"ProductDesc"`
@@ -65,6 +67,29 @@ type User struct {
 	FirstName string  `json:"first_name" db:"FirstName"`
 	LastName  string  `json:"last_name" db:"LastName"`
 	Address   *string `json:"address" db:"Address"`
+	RoleName  *string `json:"RoleName" db:"RoleName"`
+}
+
+// This will only be used on POST users request, to create a new user.
+// This has less fields than the original, due to userID and Role being set by the backend.
+type NewUser struct {
+	Username  string  `json:"username" db:"Username"`
+	Password  string  `json:"password" db:"Password"` // Maybe not, yeah?
+	Email     string  `json:"email" db:"Email"`
+	FirstName string  `json:"first_name" db:"FirstName"`
+	LastName  string  `json:"last_name" db:"LastName"`
+	Address   *string `json:"address" db:"Address"`
+}
+
+type UserPatch struct {
+	UserID    string            `json:"user_id" db:"UserID"`
+	Username  NullField[string] `json:"username" db:"Username"`
+	Password  NullField[string] `json:"password" db:"Password"` // Maybe not, yeah?
+	Email     NullField[string] `json:"email" db:"Email"`
+	FirstName NullField[string] `json:"first_name" db:"FirstName"`
+	LastName  NullField[string] `json:"last_name" db:"LastName"`
+	Address   NullField[string] `json:"address" db:"Address"`
+	RoleName  NullField[string] `json:"role_name" db:"RoleName"`
 }
 
 type Member struct {
@@ -74,12 +99,21 @@ type Member struct {
 }
 
 type Order struct {
-	ID          string      `json:"order_id" db:"OrderID"`
+	OrderID     string      `json:"order_id" db:"OrderID"`
 	UserID      string      `json:"user_id" db:"UserID"`
 	OrderDate   *time.Time  `json:"order_date" db:"OrderDate"`
 	OrderStatus string      `json:"order_status" db:"OrderStatus"`
-	OrderTotal  int         `json:"order_total" db:"OrderTotal"`
+	OrderTotal  float64     `json:"order_total" db:"OrderTotal"`
 	Items       []OrderItem `json:"items"`
+}
+
+type OrderPatch struct {
+	OrderID     string               `json:"order_id" db:"OrderID"`
+	UserID      string               `json:"user_id" db:"UserID"`
+	OrderDate   NullField[time.Time] `json:"order_date" db:"OrderDate"`
+	OrderStatus NullField[string]    `json:"order_status" db:"OrderStatus"`
+	OrderTotal  NullField[float64]   `json:"order_total" db:"OrderTotal"`
+	Items       []OrderItem          `json:"items"`
 }
 
 type OrderItem struct {
@@ -97,15 +131,24 @@ type Payment struct {
 	PaymentID     string  `json:"payment_id" db:"PaymentID"`
 	OrderID       string  `json:"order_id" db:"OrderID"`
 	PaymentMethod string  `json:"payment_method" db:"PaymentMethod"`
-	Amount        float32 `json:"amount" db:"Amount"`
+	Amount        float64 `json:"amount" db:"Amount"`
 	PaymentDate   string  `json:"payment_date" db:"PaymentDate"`
 	PaymentStatus *string `json:"payment_status" db:"PaymentStatus"`
+}
+
+type PaymentPatch struct {
+	PaymentID     string               `json:"payment_id" db:"PaymentID"`
+	OrderID       string               `json:"order_id" db:"OrderID"`
+	PaymentMethod NullField[string]    `json:"payment_method" db:"PaymentMethod"`
+	Amount        NullField[float64]   `json:"amount" db:"Amount"`
+	PaymentDate   NullField[time.Time] `json:"payment_date" db:"PaymentDate"`
+	PaymentStatus NullField[string]    `json:"payment_status" db:"PaymentStatus"`
 }
 
 type CartItem struct {
 	UserID    string `json:"cart_id" db:"UserID"`
 	ProductID string `json:"product_id" db:"ProductID"`
-	Quantity  *int64 `json:"quantity" db:"Quantity"`
+	Quantity  *int   `json:"quantity" db:"Quantity"`
 }
 
 type Review struct {
@@ -114,4 +157,23 @@ type Review struct {
 	Comment   *string   `json:"comment" db:"Comment"`
 	Rating    *int16    `json:"rating" db:"Rating"`
 	PostDate  time.Time `json:"post_date" db:"PostDate"`
+}
+
+type ReviewPatch struct {
+	UserID    string               `json:"user_id" db:"UserID"`
+	ProductID string               `json:"product_id" db:"ProductID"`
+	Comment   NullField[string]    `json:"comment" db:"Comment"`
+	Rating    NullField[int16]     `json:"rating" db:"Rating"`
+	PostDate  NullField[time.Time] `json:"post_date" db:"PostDate"`
+}
+
+type JWTToken struct {
+	UserID string  `json:"user_id" db:"UserID"`
+	Role   *string `json:"role" db:"Role"`
+	jwt.RegisteredClaims
+}
+
+type Administrators struct {
+	UserID   string `json:"user_id" db:"UserID"`
+	RoleName string `json:"role_name" db:"RoleName"`
 }

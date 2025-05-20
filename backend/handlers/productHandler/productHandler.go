@@ -69,6 +69,9 @@ Example usage:
 
 When using the POST method, the request body should contain the product details in JSON format.
 Mandatory fields cannot be null, optional fields can be null.
+
+Only admins can access this endpoint.
+
 The request body should include the following fields:
 
 	{
@@ -206,8 +209,17 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(products)
+		if err := json.NewEncoder(w).Encode(products); err != nil {
+			log.Println("Error encoding products to JSON: ", err)
+			http.Error(w, "Error encoding products to JSON", http.StatusInternalServerError)
+			return
+		}
 	case http.MethodPost:
+		// Only admins can access this endpoint
+		if !utility.CheckPrivileges(r, w, nil) {
+			return
+		}
+
 		// Decode the request body into a Product struct
 		var product Product
 		err := json.NewDecoder(r.Body).Decode(&product)
@@ -223,17 +235,18 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if product.ProductID == "" {
-			// Generate a new product ID
-			err := cons.DB.Get(&product, "SELECT UUID() AS ProductID;")
-			if err != nil {
-				log.Println("Error generating product ID: ", err)
-				http.Error(w, "Error generating product ID", http.StatusInternalServerError)
+		// Generate a new product ID
+		err = cons.DB.Get(&product, "SELECT UUID() AS "+cons.PRODUCT_ID+";")
+		if err != nil {
+			if utility.CheckSQLErr(err, w) {
 				return
 			}
-			log.Println("Product ID: ", product.ProductID)
 
+			log.Println("Error generating product ID: ", err)
+			http.Error(w, "Error generating product ID", http.StatusInternalServerError)
+			return
 		}
+		log.Println("Product ID: ", product.ProductID)
 
 		id := product.ProductID
 
@@ -253,7 +266,11 @@ func ProductsHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusCreated)
 		// Return the ID of the newly created product
 		response := map[string]string{"id": id}
-		json.NewEncoder(w).Encode(response)
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			log.Println("Error encoding response to JSON: ", err)
+			http.Error(w, "Error encoding response to JSON", http.StatusInternalServerError)
+			return
+		}
 
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -294,6 +311,9 @@ Example usage:
 
 When using the PUT method, the request body should contain the product details in JSON format.
 Mandatory fields cannot be null, while optional can be null.
+
+Only admins can access this endpoint.
+
 The request body should include the following fields:
 
 	{
@@ -321,7 +341,9 @@ Example usage:
 		"brand_name": "Updated Brand"
 	}
 	Response:
-	HTTP code: 201 No Content
+	HTTP code: 200 OK
+
+# PATCH
 
 # PATCH
 
@@ -329,10 +351,15 @@ When using the PATCH method, the request body should contain the product details
 Any amount of fields can be updated, but mandatory fields cannot be null, while optional can be null.
 The request body can use any field(s) available in the PUT method, in the same format.
 
+Only admins can access this endpoint.
+
 # DELETE
 
 When using the DELETE method, the product will be deleted from the database.
 If the product is in a foreign key constraint, the delete will fail with a 409 Conflict error.
+
+Only admins can access this endpoint.
+
 Example usage:
 
 	Method: DELETE
@@ -344,7 +371,7 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("ProductHandler called with method: ", r.Method)
 	switch r.Method {
 	case http.MethodGet:
-		id := r.PathValue("id")
+		id := r.PathValue("product_id")
 		if id == "" {
 			http.Error(w, "ID is required", http.StatusBadRequest)
 			return
@@ -363,13 +390,23 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(product)
+		if err := json.NewEncoder(w).Encode(product); err != nil {
+			log.Println("Error encoding product to JSON: ", err)
+			http.Error(w, "Error encoding product to JSON", http.StatusInternalServerError)
+			return
+		}
 	case http.MethodPut:
-		id := r.PathValue("id")
+		id := r.PathValue("product_id")
 		if id == "" {
 			http.Error(w, "ID is required", http.StatusBadRequest)
 			return
 		}
+
+		// Only admins can access this endpoint
+		if !utility.CheckPrivileges(r, w, nil) {
+			return
+		}
+
 		// Decode the request body into a Product struct
 		var product Product
 		err := json.NewDecoder(r.Body).Decode(&product)
@@ -384,7 +421,7 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Validate mandatory fields
-		if product.Name == "" || product.Price <= 0 || product.StockQuantity <= 0 {
+		if product.Name == "" || product.Price < 0 || product.StockQuantity <= 0 {
 			http.Error(w, "Missing mandatory fields", http.StatusBadRequest)
 			return
 		}
@@ -405,14 +442,19 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 
 	case http.MethodPatch:
-		id := r.PathValue("id")
+		id := r.PathValue("product_id")
 		if id == "" {
 			http.Error(w, "ID is required", http.StatusBadRequest)
 			return
 		}
 
+		// Only admins can access this endpoint
+		if !utility.CheckPrivileges(r, w, nil) {
+			return
+		}
+
 		// Decode the request body into a Product struct
-		var product PatchProduct
+		var product ProductPatch
 		err := json.NewDecoder(r.Body).Decode(&product)
 		if err != nil {
 			log.Println("Error decoding request body: ", err)
@@ -451,13 +493,16 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 
 	case http.MethodDelete:
-		id := r.PathValue("id")
+		id := r.PathValue("product_id")
 		if id == "" {
 			http.Error(w, "ID is required", http.StatusBadRequest)
 			return
 		}
 
-		// Needs to check if an admin is preforming the delete
+		// Only admins can access this endpoint
+		if !utility.CheckPrivileges(r, w, nil) {
+			return
+		}
 
 		// Delete the product from the database
 		result, err := cons.DB.Exec(cons.DeleteProduct, id)
@@ -470,14 +515,7 @@ func ProductHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error deleting product", http.StatusInternalServerError)
 			return
 		}
-		affected, err := result.RowsAffected()
-		if err != nil {
-			log.Println("Error getting affected rows: ", err)
-			http.Error(w, "Error getting affected rows", http.StatusInternalServerError)
-			return
-		}
-		if affected == 0 {
-			http.Error(w, "Product not found", http.StatusNotFound)
+		if utility.CheckDeleteResult(result, w) {
 			return
 		}
 		// Return a 204 No Content response

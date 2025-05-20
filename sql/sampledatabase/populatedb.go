@@ -3,17 +3,28 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"math/rand"
 	"os"
+	"strings"
 	"time"
-    "github.com/google/uuid"
+
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func main() {
-	// Replace the "test_project" with the name of your database
-	dsn := "root:@tcp(127.0.0.1:3306)/idatg2204" // << replace this
+	var databasename string
+	rawName, err := os.ReadFile("DATABASE_NAME.txt")
+	if err != nil {
+		fmt.Println("Failed to read the name of the database from file, will use the default name written in the code.")
+		databasename = "idatg2204" //<---- REPLACE THIS MANUALLY IF YOU SEE THE ERROR OVER WHEN YOU RUN THIS CODE.
+	} else {
+		databasename = string(rawName)
+	}
+
+	dsn := "root:@tcp(127.0.0.1:3306)/" + databasename
 	os.Setenv("DSN", dsn)
 
 	//Open the database
@@ -32,23 +43,44 @@ func main() {
 	}
 	fmt.Println("Connected to the database")
 
+	//Creates the tables
+	sqlBytes, err := os.ReadFile("databasetables.sql")
+	if err != nil {
+		log.Fatal("Failed to read SQL file:", err)
+	}
+	sqlStatements := string(sqlBytes)
+
+	queries := strings.Split(string(sqlStatements), ";")
+
+	for _, query := range queries {
+		trimmed := strings.TrimSpace(query)
+		if trimmed == "" {
+			continue
+		}
+
+		_, err := db.Exec(trimmed)
+		if err != nil {
+			log.Fatalf("Failed to execute SQL: %v\nStatement: %s", err, trimmed)
+		}
+	}
+
 	//Creating a uuid for users to be put in the sample database.
 	userIDs := []string{}
-	for i := 0; i < 4; i++{
+	for i := 0; i < 4; i++ {
 		id := uuid.New()
 		userIDs = append(userIDs, id.String())
 	}
-	
+
 	//Creating a uuid for products to be put in the sample database.
 	productIDs := []string{}
-	for i := 0; i < 20; i++{
+	for i := 0; i < 20; i++ {
 		id := uuid.New()
 		productIDs = append(productIDs, id.String())
 	}
 
 	//Creating a uuid for the order table to be put in the sample database.
 	orderIDs := []string{}
-	for i := 0; i < 10; i++{
+	for i := 0; i < 10; i++ {
 		id := uuid.New()
 		orderIDs = append(orderIDs, id.String())
 	}
@@ -87,11 +119,14 @@ func main() {
 	populateCartItems(db, userIDs, productIDs)
 
 	//Populate the member table
-	populateMember(db, userIDs)
+	populateMembers(db, userIDs)
 
 	//Udating ordertotals, payment amount accordingly to the other tables, to make it more realistic
 	updateOrderTotals(db)
 	updatePaymentAmounts(db)
+
+	//Assigning admin
+	assignAdmin(db, userIDs)
 }
 
 /*
@@ -100,7 +135,7 @@ func main() {
 *   db - This is the databased passed from the main function.
  */
 func clearTables(db *sql.DB) {
-	tables := []string{"OrderTable", "Users", "Product", "Brand", "Review", "CartItem", "Category", "OrderStatus", "OrderItem", "Payment", "Member"}
+	tables := []string{"OrderTable", "Users", "Administrators", "Members", "Product", "Brand", "Review", "CartItem", "Category", "OrderStatus", "OrderItem", "Payment"}
 	for _, table := range tables {
 		_, err := db.Exec(fmt.Sprintf("DELETE FROM %s", table))
 		if err != nil {
@@ -175,6 +210,7 @@ func populateUser(db *sql.DB, userID []string) {
 		fmt.Println("Failed to insert users.")
 		panic(err)
 	}
+
 	fmt.Println("Inserted 4 users.")
 
 }
@@ -201,6 +237,7 @@ func populateBrand(db *sql.DB) {
 		fmt.Println("Failed to insert brands.")
 		panic(err)
 	}
+
 	fmt.Println("Inserted 3 brands.")
 
 }
@@ -241,6 +278,7 @@ func populateCategory(db *sql.DB) {
 		fmt.Println("Failed to insert categories.")
 		panic(err)
 	}
+
 	fmt.Println("Inserted 10 categories into Category table.")
 }
 
@@ -302,6 +340,7 @@ func populateProduct(db *sql.DB, productID []string) {
 		fmt.Println("Failed to insert products.")
 		panic(err)
 	}
+
 	fmt.Println("Inserted 20 products into Product table.")
 }
 
@@ -349,7 +388,6 @@ func populateReview(db *sql.DB, userID []string, productID []string) {
 			panic(err)
 		}
 	}
-
 	fmt.Println("Inserted 10 reviews.")
 }
 
@@ -504,7 +542,7 @@ func populateCartItems(db *sql.DB, userID []string, productID []string) {
 		quantity := rand.Intn(3) + 1 //1 to 3
 
 		_, err := db.Exec(`INSERT INTO CartItem (UserID, ProductID, Quantity) VALUES (?, ?, ?)`,
-			userIDToStore , productIDToStore, quantity)
+			userIDToStore, productIDToStore, quantity)
 		if err != nil {
 			fmt.Println("Failed to insert cart items.")
 			panic(err)
@@ -517,9 +555,9 @@ func populateCartItems(db *sql.DB, userID []string, productID []string) {
 /*
 *   Populating the member table, this will create 3 members in the table.
  */
-func populateMember(db *sql.DB, userID []string) {
+func populateMembers(db *sql.DB, userID []string) {
 	query := `
-		INSERT INTO Member (UserID, MembershipLevel, MembershipStart) VALUES
+		INSERT INTO Members (UserID, MembershipLevel, MembershipStart) VALUES
 		(?, ?, ?),
 		(?, ?, ?),
 		(?, ?, ?)
@@ -589,4 +627,24 @@ func updatePaymentAmounts(db *sql.DB) {
 		panic(err)
 	}
 	fmt.Println("Updated payment amounts.")
+}
+
+/*
+*	Assigning adminstrators in the adminstrator table.
+*
+*	db - This is the databased passed from the main function.
+ */
+func assignAdmin(db *sql.DB, userID []string) {
+	query := `
+		INSERT INTO Administrators (UserID, RoleName) VALUES
+		(?, ?)
+	`
+	_, err := db.Exec(query,
+		userID[0], "admin",
+	)
+	if err != nil {
+		panic(err)
+	}
+	msg := fmt.Sprintf("Assign user: %s , as admin.", userID[0])
+	fmt.Println(msg)
 }
