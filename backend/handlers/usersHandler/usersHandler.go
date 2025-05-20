@@ -4,6 +4,7 @@ import (
 	cons "backend/constants"
 	. "backend/structs"
 	utility "backend/utility"
+	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -73,7 +74,6 @@ Example usage:
 	Response:
 	HTTP code: 204 NO Content
 
-
 # DELETE
 
 Deletes a user from the database, users can delete their own users, admins are allowed to delete other users.
@@ -140,13 +140,13 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 		adminGiven := false
 		var newAdmin Administrators
 		//Checks if role is being changed
-		if updateFields.RoleName.Set && updateFields.RoleName.Value != nil  {
+		if updateFields.RoleName.Set && updateFields.RoleName.Value != nil {
 			if !utility.CheckPrivileges(r, w, nil) {
 				return
 			}
 
 			newAdmin = Administrators{
-				UserID: userID,
+				UserID:   userID,
 				RoleName: "admin",
 			}
 
@@ -154,7 +154,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		//Checks if pasword is one of the fields to update
-		if updateFields.Password.Set && updateFields.Password.Value != nil  {
+		if updateFields.Password.Set && updateFields.Password.Value != nil {
 
 			//Encrypting the new password
 			hashedPassword, err := utility.HashPassword(*updateFields.Password.Value)
@@ -167,19 +167,18 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 			updateFields.Password.Value = &hashedPassword
 		}
 
-
-		//Update the fields 
-		updateFields.RoleName = NullField[string]{}  // Must be set back to custom NullField, this is due to user table in database does not have a Role Field
+		//Update the fields
+		updateFields.RoleName = NullField[string]{} // Must be set back to custom NullField, this is due to user table in database does not have a Role Field
 
 		query := "UPDATE " + cons.USERS_TABLE + " SET "
 
 		setClause, args := utility.BuildUpdateQuery(updateFields)
 
-		if setClause == "" && !adminGiven{
+		if setClause == "" && !adminGiven {
 			http.Error(w, "No fields to update", http.StatusBadRequest)
 			return
 		}
-		
+
 		if setClause != "" {
 			query += setClause + " WHERE " + cons.USER_ID + " = ?"
 			args = append(args, userID)
@@ -217,29 +216,41 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 
 		w.WriteHeader(http.StatusNoContent)
 	case http.MethodDelete:
-		
+
 		//Extract the id to delete
 		userID := r.PathValue("user_id")
 
-		// Check if the user is either trying to delete their own account or an admin deleting 
+		// Check if the user is either trying to delete their own account or an admin deleting
 		if !utility.CheckPrivileges(r, w, &userID) {
 			return
 		}
-
-		//Setting the userID in ordertable = NULL. This is to indicate that the user is deleted
-		_, err := cons.DB.Exec("UPDATE OrderTable SET UserID = NULL WHERE UserID = ?", userID)
-		if err != nil {
-			http.Error(w, "Failed to nullify user on ordertable", http.StatusInternalServerError)
-			return 
+		var result sql.Result
+		transactError := utility.Transact(func(tx *sqlx.Tx) error {
+			//Setting the userID in ordertable = NULL. This is to indicate that the user is deleted
+			_, err := tx.Exec("UPDATE OrderTable SET UserID = NULL WHERE UserID = ?", userID)
+			if err != nil {
+				log.Println("Failed to nullify user on ordertable")
+				return err
+			}
+			//Deleting the user
+			result, err = tx.Exec(cons.DeleteUser, userID)
+			if err != nil {
+				log.Println("Failed to delete user")
+				return err
+			}
+			return nil // no errors! :D
+		})
+		if transactError != nil {
+			if utility.CheckSQLErr(transactError, w) {
+				return
+			}
+			log.Println("Error deleting user: ", transactError)
+			http.Error(w, "Error deleting user", http.StatusInternalServerError)
+			return
 		}
-
-		//Deleting the user 
-		_, err = cons.DB.Exec(cons.DeleteUser, userID)
-		if err != nil {
-			http.Error(w, "Failed to delete user.", http.StatusInternalServerError)
-			return 
+		if utility.CheckDeleteResult(result, w) {
+			return
 		}
-
 
 		w.WriteHeader(http.StatusNoContent)
 	default:
