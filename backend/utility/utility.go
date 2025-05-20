@@ -45,7 +45,7 @@ func CheckDeleteResult(res sql.Result, w http.ResponseWriter) bool {
 	}
 	if affected == 0 {
 		log.Println("No rows affected by delete")
-		http.Error(w, "Order item not found", http.StatusNotFound)
+		http.Error(w, "Item not found", http.StatusNotFound)
 		return true
 	}
 	return false
@@ -77,7 +77,7 @@ func CheckSQLErr(err error, w http.ResponseWriter) bool {
 	}
 	if err == sql.ErrNoRows {
 		log.Println("No rows found error: ", err)
-		http.Error(w, "Item not found.", http.StatusNotFound)
+		http.Error(w, "Item not found", http.StatusNotFound)
 		return true
 	}
 	return false
@@ -156,7 +156,7 @@ Made with help from ChatGPT
 It generates a JWT-token, this stores the userID togethers with the corresponding role in a struct.
 This token will be used by the frontend/backend to check privileges.
 */
-func GenerateJWT(userID string , role *string, jwtKey []byte) (string, error) {
+func GenerateJWT(userID string, role *string, jwtKey []byte) (string, error) {
 
 	expirationTime := time.Now().Add(24 * time.Hour)
 
@@ -298,7 +298,6 @@ func CheckUser(r *http.Request, w http.ResponseWriter, query string, args ...any
 	}
 	return true
 }
-
 
 /*
 *   Hash the password before storing it. Using the bycrypt which is in GO's libary.
