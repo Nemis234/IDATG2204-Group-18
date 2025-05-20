@@ -15,7 +15,8 @@
 - [`GET /orders/{order_id}` → `OrderHandler`](#order)
 - [`GET /orders/{order_id}/items` → `OrderItemsHandler`](#orderitems)
 - [`GET /orders/{order_id}/items/{item_id}` → `OrderItemHandler`](#orderitem)
-- [`GET /orders/{order_id}/payment` → `PaymentHandler`](#payment) WIP
+- [`GET /orders/{order_id}/payment` → `PaymentsHandler`](#payments)
+- [`GET /orders/{order_id}/payment/{payment_id}` → `PaymentHandler`](#payment)
 
 ### 🔄 Order Status
 - [`GET /orderstatus` → `StatusHandler`](#status)
@@ -601,13 +602,123 @@ Example usage:
 
 </details>
 
+### Payments
+<details>
+<summary>Details about `PaymentsHandler`</summary>
+
+PaymentsHandler supports the following methods:
+  - GET: Get all payments for an order. The order ID is required in the URL path.
+  - POST: Create a new payment for an order. The order ID is required in the URL path.
+
+All methods require the user to have privileges to access the order.
+
+#### GET
+
+Get all payments for an order. The order ID is required in the URL path.
+
+Example usage:
+
+	Method: GET
+	Path: /orders/1/payments
+	Response:
+	[
+		{
+			"payment_id": "1",
+			"order_id": "1",
+			"payment_date": "2023-10-01",
+			"payment_amount": 100.00,
+			"payment_method": "credit_card",
+			"payment_status": "completed"
+		}
+	]
+
+#### POST
+
+Create a new payment for an order. The order ID is required in the URL path.
+
+The request body should contain the following fields:
+
+	{
+		  "payment_date": "string",
+		  "payment_amount": 0,
+		  "payment_method": "card"/"vipps"/"bank_transfer",
+		  "payment_status": "pending"/"successful"/"failed",
+	}
+
+Example usage:
+
+	Method: POST
+	Path: /orders/1/payments
+	{
+		"payment_date": "2023-10-01",
+		"payment_amount": 100.00,
+		"payment_method": "card",
+		"payment_status": "pending"
+	}
+	Response:
+	HTTP 201 Created
+	{
+		"id": "1"
+	}
+
+</details>
+
+
 ### Payment
 <details>
 <summary>Details about `PaymentHandler`</summary>
 
-...
+
+PaymentHandler supports the following methods:
+  - PUT: Update an existing payment. The payment ID and order ID are required in the URL path.
+  - PATCH: Partially update an existing payment. The payment ID and order ID are required in the URL path.
+  - DELETE: Delete an existing payment. The payment ID and order ID are required in the URL path.
+
+All methods require the user to have privileges to access the payment.
+
+#### PUT
+
+Update an existing payment. The payment ID and order ID are required in the URL path.
+The request body should contain the following fields:
+
+	{
+		  "payment_date": "string",
+		  "payment_amount": 0,
+		  "payment_method": "card"/"vipps"/"bank_transfer",
+		  "payment_status": "pending"/"successful"/"failed",
+	}
+
+Example usage:
+
+	Method: PUT
+	Path: /orders/1/payments/1
+	{
+		"payment_date": "2023-10-01",
+		"payment_amount": 100.00,
+		"payment_method": "card",
+		"payment_status": "successful"
+	}
+	Response:
+	HTTP 200 OK
+
+#### PATCH
+
+Partially update an existing payment. The payment ID and order ID are required in the URL path.
+The request body can contain any of the fields used in the PUT method.
+
+#### DELETE
+
+Delete an existing payment. The payment ID and order ID are required in the URL path.
+
+Example usage:
+
+	Method: DELETE
+	Path: /orders/1/payments/1
+	Response:
+	HTTP 204 No Content
 
 </details>
+
 
 ### Status
 <details>
@@ -1412,16 +1523,7 @@ Example usage:
 #### OrderItems - Done
 
 
-#### Payment - WIP
-- Commenting - WIP
-- Plural
-    - GET - WIP
-    - POST - WIP
-- Singluar
-    - GET - WIP
-    - PUT - WIP
-    - PATCH - WIP
-    - DELETE - WIP
+#### Payment - Done
 
 #### Status - Done
 
