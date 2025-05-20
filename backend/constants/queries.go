@@ -38,6 +38,12 @@ var InsertOrderItem = "INSERT INTO " + ORDER_ITEMS_TABLE + " (" + ORDER_ID + ", 
 var UpdateOrderItem = "UPDATE " + ORDER_ITEMS_TABLE + " SET " + ORDER_QUANTITY + " = :" + ORDER_QUANTITY + " WHERE " + ORDER_ID + " = :" + ORDER_ID + " AND " + PRODUCT_ID + " = :" + PRODUCT_ID
 var DeleteOrderItem = "DELETE FROM " + ORDER_ITEMS_TABLE + " WHERE " + ORDER_ID + " = ? AND " + PRODUCT_ID + " = ?"
 
+var QueryPayments = "SELECT * FROM " + PAYMENT_TABLE
+var QueryPayment = "SELECT * FROM " + PAYMENT_TABLE + " WHERE " + PAYMENT_ID + " = ?"
+var InsertPayment = "INSERT INTO " + PAYMENT_TABLE + " (" + PAYMENT_ID + ", " + ORDER_ID + ", " + PAYMENT_METHOD + ", " + PAYMENT_AMOUNT + ", " + PAYMENT_DATE + ", " + PAYMENT_STATUS + ") VALUES (:" + PAYMENT_ID + ", :" + ORDER_ID + ", :" + PAYMENT_METHOD + ", :" + PAYMENT_AMOUNT + ", :" + PAYMENT_DATE + ", :" + PAYMENT_STATUS + ")"
+var UpdatePayment = "UPDATE " + PAYMENT_TABLE + " SET " + PAYMENT_METHOD + " = :" + PAYMENT_METHOD + ", " + PAYMENT_AMOUNT + " = :" + PAYMENT_AMOUNT + ", " + PAYMENT_DATE + " = :" + PAYMENT_DATE + ", " + PAYMENT_STATUS + " = :" + PAYMENT_STATUS + " WHERE " + PAYMENT_ID + " = :" + PAYMENT_ID
+var DeletePayment = "DELETE FROM " + PAYMENT_TABLE + " WHERE " + PAYMENT_ID + " = ?"
+
 var QueryOrderStatus = "SELECT * FROM " + ORDER_STATUS_TABLE
 var InsertOrderStatus = "INSERT INTO " + ORDER_STATUS_TABLE + " (" + ORDER_STATUS_NAME + ", " + ORDER_STATUS_DESC + ") VALUES (:" + ORDER_STATUS_NAME + ", :" + ORDER_STATUS_DESC + ")"
 var UpdateOrderStatus = "UPDATE " + ORDER_STATUS_TABLE + " SET " + ORDER_STATUS_DESC + " = :" + ORDER_STATUS_DESC + " WHERE " + ORDER_STATUS_NAME + " = :" + ORDER_STATUS_NAME
