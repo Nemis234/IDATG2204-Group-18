@@ -3,6 +3,7 @@ package structs
 import (
 	"encoding/json"
 	"time"
+
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -69,8 +70,8 @@ type User struct {
 	RoleName  *string `json:"RoleName" db:"RoleName"`
 }
 
-//This will only be used on POST users request, to create a new user.
-//This has less fields than the original, due to userID and Role being set by the backend.
+// This will only be used on POST users request, to create a new user.
+// This has less fields than the original, due to userID and Role being set by the backend.
 type NewUser struct {
 	Username  string  `json:"username" db:"Username"`
 	Password  string  `json:"password" db:"Password"` // Maybe not, yeah?
@@ -88,7 +89,7 @@ type UserPatch struct {
 	FirstName NullField[string] `json:"first_name" db:"FirstName"`
 	LastName  NullField[string] `json:"last_name" db:"LastName"`
 	Address   NullField[string] `json:"address" db:"Address"`
-	RoleName      NullField[string] `json:"role_name" db:"RoleName"`
+	RoleName  NullField[string] `json:"role_name" db:"RoleName"`
 }
 
 type Member struct {
@@ -137,7 +138,7 @@ type Payment struct {
 
 type PaymentPatch struct {
 	PaymentID     string               `json:"payment_id" db:"PaymentID"`
-	OrderID       NullField[string]    `json:"order_id" db:"OrderID"`
+	OrderID       string               `json:"order_id" db:"OrderID"`
 	PaymentMethod NullField[string]    `json:"payment_method" db:"PaymentMethod"`
 	Amount        NullField[float64]   `json:"amount" db:"Amount"`
 	PaymentDate   NullField[time.Time] `json:"payment_date" db:"PaymentDate"`
@@ -167,12 +168,12 @@ type ReviewPatch struct {
 }
 
 type JWTToken struct {
-    UserID string `json:"user_id" db:"UserID"`
-    Role   *string `json:"role" db:"Role"`
-    jwt.RegisteredClaims
+	UserID string  `json:"user_id" db:"UserID"`
+	Role   *string `json:"role" db:"Role"`
+	jwt.RegisteredClaims
 }
 
 type Administrators struct {
-	UserID    string	`json:"user_id" db:"UserID"`
-	RoleName      string	`json:"role_name" db:"RoleName"`
+	UserID   string `json:"user_id" db:"UserID"`
+	RoleName string `json:"role_name" db:"RoleName"`
 }
