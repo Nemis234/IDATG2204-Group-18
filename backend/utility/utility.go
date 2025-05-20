@@ -189,7 +189,7 @@ then proceeds to validate it, then extracts the data before returning.
 func ValidateJWT(r *http.Request, jwtKey []byte) (*structs.JWTToken, error) {
 	authHeader := r.Header.Get("Authorization")
 	if authHeader == "" {
-		return nil, fmt.Errorf("No authorization header")
+		return nil, fmt.Errorf("no authorization header")
 	}
 
 	parts := strings.Split(authHeader, " ")
@@ -205,7 +205,7 @@ func ValidateJWT(r *http.Request, jwtKey []byte) (*structs.JWTToken, error) {
 	})
 
 	if err != nil || !token.Valid {
-		return nil, fmt.Errorf("Invalid token")
+		return nil, fmt.Errorf("invalid token")
 	}
 
 	return jwtToken, nil
