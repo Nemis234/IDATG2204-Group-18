@@ -9,6 +9,37 @@ import (
 	"net/http"
 )
 
+/*
+UserOrdersHandler suppoerts the following methods:
+  - GET: Returns all orders for a specific user. The user ID is passed as a URL parameter.
+
+# GET
+
+Example usage:
+
+	  	Method: GET
+	  	Path: /users/1234/orders
+		Response:
+		HTTP Status: 200 OK
+		[
+			{
+				"order_id": 1,
+				"user_id": 1234,
+				"order_date": "2023-10-01",
+				"total_amount": 100.00,
+				"status": "Shipped",
+				"items": none
+			},
+			{
+				"order_id": 2,
+				"user_id": 1234,
+				"order_date": "2023-10-02",
+				"total_amount": 50.00,
+				"status": "Pending",
+				"items": none
+			}
+		]
+*/
 func UserOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
