@@ -27,6 +27,7 @@ var DeleteBrand = "DELETE FROM " + BRANDS_TABLE + " WHERE " + BRAND_NAME + " = ?
 
 var QueryOrders = "SELECT * FROM " + ORDER_TABLE
 var QueryOrder = "SELECT * FROM " + ORDER_TABLE + " WHERE " + ORDER_ID + " = ?"
+var QueryOrdersByUser = "SELECT * FROM " + ORDER_TABLE + " WHERE " + USER_ID + " = ?"
 var InsertOrder = "INSERT INTO " + ORDER_TABLE + " (" + ORDER_ID + ", " + USER_ID + ", " + ORDER_DATE + ", " + ORDER_STATUS + ", " + ORDER_TOTAL + ") VALUES (:" + ORDER_ID + ", :" + USER_ID + ", :" + ORDER_DATE + ", :" + ORDER_STATUS + ", :" + ORDER_TOTAL + ")"
 var UpdateOrder = "UPDATE " + ORDER_TABLE + " SET " + ORDER_DATE + " = :" + ORDER_DATE + ", " + ORDER_STATUS + " = :" + ORDER_STATUS + ", " + ORDER_TOTAL + " = :" + ORDER_TOTAL + " WHERE " + ORDER_ID + " = :" + ORDER_ID
 var DeleteOrder = "DELETE FROM " + ORDER_TABLE + " WHERE " + ORDER_ID + " = ?"
