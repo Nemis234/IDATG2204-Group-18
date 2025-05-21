@@ -20,6 +20,18 @@ import (
 
 /*
 Thanks to https://www.reddit.com/r/golang/comments/a85ex4/comment/ec89v3b/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+How to use:
+
+	transactError := utility.Transact(func(tx *sqlx.Tx) error {
+		// Your database operations here
+		// Use tx instead of cons.DB for all operations
+		// Example:
+		_, err := tx.Exec("INSERT INTO users (name) VALUES (?)", "John Doe")
+		if err != nil {
+			return err
+		}
+		return nil
+	}
 */
 func Transact(fn func(*sqlx.Tx) error) error {
 	tx, err := cons.DB.Beginx()
@@ -297,6 +309,15 @@ func CheckUser(r *http.Request, w http.ResponseWriter, query string, args ...any
 		return false
 	}
 	return true
+}
+
+func GetUserID(r *http.Request, w http.ResponseWriter) *string {
+	jwtTokenData, err := ValidateJWT(r, cons.JwtKey)
+	if err != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return nil
+	}
+	return &jwtTokenData.UserID
 }
 
 /*
