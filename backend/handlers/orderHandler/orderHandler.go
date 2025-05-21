@@ -237,7 +237,6 @@ func OrdersHandler(w http.ResponseWriter, r *http.Request) {
 /*
 OrderHandler supports the following methods:
   - GET: Fetches a specific order by ID.
-  - PUT: Updates an existing order.
   - PATCH: Partially updates an existing order.
   - DELETE: Deletes an existing order.
 
@@ -287,35 +286,31 @@ User ID and Order ID cannot be changed.
 
 Mandatory fields cannot be null, while optional can be null.
 
-The request body should contain the following fields:
-
-	{
-	- order_date	(string)| optional	: The date of the order in ISO 8601 format.
-	- order_total	(float64)| mandatory	: The total amount of the order.
-	- order_status	(string)| mandatory	: The status of the order. Must be a status found in the OrderStatus table.
-	}
-
-Example usage:
-
-	Method: PUT
-	Route: /orders/12345
-	Request Body:
-	{
-		"order_date": "2023-10-01T12:00:00Z",
-		"order_status": "Pending",
-		"order_total": 100.50
-	}
-	Response:
-	Http Status: 200 OK
-
 # PATCH
 
 PATCH handles the partial update of an existing order in the database.
 The order ID is specified in the URL, and the order details are provided in the request body.
 
-The request body can use any field(s) available in the PUT method, in the same format.
-
 Mandatory fields cannot be null, while optional can be null.
+
+The request body can contain the following fields:
+
+	{
+	- order_date	(string)| optional	: The date of the order in ISO 8601 format.
+	- order_status	(string)| mandatory	: The status of the order. Must be a status found in the OrderStatus table.
+	}
+
+Example usage:
+
+	Method: PATCH
+	Route: /orders/12345
+	Request Body:
+	{
+		"order_date": "2023-10-01T12:00:00Z",
+		"order_status": "Pending",
+	}
+	Response:
+	Http Status: 200 OK
 
 # DELETE
 
@@ -375,58 +370,6 @@ func OrderHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error encoding order to JSON", http.StatusInternalServerError)
 			return
 		}
-
-	case http.MethodPut:
-		id := r.PathValue("order_id")
-		if id == "" {
-			log.Println("Order ID is required for PUT request")
-			http.Error(w, "Order ID is required", http.StatusBadRequest)
-			return
-		}
-
-		// Check user privileges
-		if !utility.CheckUser(r, w, cons.GetUserIDByOrderID, id) {
-			log.Println("User does not have privileges to "+r.Method+"  order with ID: ", id)
-			return
-		}
-
-		var order Order
-		if err := json.NewDecoder(r.Body).Decode(&order); err != nil {
-			log.Println("Error decoding order: ", err)
-			http.Error(w, "Error decoding order", http.StatusBadRequest)
-			return
-		}
-		if order.OrderID != "" && order.OrderID != id {
-			http.Error(w, "Order ID cannot be changed", http.StatusBadRequest)
-			return
-		}
-		if order.UserID != "" {
-			http.Error(w, "User ID cannot be changed", http.StatusBadRequest)
-			return
-		}
-		order.OrderID = id
-
-		// check for mandatory fields
-		if order.OrderTotal == 0 || order.OrderStatus == "" {
-			log.Println("Mandatory fields are missing")
-			http.Error(w, "Mandatory fields are missing", http.StatusBadRequest)
-			return
-		}
-
-		log.Println("Order : ", order)
-
-		// Update the order in the database
-		_, err := cons.DB.NamedExec(cons.UpdateOrder, order)
-		if err != nil {
-			if utility.CheckSQLErr(err, w) {
-				return
-			}
-			log.Println("Error updating order: ", err)
-			http.Error(w, "Error updating order", http.StatusInternalServerError)
-			return
-		}
-		log.Println("Order updated successfully with ID: ", order.OrderID)
-		w.WriteHeader(http.StatusOK)
 
 	case http.MethodPatch:
 		id := r.PathValue("order_id")
