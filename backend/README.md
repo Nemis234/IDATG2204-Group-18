@@ -30,7 +30,7 @@
 
 ### 👤 Users
 - `GET /users` → [`UsersHandler`](#users)
-- `GET /users/{user_id}` → [`UserHandler`](#user) WIP
+- `GET /users/{user_id}` → [`UserHandler`](#user)
 - `GET /users/{user_id}/member` → [`MemberHandler`](#member)
 - `GET /user/{user_id}/cart` → [`CartHandler`](#cart)
 - `GET /user/{user_id}/cart/{product_id}` → [`CartItemHandler`](#cart-item)
@@ -1187,7 +1187,87 @@ Example usage:
 <details>
 <summary>Details about `UserHandler`</summary>
 
-...
+
+UserHandler support these methods:
+
+  - GET retrieve user info with the given user id.
+  - PATCH requests to update indevidual fields for a user.
+  - DELETE deletes a use from the database.
+
+# GET
+
+Retrieves the user info from the database.
+
+Example usage:
+
+	Method: GET
+	Route: /users/0df01f83-a9a7-4afa-9b62-8d0bb9722849
+	Response:
+	HTTP code: 200 OK
+	[
+		{
+			"user_id": "0df01f83-a9a7-4afa-9b62-8d0bb9722849",
+			"username": "helloWorld",
+			"password": "$2a$10$a8ZHeovSX0/NitUQBkHHHeTe8FqVRlJEmet29pUYDjjqkQA6KGaum",
+			"email": "john_doe@gmail.com",
+			"first_name": "John",
+			"last_name": "Doe",
+			"address": "Yolostreet 15"
+		},
+	]
+
+# PATCH
+
+Updating individual fields for the user. Some fields require specific attention:
+
+Password: Password is recieved in Raw form and hashed before used to update the field.
+Role: Must first check privileges, only admins can grant another user admin privileges.
+
+General function flow:
+-> Checks if user i logged in with privileges
+-> Extracts the fields to update from payload
+-> Check if admin role is being updated, if so check admin privileges, then insert into the administrator table
+-> Check if password is being updated, if so hash the password.
+-> Update the user table.
+-> Write a respond to the client (204 No Content)
+
+Example usage:
+
+	Method: PATCH
+	Route: /users/d2054caf-1155-47a6-8791-3222c9d6beb8
+
+	Request:
+	[
+		{
+			"password": "newPassword",
+			"email": "newEmail@gmail.com",
+			"role_name": "admin"
+		},
+	]
+
+	Response:
+	HTTP code: 204 NO Content
+
+# DELETE
+
+Deletes a user from the database, users can delete their own users, admins are allowed to delete other users.
+Due to GDPR and Accounting law in Norway, we have a duty to log our transactions, but we still need to delete personal informations.
+So we want to keep our orderstable and set the userID to NULL, while deleting the user.
+This way, ordertable won't have a conflict with having its Foreign key being deleted.
+
+General function flow:
+-> Extracts the userID to delete
+-> Checking priviliges
+-> Set the userID in ordertable to NULL
+-> Delete the user from users
+-> Write a respond to the client (204 No Content)
+
+Example usage:
+
+	Method: DELETE
+	Route: /users/0df01f83-a9a7-4afa-9b62-8d0bb9722849
+	Response:
+	HTTP code: 204 No Content
 
 </details>
 
