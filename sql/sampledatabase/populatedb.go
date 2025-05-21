@@ -436,7 +436,7 @@ func populateOrderTable(db *sql.DB, userID []string, orderID []string) {
 		orderstatus := orderstatuses[i%len(orderstatuses)]
 		orderDate := time.Now().AddDate(0, 0, -rand.Intn(100)).Format("2006-01-02") // Random date in the past 100 days
 
-		_, err := db.Exec(`INSERT INTO OrderTable (OrderID, UserID, OrderDate, OrderStatus) VALUES (?, ?, ?, ?, ?)`,
+		_, err := db.Exec(`INSERT INTO OrderTable (OrderID, UserID, OrderDate, OrderStatus) VALUES (?, ?, ?, ?)`,
 			orderIDToStore, userIDToStore, orderDate, orderstatus)
 		if err != nil {
 			fmt.Println("Failed to insert orders.")
@@ -614,8 +614,8 @@ func updateOrderTotals(db *sql.DB) {
 func updatePaymentAmounts(db *sql.DB) {
 	_, err := db.Exec(`
         UPDATE Payment
-        JOIN OrderTable ON Payment.OrderID = OrderTable.OrderID
-        SET Payment.Amount = OrderTable.OrderTotal
+        JOIN OrderTotal ON Payment.OrderID = OrderTotal.OrderID
+        SET Payment.Amount = OrderTotal.OrderTotal
     `)
 	if err != nil {
 		panic(err)
