@@ -35,6 +35,8 @@ const (
 	ORDER_STATUS = "OrderStatus"
 	ORDER_TOTAL  = "OrderTotal"
 
+	ORDER_TOTAL_TABLE = "OrderTotal"
+
 	ORDER_ITEMS_TABLE = "OrderItem"
 	ORDER_QUANTITY    = "Quantity"
 
