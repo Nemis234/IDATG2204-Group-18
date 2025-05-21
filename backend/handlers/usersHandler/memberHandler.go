@@ -99,6 +99,7 @@ func MemberHandler(w http.ResponseWriter, r *http.Request) {
 			if utility.CheckSQLErr(err, w) {
 				return
 			}
+			log.Println("Error getting member data:", err)
 			http.Error(w, "Error getting member data", http.StatusNotFound)
 			return
 		}
