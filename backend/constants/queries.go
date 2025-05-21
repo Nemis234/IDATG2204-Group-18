@@ -25,11 +25,11 @@ var InsertBrand = "INSERT INTO " + BRANDS_TABLE + " (" + BRAND_NAME + ", " + BRA
 var UpdateBrand = "UPDATE " + BRANDS_TABLE + " SET " + BRAND_DESC + " = :" + BRAND_DESC + " WHERE " + BRAND_NAME + " = :" + BRAND_NAME
 var DeleteBrand = "DELETE FROM " + BRANDS_TABLE + " WHERE " + BRAND_NAME + " = ?"
 
-var QueryOrders = "SELECT * FROM " + ORDER_TABLE
-var QueryOrder = "SELECT * FROM " + ORDER_TABLE + " WHERE " + ORDER_ID + " = ?"
-var QueryOrdersByUser = "SELECT * FROM " + ORDER_TABLE + " WHERE " + USER_ID + " = ?"
-var InsertOrder = "INSERT INTO " + ORDER_TABLE + " (" + ORDER_ID + ", " + USER_ID + ", " + ORDER_DATE + ", " + ORDER_STATUS + ", " + ORDER_TOTAL + ") VALUES (:" + ORDER_ID + ", :" + USER_ID + ", :" + ORDER_DATE + ", :" + ORDER_STATUS + ", :" + ORDER_TOTAL + ")"
-var UpdateOrder = "UPDATE " + ORDER_TABLE + " SET " + ORDER_DATE + " = :" + ORDER_DATE + ", " + ORDER_STATUS + " = :" + ORDER_STATUS + ", " + ORDER_TOTAL + " = :" + ORDER_TOTAL + " WHERE " + ORDER_ID + " = :" + ORDER_ID
+var QueryOrders = "SELECT * FROM " + ORDER_TOTAL_TABLE
+var QueryOrder = "SELECT * FROM " + ORDER_TOTAL_TABLE + " WHERE " + ORDER_ID + " = ?"
+var QueryOrdersByUser = "SELECT * FROM " + ORDER_TOTAL_TABLE + " WHERE " + USER_ID + " = ?"
+var InsertOrder = "INSERT INTO " + ORDER_TABLE + " (" + ORDER_ID + ", " + USER_ID + ", " + ORDER_DATE + ", " + ORDER_STATUS + ") VALUES (:" + ORDER_ID + ", :" + USER_ID + ", :" + ORDER_DATE + ", :" + ORDER_STATUS + ")"
+var UpdateOrder = "UPDATE " + ORDER_TABLE + " SET " + ORDER_DATE + " = :" + ORDER_DATE + ", " + ORDER_STATUS + " = :" + ORDER_STATUS + " WHERE " + ORDER_ID + " = :" + ORDER_ID
 var DeleteOrder = "DELETE FROM " + ORDER_TABLE + " WHERE " + ORDER_ID + " = ?"
 var GetUserIDByOrderID = "SELECT " + USER_ID + " FROM " + ORDER_TABLE + " WHERE " + ORDER_ID + " = ?"
 
