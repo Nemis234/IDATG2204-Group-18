@@ -54,7 +54,6 @@ CREATE TABLE IF NOT EXISTS OrderTable (
     UserID VARCHAR(50),
     OrderDate DATE,
     OrderStatus VARCHAR(50) NOT NULL,
-    OrderTotal DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (UserID) REFERENCES Users(UserID) ON UPDATE CASCADE,
     FOREIGN KEY (OrderStatus) REFERENCES OrderStatus(StatusName) ON UPDATE CASCADE
 );
@@ -67,6 +66,22 @@ CREATE TABLE IF NOT EXISTS OrderItem (
     FOREIGN KEY (OrderID) REFERENCES OrderTable(OrderID) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (ProductID) REFERENCES Product(ProductID) ON UPDATE CASCADE
 );
+
+CREATE OR REPLACE VIEW OrderTotal AS
+SELECT 
+    o.OrderID,
+    o.UserID,
+    o.OrderDate,
+    o.OrderStatus,
+    SUM(oi.Quantity * p.Price) AS OrderTotal
+FROM 
+    OrderTable o
+JOIN 
+    OrderItem oi ON o.OrderID = oi.OrderID
+JOIN 
+    Product p ON oi.ProductID = p.ProductID
+GROUP BY 
+    o.OrderID, o.UserID, o.OrderDate, o.OrderStatus;
 
 CREATE TABLE IF NOT EXISTS Payment (
     PaymentID VARCHAR(50) NOT NULL PRIMARY KEY,

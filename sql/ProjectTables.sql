@@ -67,6 +67,22 @@ CREATE TABLE OrderItem (
     FOREIGN KEY (ProductID) REFERENCES Product(ProductID) ON UPDATE CASCADE
 );
 
+CREATE OR REPLACE VIEW OrderTotal AS
+SELECT 
+    o.OrderID,
+    o.UserID,
+    o.OrderDate,
+    o.OrderStatus,
+    SUM(oi.Quantity * p.Price) AS OrderTotal
+FROM 
+    OrderTable o
+JOIN 
+    OrderItem oi ON o.OrderID = oi.OrderID
+JOIN 
+    Product p ON oi.ProductID = p.ProductID
+GROUP BY 
+    o.OrderID, o.UserID, o.OrderDate, o.OrderStatus;
+
 CREATE TABLE Payment (
     PaymentID VARCHAR(50) NOT NULL PRIMARY KEY,
     OrderID VARCHAR(50) NOT NULL,
