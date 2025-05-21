@@ -34,6 +34,7 @@
 - [`GET /users/{user_id}/member` → `MemberHandler`](#member)
 - [`GET /user/{user_id}/cart` → `CartHandler`](#cart)
 - [`GET /user/{user_id}/cart/{product_id}` → `CartItemHandler`](#cart-item)
+- [`GET /user/{user_id}/orders` → `UserOrdersHandler`](#user-orders)
 - [`GET /users/{user_id}/reviews` → `UserReviewsHandler`](#userreviews)
 - [`GET /users/{user_id}/reviews/{product_id}` → `ReviewHandler`](#review)
 - [`POST /users/login` → `LoginHandler`](#login)
@@ -1390,6 +1391,45 @@ Example usage:
 	URL: /users/456/cart/123
 	Response:
 	HTTP Status: 204 No Content
+
+</details>
+
+
+
+### User orders
+<details>
+<summary>Details about `UserOrdersHandler`</summary>
+
+
+UserOrdersHandler suppoerts the following methods:
+  - GET: Returns all orders for a specific user. The user ID is passed as a URL parameter.
+
+# GET
+
+Example usage:
+
+	  	Method: GET
+	  	Path: /users/1234/orders
+		Response:
+		HTTP Status: 200 OK
+		[
+			{
+				"order_id": 1,
+				"user_id": 1234,
+				"order_date": "2023-10-01",
+				"total_amount": 100.00,
+				"status": "Shipped",
+				"items": none
+			},
+			{
+				"order_id": 2,
+				"user_id": 1234,
+				"order_date": "2023-10-02",
+				"total_amount": 50.00,
+				"status": "Pending",
+				"items": none
+			}
+		]
 
 </details>
 
