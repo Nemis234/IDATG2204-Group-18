@@ -109,11 +109,8 @@ type Order struct {
 
 type OrderPatch struct {
 	OrderID     string               `json:"order_id" db:"OrderID"`
-	UserID      string               `json:"user_id" db:"UserID"`
 	OrderDate   NullField[time.Time] `json:"order_date" db:"OrderDate"`
 	OrderStatus NullField[string]    `json:"order_status" db:"OrderStatus"`
-	OrderTotal  NullField[float64]   `json:"order_total" db:"OrderTotal"`
-	Items       []OrderItem          `json:"items"`
 }
 
 type OrderItem struct {
