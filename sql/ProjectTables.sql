@@ -54,7 +54,6 @@ CREATE TABLE OrderTable (
     UserID VARCHAR(50) NOT NULL,
     OrderDate DATE,
     OrderStatus VARCHAR(50) NOT NULL,
-    OrderTotal DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (UserID) REFERENCES Users(UserID) ON UPDATE CASCADE,
     FOREIGN KEY (OrderStatus) REFERENCES OrderStatus(StatusName) ON UPDATE CASCADE
 );
