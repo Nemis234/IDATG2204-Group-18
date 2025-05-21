@@ -345,8 +345,6 @@ Example usage:
 
 # PATCH
 
-# PATCH
-
 When using the PATCH method, the request body should contain the product details in JSON format.
 Any amount of fields can be updated, but mandatory fields cannot be null, while optional can be null.
 The request body can use any field(s) available in the PUT method, in the same format.
