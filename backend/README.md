@@ -313,43 +313,31 @@ Admin users can place orders for any user.
 
 Mandatory fields cannot be null, while optional can be null.
 
+The JSON should be an array of objects.
 The request body should contain the following fields:
 
-	{
-	- user_id	(string)| mandatory	: The ID of the user placing the order.
-	- order_date	(string)| optional	: The date of the order in ISO 8601 format.
-	- order_total	(float64)| mandatory	: The total amount of the order.
-	- order_status	(string)| mandatory	: The status of the order, must be found in the OrderStatus table.
-	- items	(array of objects)| optional	: The order_items in the order. Each item must contain the product ID and quantity. See below for the format.
-
-		The order items should contain the following fields:
+	[
 		{
 		- product_id	(string)| mandatory	: The ID of the product.
 		- quantity		(int)| mandatory	: The quantity of the product.
 		}
-	}
+	]
 
 Example usage:
 
 	Method: POST
 	Route: /orders
 	Request Body:
-	{
-		"user_id": "67890",
-		"order_date": "2023-10-01T12:00:00Z",
-		"order_status": "Pending",
-		"order_total": 100.50,
-		"items": [
-			{
-				"product_id": "54321",
-				"quantity": 2
-			},
-			{
-				"product_id": "67890",
-				"quantity": 1
-			}
-		]
-	}
+	[
+		{
+			"product_id": "54321",
+			"quantity": 2
+		},
+		{
+			"product_id": "67890",
+			"quantity": 1
+		}
+	]
 	Response:
 	Http Status: 201 Created
 	{
