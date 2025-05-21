@@ -434,11 +434,10 @@ func populateOrderTable(db *sql.DB, userID []string, orderID []string) {
 		orderIDToStore := orderID[i%len(orderID)]
 		userIDToStore := userID[i%len(userID)]
 		orderstatus := orderstatuses[i%len(orderstatuses)]
-		ordertotal := 0                                                             //Using update to calculate this later
 		orderDate := time.Now().AddDate(0, 0, -rand.Intn(100)).Format("2006-01-02") // Random date in the past 100 days
 
-		_, err := db.Exec(`INSERT INTO OrderTable (OrderID, UserID, OrderDate, OrderStatus, OrderTotal) VALUES (?, ?, ?, ?, ?)`,
-			orderIDToStore, userIDToStore, orderDate, orderstatus, ordertotal)
+		_, err := db.Exec(`INSERT INTO OrderTable (OrderID, UserID, OrderDate, OrderStatus) VALUES (?, ?, ?, ?, ?)`,
+			orderIDToStore, userIDToStore, orderDate, orderstatus)
 		if err != nil {
 			fmt.Println("Failed to insert orders.")
 			panic(err)
@@ -599,11 +598,6 @@ func updateOrderTotals(db *sql.DB) {
             FROM OrderItem
             JOIN Product ON OrderItem.ProductID = Product.ProductID
             WHERE OrderItem.OrderID = ?`, orderID).Scan(&totalAmount)
-		if err != nil {
-			panic(err)
-		}
-
-		_, err = db.Exec("UPDATE OrderTable SET OrderTotal = ? WHERE OrderID = ?", totalAmount, orderID)
 		if err != nil {
 			panic(err)
 		}
