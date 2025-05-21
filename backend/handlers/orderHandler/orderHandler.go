@@ -142,41 +142,12 @@ func OrdersHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error decoding order", http.StatusBadRequest)
 			return
 		}
-		var total float64
-		transactError1 := utility.Transact(func(tx *sqlx.Tx) error {
-			for _, item := range items {
-				var product Product
-				if item.ProductID == "" {
-					log.Println("Product ID is required")
-					return fmt.Errorf("product ID is required")
-				}
-				err := tx.Get(&product, cons.QueryProduct, item.ProductID)
-				if err != nil {
-					return err
-				}
-				total += product.Price * float64(item.Quantity)
-			}
-			return nil
-		})
-		if transactError1 != nil {
-			if utility.CheckSQLErr(transactError1, w) {
-				return
-			}
-			if transactError1.Error() == "product ID is required" {
-				http.Error(w, "Product ID is required", http.StatusBadRequest)
-				return
-			}
-			log.Println("Error fetching product: ", transactError1)
-			http.Error(w, "Error fetching product", http.StatusInternalServerError)
-			return
-		}
 
 		date := time.Now()
 		order := Order{
 			UserID:      *userID,
 			OrderDate:   &date,
 			OrderStatus: cons.ORDER_STATUS_PENDING,
-			OrderTotal:  total,
 			Items:       items,
 		}
 
