@@ -2,7 +2,6 @@ package orderHandler
 
 import (
 	cons "backend/constants"
-	"backend/structs"
 	. "backend/structs"
 	utility "backend/utility"
 	"encoding/json"
@@ -10,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -67,43 +67,31 @@ Admin users can place orders for any user.
 
 Mandatory fields cannot be null, while optional can be null.
 
+The JSON should be an array of objects.
 The request body should contain the following fields:
 
-	{
-	- user_id	(string)| mandatory	: The ID of the user placing the order.
-	- order_date	(string)| optional	: The date of the order in ISO 8601 format.
-	- order_total	(float64)| mandatory	: The total amount of the order.
-	- order_status	(string)| mandatory	: The status of the order, must be found in the OrderStatus table.
-	- items	(array of objects)| optional	: The order_items in the order. Each item must contain the product ID and quantity. See below for the format.
-
-		The order items should contain the following fields:
+	[
 		{
 		- product_id	(string)| mandatory	: The ID of the product.
 		- quantity		(int)| mandatory	: The quantity of the product.
 		}
-	}
+	]
 
 Example usage:
 
 	Method: POST
 	Route: /orders
 	Request Body:
-	{
-		"user_id": "67890",
-		"order_date": "2023-10-01T12:00:00Z",
-		"order_status": "Pending",
-		"order_total": 100.50,
-		"items": [
-			{
-				"product_id": "54321",
-				"quantity": 2
-			},
-			{
-				"product_id": "67890",
-				"quantity": 1
-			}
-		]
-	}
+	[
+		{
+			"product_id": "54321",
+			"quantity": 2
+		},
+		{
+			"product_id": "67890",
+			"quantity": 1
+		}
+	]
 	Response:
 	Http Status: 201 Created
 	{
@@ -138,17 +126,58 @@ func OrdersHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case http.MethodPost:
-		var order structs.Order
-		if err := json.NewDecoder(r.Body).Decode(&order); err != nil {
+		userID := utility.GetUserID(r, w)
+		if userID == nil {
+			return
+		}
+		// Check user privileges
+		if !utility.CheckPrivileges(r, w, userID) {
+			log.Println("User is not logged in or does not have privileges to make an order with ID: ", userID)
+			return
+		}
+
+		var items []OrderItem
+		if err := json.NewDecoder(r.Body).Decode(&items); err != nil {
 			log.Println("Error decoding order: ", err)
 			http.Error(w, "Error decoding order", http.StatusBadRequest)
 			return
 		}
-
-		// Check user privileges
-		if !utility.CheckPrivileges(r, w, &order.UserID) {
-			log.Println("User is not logged in or does not have privileges to make an order with ID: ", order.UserID)
+		var total float64
+		transactError1 := utility.Transact(func(tx *sqlx.Tx) error {
+			for _, item := range items {
+				var product Product
+				if item.ProductID == "" {
+					log.Println("Product ID is required")
+					return fmt.Errorf("product ID is required")
+				}
+				err := tx.Get(&product, cons.QueryProduct, item.ProductID)
+				if err != nil {
+					return err
+				}
+				total += product.Price * float64(item.Quantity)
+			}
+			return nil
+		})
+		if transactError1 != nil {
+			if utility.CheckSQLErr(transactError1, w) {
+				return
+			}
+			if transactError1.Error() == "product ID is required" {
+				http.Error(w, "Product ID is required", http.StatusBadRequest)
+				return
+			}
+			log.Println("Error fetching product: ", transactError1)
+			http.Error(w, "Error fetching product", http.StatusInternalServerError)
 			return
+		}
+
+		date := time.Now()
+		order := Order{
+			UserID:      *userID,
+			OrderDate:   &date,
+			OrderStatus: cons.ORDER_STATUS_PENDING,
+			OrderTotal:  total,
+			Items:       items,
 		}
 
 		// Generate a new order ID
