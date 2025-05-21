@@ -30,8 +30,8 @@ Example usage:
 	Body:
 	{
 		"UserID": "456",
-		"MembershipLevel": "Gold",
-		"MembershipStart": "2023-01-01"
+		"membership_level": "Gold",
+		"membership_start": "2023-01-01"
 	}
 
 # POST
@@ -45,8 +45,8 @@ Example usage:
 	URL: /users/456/member
 	Body:
 	{
-		"MembershipLevel": "Gold",
-		"MembershipStart": "2023-01-01"
+		"membership_level": "Gold",
+		"membership_start": "2023-01-01"
 	}
 	Response:
 	HTTP Status: 201 Created
