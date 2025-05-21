@@ -3,41 +3,41 @@
 ## API Endpoints
 
 ### 🏷️ Brands
-- [`GET /brands` → `BrandsHandler`](#brands)
-- [`GET /brands/{id}` → `BrandHandler`](#brand)
+- `GET /brands` → [`BrandsHandler`](#brands)
+- `GET /brands/{id}` → [`BrandHandler`](#brand)
 
 ### 📂 Categories
-- [`GET /categories` → `CategoriesHandler`](#categories)
-- [`GET /categories/{id}` → `CategoryHandler`](#category)
+- `GET /categories` → [`CategoriesHandler`](#categories)
+- `GET /categories/{id}` → [`CategoryHandler`](#category)
 
 ### 📦 Orders
-- [`GET /orders` → `OrdersHandler`](#orders)
-- [`GET /orders/{order_id}` → `OrderHandler`](#order)
-- [`GET /orders/{order_id}/items` → `OrderItemsHandler`](#orderitems)
-- [`GET /orders/{order_id}/items/{item_id}` → `OrderItemHandler`](#orderitem)
-- [`GET /orders/{order_id}/payment` → `PaymentsHandler`](#payments)
-- [`GET /orders/{order_id}/payment/{payment_id}` → `PaymentHandler`](#payment)
+- `GET /orders` → [`OrdersHandler`](#orders)
+- `GET /orders/{order_id}` → [`OrderHandler`](#order)
+- `GET /orders/{order_id}/items` → [`OrderItemsHandler`](#orderitems)
+- `GET /orders/{order_id}/items/{item_id}` → [`OrderItemHandler`](#orderitem)
+- `GET /orders/{order_id}/payment` → [`PaymentsHandler`](#payments)
+- `GET /orders/{order_id}/payment/{payment_id}` → [`PaymentHandler`](#payment)
 
 ### 🔄 Order Status
-- [`GET /orderstatus` → `StatusHandler`](#status)
-- [`GET /orderstatus/{statusName}` → `UpdateStatusHandler`](#update-status)
+- `GET /orderstatus` → [`StatusHandler`](#status)
+- `GET /orderstatus/{statusName}` → [`UpdateStatusHandler`](#update-status)
 
 ### 🛍️ Products
-- [`GET /products` → `ProductsHandler`](#products)
-- [`GET /products/{product_id}` → `ProductHandler`](#product)
-- [`GET /products/{product_id}/reviews` → `ProductReviewsHandler`](#productreviews)
-- [`GET /products/{product_id}/reviews/{user_id}` → `ReviewHandler`](#review)
+- `GET /products` → [`ProductsHandler`](#products)
+- `GET /products/{product_id}` → [`ProductHandler`](#product)
+- `GET /products/{product_id}/reviews` → [`ProductReviewsHandler`](#productreviews)
+- `GET /products/{product_id}/reviews/{user_id}` → [`ReviewHandler`](#review)
 
 ### 👤 Users
-- [`GET /users` → `UsersHandler`](#users)
-- [`GET /users/{user_id}` → `UserHandler`](#user) WIP
-- [`GET /users/{user_id}/member` → `MemberHandler`](#member)
-- [`GET /user/{user_id}/cart` → `CartHandler`](#cart)
-- [`GET /user/{user_id}/cart/{product_id}` → `CartItemHandler`](#cart-item)
-- [`GET /user/{user_id}/orders` → `UserOrdersHandler`](#user-orders)
-- [`GET /users/{user_id}/reviews` → `UserReviewsHandler`](#userreviews)
-- [`GET /users/{user_id}/reviews/{product_id}` → `ReviewHandler`](#review)
-- [`POST /users/login` → `LoginHandler`](#login)
+- `GET /users` → [`UsersHandler`](#users)
+- `GET /users/{user_id}` → [`UserHandler`](#user) WIP
+- `GET /users/{user_id}/member` → [`MemberHandler`](#member)
+- `GET /user/{user_id}/cart` → [`CartHandler`](#cart)
+- `GET /user/{user_id}/cart/{product_id}` → [`CartItemHandler`](#cart-item)
+- `GET /user/{user_id}/orders` → [`UserOrdersHandler`](#user-orders)
+- `GET /users/{user_id}/reviews` → [`UserReviewsHandler`](#userreviews)
+- `GET /users/{user_id}/reviews/{product_id}` → [`ReviewHandler`](#review)
+- `POST /users/login` → [`LoginHandler`](#login)
 
 ---
 
