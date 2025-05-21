@@ -70,6 +70,7 @@ func main() {
 	router.HandleFunc("/users/{user_id}/member", usershandler.MemberHandler)
 	router.HandleFunc("/users/{user_id}/cart", usershandler.CartHandler)
 	router.HandleFunc("/users/{user_id}/cart/{product_id}", usershandler.CartItemHandler)
+	router.HandleFunc("/users/{user_id}/orders", usershandler.UserOrdersHandler)
 	router.HandleFunc("/users/{user_id}/reviews", usershandler.UserReviewsHandler)
 	router.HandleFunc("/users/{user_id}/reviews/{product_id}", usershandler.ReviewHandler)
 	// Only POST method is allowed for login
