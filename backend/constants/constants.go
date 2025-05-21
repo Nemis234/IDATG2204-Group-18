@@ -38,9 +38,10 @@ const (
 	ORDER_ITEMS_TABLE = "OrderItem"
 	ORDER_QUANTITY    = "Quantity"
 
-	ORDER_STATUS_TABLE = "OrderStatus"
-	ORDER_STATUS_NAME  = "StatusName"
-	ORDER_STATUS_DESC  = "StatusDesc"
+	ORDER_STATUS_TABLE   = "OrderStatus"
+	ORDER_STATUS_NAME    = "StatusName"
+	ORDER_STATUS_DESC    = "StatusDesc"
+	ORDER_STATUS_PENDING = "Pending"
 
 	PAYMENT_TABLE  = "Payment"
 	PAYMENT_ID     = "PaymentID"
