@@ -134,6 +134,7 @@ func MemberHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error checking member status", http.StatusInternalServerError)
 			return
 		}
+		member.UserID = userID
 		// Insert new member data
 		_, err = cons.DB.NamedExec(cons.InsertMember, member)
 		if err != nil {
