@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `administrators` (
   `UserID` varchar(50) NOT NULL,
   `RoleName` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dataark for tabell `administrators`
@@ -48,7 +48,7 @@ INSERT INTO `administrators` (`UserID`, `RoleName`) VALUES
 CREATE TABLE `brand` (
   `BrandName` varchar(50) NOT NULL,
   `BrandDesc` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dataark for tabell `brand`
@@ -69,7 +69,7 @@ CREATE TABLE `cartitem` (
   `UserID` varchar(50) NOT NULL,
   `ProductID` varchar(50) NOT NULL,
   `Quantity` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dataark for tabell `cartitem`
@@ -96,7 +96,7 @@ INSERT INTO `cartitem` (`UserID`, `ProductID`, `Quantity`) VALUES
 CREATE TABLE `category` (
   `CategoryName` varchar(50) NOT NULL,
   `CategoryDesc` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dataark for tabell `category`
@@ -124,7 +124,7 @@ CREATE TABLE `members` (
   `UserID` varchar(50) NOT NULL,
   `MembershipLevel` enum('Silver','Gold','Platinum') NOT NULL,
   `MembershipStart` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dataark for tabell `members`
@@ -145,7 +145,7 @@ CREATE TABLE `orderitem` (
   `OrderID` varchar(50) NOT NULL,
   `ProductID` varchar(50) NOT NULL,
   `Quantity` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dataark for tabell `orderitem`
@@ -182,7 +182,7 @@ INSERT INTO `orderitem` (`OrderID`, `ProductID`, `Quantity`) VALUES
 CREATE TABLE `orderstatus` (
   `StatusName` varchar(50) NOT NULL,
   `StatusDesc` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dataark for tabell `orderstatus`
@@ -209,7 +209,7 @@ CREATE TABLE `ordertable` (
   `UserID` varchar(50) NOT NULL,
   `OrderDate` date DEFAULT NULL,
   `OrderStatus` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dataark for tabell `ordertable`
@@ -254,7 +254,7 @@ CREATE TABLE `payment` (
   `Amount` decimal(10,2) NOT NULL,
   `PaymentDate` date NOT NULL,
   `PaymentStatus` enum('pending','successful','failed') DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dataark for tabell `payment`
@@ -287,7 +287,7 @@ CREATE TABLE `product` (
   `StockQuantity` int(11) NOT NULL,
   `Brand` varchar(50) DEFAULT NULL,
   `Category` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dataark for tabell `product`
@@ -327,7 +327,7 @@ CREATE TABLE `review` (
   `Comment` varchar(500) DEFAULT NULL,
   `Rating` int(11) DEFAULT NULL CHECK (`Rating` between 1 and 10),
   `PostDate` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dataark for tabell `review`
@@ -359,7 +359,7 @@ CREATE TABLE `users` (
   `FirstName` varchar(50) NOT NULL,
   `LastName` varchar(50) NOT NULL,
   `Address` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dataark for tabell `users`
