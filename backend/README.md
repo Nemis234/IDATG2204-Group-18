@@ -1,5 +1,23 @@
 
 
+## Installation
+### Requirements:
+- A MySQL database solution running on `root:@tcp(127.0.0.1:3306)/idatg2204` with the correct SQL tables (see README.md in /sql/sampledatabase/README.md)
+- Or set the environmental variable `DSN` to the desired path with credentials
+
+### How to
+To start the backend, run the executable for your appropriate OS and system architecture (most commonly amd64) located in the `/backend/` directory
+
+### Alternativly, to run the code without the executable:
+#### Requirements
+- GO version `1.24.1` or higher
+
+#### How to
+Open a terminal window, and navigate to the `/backend/` directory. Then run this command: `go run main.go`
+
+To stop the program, close the terminal window or press `ctr + c`
+
+
 ## API Endpoints
 
 ### 🏷️ Brands
