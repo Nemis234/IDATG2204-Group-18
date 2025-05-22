@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS OrderStatus (
 
 CREATE TABLE IF NOT EXISTS OrderTable (
     OrderID VARCHAR(50) NOT NULL PRIMARY KEY,
-    UserID VARCHAR(50),
+    UserID VARCHAR(50) NOT NULL,
     OrderDate DATE,
     OrderStatus VARCHAR(50) NOT NULL,
     FOREIGN KEY (UserID) REFERENCES Users(UserID) ON UPDATE CASCADE,
@@ -112,3 +112,13 @@ CREATE TABLE IF NOT EXISTS Review (
     FOREIGN KEY (UserID) REFERENCES Users(UserID) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (ProductID) REFERENCES Product(ProductID) ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+CREATE INDEX idx_product_brand ON Product(Brand);
+
+CREATE INDEX idx_product_category ON Product(Category);
+
+CREATE INDEX ind_ordertable_userid ON OrderTable(UserID);
+
+CREATE INDEX idx_payment_orderid ON Payment(OrderID);
+
+CREATE INDEX idx_review_productid ON Review(ProductID);
