@@ -4,6 +4,7 @@ import (
 	cons "backend/constants"
 	. "backend/structs"
 	utility "backend/utility"
+	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -130,6 +131,8 @@ func MemberHandler(w http.ResponseWriter, r *http.Request) {
 		if err == nil {
 			http.Error(w, "User is already a member", http.StatusConflict)
 			return
+		} else if err == sql.ErrNoRows {
+			// User is not a member, proceed to insert
 		} else if !utility.CheckSQLErr(err, w) {
 			http.Error(w, "Error checking member status", http.StatusInternalServerError)
 			return
