@@ -102,7 +102,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		id := checkUser.UserID
-		response := map[string]string{"user_id": id}
+		response := map[string]string{"user_id": id, "auth_token": "Bearer " + token}
 		if err := json.NewEncoder(w).Encode(response); err != nil {
 			log.Println("Error encoding response: ", err)
 			http.Error(w, "Error encoding response", http.StatusInternalServerError)
